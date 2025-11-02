@@ -1,6 +1,20 @@
 # Prerequisites
 *.d
 
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build directories
+[Bb]in/
+[Dd]ebug/
+[Rr]elease/
+x64/
+Win32/
+
 # Compiled Object files
 *.slo
 *.lo
