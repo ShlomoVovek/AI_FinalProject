@@ -167,6 +167,12 @@ Point IPathfinding::FindClosestSafePosition(double searchRange, const double* sa
 
 bool IPathfinding::FindAStarPath(Point goal, const double* safetyMap)
 {
+	if (!IsWalkable(safetyMap, goal))
+	{
+		// TODO: check if bases are walkable
+		return false;
+	}
+
 	// std::vector <Cell*> createdCells; // storage for all created cells
 	std::map<int, Cell*> allCells; // map of all cells
 	std::priority_queue<Cell*, std::vector<Cell*>, CompareCells> openList; // priority queue
@@ -226,10 +232,11 @@ bool IPathfinding::FindAStarPath(Point goal, const double* safetyMap)
 	if (goalCell != nullptr)
 	{
 		RestorePath(goalCell, currentPath);
-		CleanupCells(createdCells);
-		return true;
 	}
-	return false;
+	CleanupCells(createdCells);
+
+	// 7. Return true if path was found
+	return (goalCell != nullptr);
 }
 
 void IPathfinding::CleanupCells(std::vector<Cell*>& createdCells)
