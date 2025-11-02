@@ -13,10 +13,10 @@ bool IPathfinding::IsWalkable(const double* safetyMap, Point p) const
 	if (index < 0 || index >= MSX * MSY) return false;
 	
 	double cellValue = safetyMap[index];
-	if (cellValue == ROCK || cellValue == WATER)
+	if (cellValue == (double)ROCK || cellValue == (double)WATER)
 		return false;
 
-	return true; // is Water or Rock
+	return true; // is not Water or Rock
 }
 
 // calculate the cost of making the next step:
@@ -36,10 +36,14 @@ double IPathfinding::CalculateStepCost(int dx, int dy, const Point& neighbor, co
 	if (index < 0 || index >= MSX * MSY)
 		return 9999.0; // high costs
 
-	double safetyValue = safetyMap[index]; // maybe add null check
-
 	// 3. calculate safety penalty
-	double safetyPenalty = safetyValue * SAFETY_WEIGHT;
+	double safetyValue = safetyMap[index]; // maybe add null check
+	double safetyPenalty = 0.0;
+	
+	if (safetyValue >= 0) // if not obstacle
+	{
+		safetyPenalty = safetyValue * SAFETY_WEIGHT;
+	}
 
 	// 4. sum sosts
 	return STRAIGHT_COST + safetyPenalty;
@@ -47,7 +51,7 @@ double IPathfinding::CalculateStepCost(int dx, int dy, const Point& neighbor, co
 
 bool IPathfinding::IsGoalReached(const Point& current, const Point& goal) const
 {
-	return current.x == goal.x && current.y == goal.y;
+	return (current.x == goal.x) && (current.y == goal.y);
 }
 
 // calculate H vlaue with Manhattan distance
@@ -167,18 +171,46 @@ Point IPathfinding::FindClosestSafePosition(double searchRange, const double* sa
 
 bool IPathfinding::FindAStarPath(Point goal, const double* safetyMap)
 {
+	currentPath.clear();
+	CleanupCells(createdCells);
+
+	// TODO: check if bases are walkable
 	if (!IsWalkable(safetyMap, goal))
 	{
-		// TODO: check if bases are walkable
-		return false;
+		// if not walkable, try finding other
+		bool foundAlternative = false;
+		for (int dy = -1; dy <= 1 && !foundAlternative; ++dy)
+		{
+			for (int dx = -1; dx <= 1 && !foundAlternative; ++dx)
+			{
+				if (dx == 0 && dy == 0) continue;
+
+				Point altGoal = { goal.x + dx, goal.y + dy };
+				if (altGoal.x >= 0 && altGoal.x < MSX &&
+					altGoal.y >= 0 && altGoal.y < MSY &&
+					IsWalkable(safetyMap, altGoal))
+				{
+					goal = altGoal;
+					foundAlternative = true;
+				}
+			}
+		}
+
+		if (!foundAlternative)
+			return false;
 	}
 
-	// std::vector <Cell*> createdCells; // storage for all created cells
-	std::map<int, Cell*> allCells; // map of all cells
-	std::priority_queue<Cell*, std::vector<Cell*>, CompareCells> openList; // priority queue
+	std::map<int, Cell*> allCells;
+	std::priority_queue<Cell*, std::vector<Cell*>, CompareCells> openList;
+	std::map<int, bool> closedList;
 
 	// 1. reset
 	Point start = GetLoaction();
+
+	if (start.x == goal.x && start.y == goal.y)
+	{
+		return true;
+	}
 
 	// start: g = 0, h = Heuristic, f = h
 	double hStart = CalculateHeuristic(start, goal);
@@ -194,49 +226,66 @@ bool IPathfinding::FindAStarPath(Point goal, const double* safetyMap)
 
 	// set Goal Point
 	const Point goalPoint = goal;
+	int iterations = 0;
+	const int MAX_ITERATIONS = MSX * MSY;
 
 	// 2. main search loop
-	while (!openList.empty())
+	while (!openList.empty() && iterations < MAX_ITERATIONS)
 	{
+		iterations++;
+
 		Cell* current = openList.top();
 		openList.pop();
 
+		int currentIndex = current->getPoint().x * MSY + current->getPoint().y;
 
-		// 3. check destination
+		if (closedList[currentIndex])
+			continue;
+
+		closedList[currentIndex] = true;
+
 		if (IsGoalReached(current->getPoint(), goal))
 		{
 			goalCell = current;
-			break; // found Goal
+			break;
 		}
 
-		// 4. check neighbors
-		for (int dy = -1; dy <=1; ++dy)
+		for (int dy = -1; dy <= 1; ++dy)
+		{
 			for (int dx = -1; dx <= 1; ++dx)
 			{
 				if (dy == 0 && dx == 0)
 					continue;
 
-				Point neighbor = { current->getPoint().x + dx, current->getPoint().y + dy};
+				Point neighbor = { current->getPoint().x + dx, current->getPoint().y + dy };
 
-				// check boundaries
-				if (neighbor.x >= 0 && neighbor.x < MSX && neighbor.y >= 0 && neighbor.y < MSY)
+				if (neighbor.x >= 0 && neighbor.x < MSX &&
+					neighbor.y >= 0 && neighbor.y < MSY)
 				{
-					if (IsWalkable(safetyMap,neighbor))
+					int neighborIndex = neighbor.x * MSY + neighbor.y;
+
+					if (closedList[neighborIndex])
+						continue;
+
+					if (IsWalkable(safetyMap, neighbor))
 					{
-						ProcessNeighbors(current, neighbor, goal, safetyMap, allCells, createdCells, openList);
+						ProcessNeighbors(current, neighbor, goal, safetyMap,
+							allCells, createdCells, openList);
 					}
 				}
 			}
+		}
 	}
+
 	// 5. cleanup memory
 	if (goalCell != nullptr)
 	{
 		RestorePath(goalCell, currentPath);
 	}
-	CleanupCells(createdCells);
+	// CleanupCells(createdCells);
 
 	// 7. Return true if path was found
-	return (goalCell != nullptr);
+	return (goalCell != nullptr && !currentPath.empty());
 }
 
 void IPathfinding::CleanupCells(std::vector<Cell*>& createdCells)

@@ -17,7 +17,7 @@ enum CellType
 {
 	EMPTY = 0,
 	ROCK = -2, // SAFE: cannot shoot, see, cross 
-	WATER = -3,// SAFE: can corss, cannot shoot or see
+	WATER = -3,// NOT SAFE: can shoot or see, cannot corss
 	TREE = -4, // NOT SAFE: can shoot and see, cannot cross
 	BASE = -5 // ammo and medicine
 };

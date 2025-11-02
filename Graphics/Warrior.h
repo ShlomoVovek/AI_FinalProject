@@ -34,6 +34,8 @@ private:
 	Point currentAttackTarget;
 	WorriorState currentState;
 
+	int moveCooldown; // TODO: add in NPC.h
+
 	Point DetermineBestAttackPosition(Point enemyLoc);
 
 	// bool FindAStarPath(Point goal, const double* safteyMap) override;

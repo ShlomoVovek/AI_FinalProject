@@ -51,6 +51,7 @@ protected:
 	NpcType type;
 	Commander* myCommander;
 	double health;
+	// int moveCooldown;
 
 	// behavior properties
 	Point targetLocation;

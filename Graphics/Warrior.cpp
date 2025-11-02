@@ -7,23 +7,28 @@
 #include <algorithm>
 
 Warrior::Warrior(int x, int y, TeamColor t) :
-	NPC(x, y, t, WARRIOR), ammo(MAX_AMMO), isAttacking(false), currentState(W_IDLE)
+	NPC(x, y, t, WARRIOR), ammo(MAX_AMMO), isAttacking(false), currentState(W_IDLE), moveCooldown(0)
 {
 }
 
+// TODO: build this method
 Point Warrior::DetermineBestAttackPosition(Point enemyLoc)
 {
-	Point point;
-	point.x = 0;
-	point.y = 0;
-	return point;
+	return enemyLoc;
 }
 
 void Warrior::CalculatePathAndMove()
 {
+	if (moveCooldown > 0)
+	{
+		moveCooldown--; // Wait
+		return;         // Don't move this frame
+	}
+
 	if (currentPath.empty())
 	{
 		isMoving = false;
+		currentState = W_IDLE;
 		return;
 	}
 
@@ -42,6 +47,7 @@ void Warrior::CalculatePathAndMove()
 		{
 			SetDirection(currentPath.front());
 		}
+		moveCooldown = 1000;
 	}
 	/*
 	if (currentPath.empty())
@@ -148,12 +154,19 @@ void Warrior::ExecuteCommand(int commandCode, Point target)
 {
 	if (!IsAlive()) return;
 
+	if (currentState != W_IDLE)
+	{
+		return;
+	}
+
+	/*
 	if ((commandCode == CMD_MOVE && currentState == W_ADVANCE) ||
 		(commandCode == CMD_ATTACK && currentState == W_ATTACK) ||
 		(commandCode == CMD_DEFEND && currentState == W_RETREAT))
 	{
 		return;
 	}
+	*/
 
 	if (commandCode == CMD_MOVE && (int)location.x == (int)target.x &&
 		(int)location.y == (int)target.y)
