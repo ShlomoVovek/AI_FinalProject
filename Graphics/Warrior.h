@@ -48,7 +48,7 @@ protected:
 
 	// connect interface to NPC's methods
 	// bool IsWalkable(Point p) const { return IPathfinding::IsWalkable(this->GetViewMap(), p); }
-	Point GetLoaction() const override { return NPC::GetLocation(); }
+	Point GetLocation() const override { return NPC::GetLocation(); }
 
 public:
 	// constructor

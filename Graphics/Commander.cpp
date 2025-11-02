@@ -74,14 +74,23 @@ Point Commander::FindSafePosition() const
 
 	Point closeEnemy = allSpottedEnemies.front().point;
 
+	double manhattanDist = ManhattanDistance(
+		(int)location.x, (int)location.y,
+		closeEnemy.x, closeEnemy.y
+	);
+
 	double dx = location.x - closeEnemy.x;
 	double dy = location.y - closeEnemy.y;
 
 	// go back
 	Point safePos = { location.x + dx * 2, location.y + dy * 2 };
-
 	safePos.x = std::max(1.0, std::min(static_cast<double>(MSX - 1), static_cast<double>(safePos.x)));
 	safePos.y = std::max(1.0, std::min(static_cast<double>(MSY - 1), static_cast<double>(safePos.y)));
+
+	if (safePos.x < 1) safePos.x = 1;
+	if (safePos.x >= MSX - 1) safePos.x = MSX - 2;
+	if (safePos.y < 1) safePos.y = 1;
+	if (safePos.y >= MSY - 1) safePos.y = MSY - 2;
 
 	return safePos;
 }
@@ -93,16 +102,29 @@ Point Commander::FindAttackPosition() const
 
 	Point closestEnemy = allSpottedEnemies.front().point;
 
+	double manhattanDist = ManhattanDistance(
+		(int)location.x, (int)location.y,
+		closestEnemy.x, closestEnemy.y
+	);
+
 	double dx = closestEnemy.x - location.x;
 	double dy = closestEnemy.y - location.y;
-	double length = Distance(location.x, location.y, closestEnemy.x, closestEnemy.y);
 
 	Point attackPos;
-	attackPos.x = closestEnemy.x - (dx / length) * 15;
-	attackPos.y = closestEnemy.y - (dy / length) * 15;
-	
-	attackPos.x = std::min(static_cast<double>(MSX - 1), std::max(1.0, static_cast<double>(attackPos.x)));
-	attackPos.y = std::min(static_cast<double>(MSY - 1), std::max(1.0, static_cast<double>(attackPos.y)));
+	if (manhattanDist > 15)
+	{
+		attackPos.x = (int)(closestEnemy.x - (dx / manhattanDist) * 15);
+		attackPos.y = (int)(closestEnemy.y - (dy / manhattanDist) * 15);
+	}
+	else
+	{
+		attackPos = closestEnemy;
+	}
+
+	if (attackPos.x < 1) attackPos.x = 1;
+	if (attackPos.x >= MSX - 1) attackPos.x = MSX - 2;
+	if (attackPos.y < 1) attackPos.y = 1;
+	if (attackPos.y >= MSY - 1) attackPos.y = MSY - 2;
 
 	return attackPos;
 }

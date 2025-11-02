@@ -45,7 +45,7 @@ protected:
 
 	bool IsWalkable(const double* safetyMap, Point p) const;
 	// virtual methods implemented by characters
-	virtual Point GetLoaction() const = 0;
+	virtual Point GetLocation() const = 0;
 
 public:
 	virtual ~IPathfinding() = default; // destructor

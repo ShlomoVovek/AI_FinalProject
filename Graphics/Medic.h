@@ -16,7 +16,7 @@ private:
 protected:
 	void CalculatePathAndMove() override;
 	Point GetBaseLocation() const;
-	Point GetLoaction() const override { return NPC::GetLocation(); }
+	Point GetLocation() const override { return NPC::GetLocation(); }
 public: 
 	// constructor
 	Medic(int x, int y, TeamColor t);

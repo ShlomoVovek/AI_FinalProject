@@ -110,7 +110,7 @@ void IPathfinding::ProcessNeighbors(Cell* current, const Point& neighbor, const 
 
 Point IPathfinding::FindClosestSafePosition(double searchRange, const double* safetyMap) const
 {
-	Point start = GetLoaction();
+	Point start = GetLocation();
 
 	if (safetyMap == nullptr || MSX <= 0 || MSY <= 0)
 		return start;
@@ -151,14 +151,13 @@ Point IPathfinding::FindClosestSafePosition(double searchRange, const double* sa
 				if (visited[neighborIndex]) continue;
 
 				// 3. Walkability
+				// TODO: implement Distance & cost method
 				if (IsWalkable(safetyMap, neighbor))
 				{
-					// TODO: implement Distance & cost method
-					double dx_start = neighbor.x - start.x;
-					double dy_start = neighbor.y - start.y;
-					double distance = sqrt(dx_start * dx_start + dy_start * dy_start);
+					// Use Manhattan distance for search range
+					double manhattanDist = ManhattanDistance(start, neighbor);
 
-					if (distance <= searchRange)
+					if (manhattanDist <= searchRange)
 					{
 						visited[neighborIndex] = true;
 						q.push(neighbor);
@@ -205,7 +204,7 @@ bool IPathfinding::FindAStarPath(Point goal, const double* safetyMap)
 	std::map<int, bool> closedList;
 
 	// 1. reset
-	Point start = GetLoaction();
+	Point start = GetLocation();
 
 	if (start.x == goal.x && start.y == goal.y)
 	{

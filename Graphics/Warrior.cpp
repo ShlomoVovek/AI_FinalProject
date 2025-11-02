@@ -17,22 +17,31 @@ Point Warrior::DetermineBestAttackPosition(Point enemyLoc)
 	// Calculate a tactical position near the enemy
 	double dx = enemyLoc.x - location.x;
 	double dy = enemyLoc.y - location.y;
-	double dist = Distance(location, enemyLoc);
+	
+	double manhattanDist = ManhattanDistance(
+		(int)location.x, (int)location.y,
+		enemyLoc.x, enemyLoc.y
+	);
 
-	if (dist < 1.0) dist = 1.0;
+	if (manhattanDist < 1) manhattanDist = 1;
 
-	// Position at fighting range (10 units from enemy)
+	double euclideanDist = sqrt(dx * dx + dy * dy);
+	if (euclideanDist < 1.0) euclideanDist = 1.0;
+
 	Point attackPos;
-	attackPos.x = (int)(location.x + (dx / dist) * (dist - 10));
-	attackPos.y = (int)(location.y + (dy / dist) * (dist - 10));
+	attackPos.x = (int)(location.x + (dx / euclideanDist) * (manhattanDist - 10));
+	attackPos.y = (int)(location.y + (dy / euclideanDist) * (manhattanDist - 10));
 
-	// Clamp to map boundaries
-	attackPos.x = std::max(1, std::min(MSX - 2, attackPos.x));
-	attackPos.y = std::max(1, std::min(MSY - 2, attackPos.y));
+	// Clamp to SAFE boundaries
+	if (attackPos.x < 1) attackPos.x = 1;
+	if (attackPos.x >= MSX - 1) attackPos.x = MSX - 2;
+	if (attackPos.y < 1) attackPos.y = 1;
+	if (attackPos.y >= MSY - 1) attackPos.y = MSY - 2;
 
 	std::cout << "Warrior determining attack position: ("
 		<< attackPos.x << ", " << attackPos.y << ") towards enemy at ("
-		<< enemyLoc.x << ", " << enemyLoc.y << ")\n";
+		<< enemyLoc.x << ", " << enemyLoc.y << ") Manhattan dist: "
+		<< manhattanDist << "\n";
 
 	return attackPos;
 }
@@ -132,6 +141,12 @@ void Warrior::ReportInjury(NPC* injuredSoldier)
 void Warrior::ExecuteCommand(int commandCode, Point target)
 {
 	if (!IsAlive()) return;
+
+	// map boundaries
+	if (target.x < 1) target.x = 1;
+	if (target.x >= MSX - 1) target.x = MSX - 2;
+	if (target.y < 1) target.y = 1;
+	if (target.y >= MSY - 1) target.y = MSY - 2;
 
 	std::cout << "Warrior (Team " << (team == TEAM_RED ? "RED" : "BLUE")
 		<< ") at (" << location.x << ", " << location.y

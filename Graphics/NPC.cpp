@@ -27,16 +27,33 @@ void NPC::SetCommander(Commander* pCommander)
 // TODO: check what it does and why important
 void NPC::SetDirection(Point target)
 {
+	// map boundaries
+	if (target.x < 0) target.x = 0;
+	if (target.x >= MSX) target.x = MSX - 1;
+	if (target.y < 0) target.y = 0;
+	if (target.y >= MSY) target.y = MSY - 1;
+
 	targetLocation = target;
 	double dx = targetLocation.x - location.x;
 	double dy = targetLocation.y - location.y;
 
-	double length = Distance(location.x, location.y, targetLocation.x, targetLocation.y);
-	if (length > 0)
+	double manhattanDist = ManhattanDistance(
+		(int)location.x, (int)location.y,
+		targetLocation.x, targetLocation.y);
+	if (manhattanDist > 0.1)
 	{
-		directionX = dx / length;
-		directionY = dy / length;
-		isMoving = true;
+		// For diagonal movement, normalize the vector
+		double euclideanLength = sqrt(dx * dx + dy * dy);
+		if (euclideanLength > 0.1)
+		{
+			directionX = dx / euclideanLength;
+			directionY = dy / euclideanLength;
+			isMoving = true;
+		}
+		else
+		{
+			isMoving = false;
+		}
 	}
 	else
 	{
@@ -51,7 +68,18 @@ void NPC::MoveToTarget()
 		location.x += SPEED * directionX;
 		location.y += SPEED * directionY;
 
-		if (Distance(location.x, location.y, targetLocation.x, targetLocation.y) < 1.0)
+		// map boundaries
+		if (location.x < 0.5) location.x = 0.5;
+		if (location.x >= MSX - 0.5) location.x = MSX - 0.5;
+		if (location.y < 0.5) location.y = 0.5;
+		if (location.y >= MSY - 0.5) location.y = MSY - 0.5;
+
+		double manhattanDist = ManhattanDistance(
+			(int)location.x, (int)location.y,
+			targetLocation.x, targetLocation.y
+		);
+
+		if (manhattanDist <= 1)  // Reached within 1 cell
 		{
 			isMoving = false;
 		}
