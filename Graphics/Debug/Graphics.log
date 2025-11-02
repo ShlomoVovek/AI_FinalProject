@@ -1,5 +1,60 @@
 ﻿D:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(534,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (Graphics.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  Cell.cpp
+  Chopping.cpp
+  Commander.cpp
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(81,31): warning C4838: conversion from 'double' to 'int' requires a narrowing conversion
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(81,31): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(81,52): warning C4838: conversion from 'double' to 'int' requires a narrowing conversion
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(81,52): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(83,22): warning C4244: '=': conversion from 'const _Ty' to 'int', possible loss of data
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(83,22): warning C4244:         with
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(83,22): warning C4244:         [
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(83,22): warning C4244:             _Ty=double
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(83,22): warning C4244:         ]
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(84,22): warning C4244: '=': conversion from 'const _Ty' to 'int', possible loss of data
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(84,22): warning C4244:         with
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(84,22): warning C4244:         [
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(84,22): warning C4244:             _Ty=double
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(84,22): warning C4244:         ]
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(101,31): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(102,31): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(104,24): warning C4244: '=': conversion from 'const _Ty' to 'int', possible loss of data
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(104,24): warning C4244:         with
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(104,24): warning C4244:         [
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(104,24): warning C4244:             _Ty=double
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(104,24): warning C4244:         ]
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(105,24): warning C4244: '=': conversion from 'const _Ty' to 'int', possible loss of data
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(105,24): warning C4244:         with
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(105,24): warning C4244:         [
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(105,24): warning C4244:             _Ty=double
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(105,24): warning C4244:         ]
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(149,20): warning C4018: '>=': signed/unsigned mismatch
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(183,28): warning C4838: conversion from 'double' to 'int' requires a narrowing conversion
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(183,28): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(183,39): warning C4838: conversion from 'double' to 'int' requires a narrowing conversion
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(183,39): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  Dropping.cpp
+  GoHome.cpp
+  GoToForest.cpp
+  GoToWarehouse.cpp
   IPathfinding.cpp
+  main.cpp
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(7,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  (compiling source file 'main.cpp')
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\main.cpp(153,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\main.cpp(154,20): warning C4305: 'argument': truncation from 'double' to 'GLclampf'
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\main.cpp(195,6): warning C4326: return type of 'main' should be 'int' instead of 'void'
+  Map.cpp
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Map.cpp(8,15): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Map.cpp(81,11): warning C4101: 'warehouse': unreferenced local variable
+  Medic.cpp
+  NPC.cpp
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\NPC.cpp(51,23): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\NPC.cpp(52,23): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+  State.cpp
+  StayAtHome.cpp
+  SupplyAgent.cpp
   Warrior.cpp
 D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(7,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
   (compiling source file 'Warrior.cpp')

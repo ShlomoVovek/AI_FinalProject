@@ -26,6 +26,15 @@ struct Point
 {
 	int x;
 	int y;
+
+	// Add comparison operators for easier debugging
+	bool operator==(const Point& other) const {
+		return x == other.x && y == other.y;
+	}
+
+	bool operator!=(const Point& other) const {
+		return !(*this == other);
+	}
 };
 
 inline double Distance(double x1, double y1, double x2, double y2)
