@@ -7,7 +7,7 @@
 #include <list>
 
 
-const double SPEED = 0.5;
+const double SPEED = 2.0;
 const double MAX_HP = 100.0;
 const double CRITICAL_HP = MAX_HP * 0.25;
 

@@ -161,6 +161,51 @@ void init()
 	InitCharacters();
 }
 
+/*
+void displayGameMap()
+{
+	glClear(GL_COLOR_BUFFER_BIT); // clean frame buffer
+
+	ShowMaze(); // This draws your regular maze
+
+	glutSwapBuffers(); // show all
+}
+*/
+
+/*
+void displayCommanderMap()
+{
+	glClear(GL_COLOR_BUFFER_BIT); // clean frame buffer
+
+	// --- TODO: Add your logic here ---
+	// You probably want to draw the base map first
+	ShowMaze();
+
+	// Then, draw the visibility overlay on top of it
+	// For example:
+	// DrawCommanderVisibilityOverlay();
+
+	glutSwapBuffers(); // show all
+}
+*/
+
+/*
+// Menu callback function to switch views
+void viewMenu(int choice)
+{
+	switch (choice)
+	{
+	case 1:  // Game Map
+		glutDisplayFunc(displayGameMap); // Set display function to show Game Map
+		break;
+	case 2:   // Commander Visibility Map
+		glutDisplayFunc(displayCommanderMap); // Set display function to show Commander Map
+		break;
+	}
+	glutPostRedisplay(); // Request a redraw to show the change
+}
+*/
+
 void display()
 {
 	glClear(GL_COLOR_BUFFER_BIT); // clean frame buffer
@@ -201,9 +246,17 @@ void main(int argc, char* argv[])
 	glutCreateWindow("AI Final Project");
 
 	glutDisplayFunc(display);
+	//glutDisplayFunc(displayGameMap);
 	glutIdleFunc(idle);
 
+	//glutKeyboardFunc(keyboard);
+
 	// TODO: glutReshapeFunc(reshape);
+
+	// glutCreateMenu(viewMenu);
+	glutAddMenuEntry("Game Map", 1);
+	glutAddMenuEntry("Commander Visibility Map", 2);
+	glutAttachMenu(GLUT_RIGHT_BUTTON);
 
 	init();
 

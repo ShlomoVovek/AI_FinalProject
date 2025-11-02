@@ -19,25 +19,24 @@ D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProj
 D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(205,28): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
 D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(205,39): warning C4838: conversion from 'double' to 'int' requires a narrowing conversion
 D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(205,39): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-  IPathfinding.cpp
+  GoToWarehouse.cpp
+  Medic.cpp
   NPC.cpp
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\NPC.cpp(68,23): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\NPC.cpp(69,23): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
 D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\NPC.cpp(72,38): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
 D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\NPC.cpp(73,49): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
 D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\NPC.cpp(74,38): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
 D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\NPC.cpp(75,49): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+  SupplyAgent.cpp
   Warrior.cpp
 D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(7,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
   (compiling source file 'Warrior.cpp')
   
+  main.cpp
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(7,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  (compiling source file 'main.cpp')
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\main.cpp(153,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\main.cpp(154,20): warning C4305: 'argument': truncation from 'double' to 'GLclampf'
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\main.cpp(240,6): warning C4326: return type of 'main' should be 'int' instead of 'void'
   Generating Code...
-StayAtHome.obj : warning LNK4099: PDB '' was not found with 'StayAtHome.obj' or at ''; linking object as if no debug info
-State.obj : warning LNK4099: PDB '' was not found with 'State.obj' or at ''; linking object as if no debug info
-Map.obj : warning LNK4099: PDB '' was not found with 'Map.obj' or at ''; linking object as if no debug info
-GoToForest.obj : warning LNK4099: PDB '' was not found with 'GoToForest.obj' or at ''; linking object as if no debug info
-GoHome.obj : warning LNK4099: PDB '' was not found with 'GoHome.obj' or at ''; linking object as if no debug info
-Dropping.obj : warning LNK4099: PDB '' was not found with 'Dropping.obj' or at ''; linking object as if no debug info
-Chopping.obj : warning LNK4099: PDB '' was not found with 'Chopping.obj' or at ''; linking object as if no debug info
-Cell.obj : warning LNK4099: PDB '' was not found with 'Cell.obj' or at ''; linking object as if no debug info
   Graphics.vcxproj -> D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Debug\AI_FinalProject.exe

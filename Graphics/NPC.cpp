@@ -65,8 +65,8 @@ void NPC::MoveToTarget()
 {
 	if (isMoving)
 	{
-		location.x += SPEED * directionX;
-		location.y += SPEED * directionY;
+		location.x += (int)(SPEED * directionX);
+		location.y += (int)(SPEED * directionY);
 
 		// map boundaries
 		if (location.x < 0.5) location.x = 0.5;
