@@ -1,14 +1,42 @@
 #include "Commander.h"
+#include "CommanderAnalyzingState.h"
 #include <algorithm>
 #include <cmath>
 #include <iostream>
 
 Commander::Commander(int x, int y, TeamColor t) :
-	NPC(x, y, t, COMMANDER), currentTeamCommand(CMD_NONE)
+	NPC(x, y, t, COMMANDER),
+	currentState(nullptr),
+	plannedCommand(CMD_NONE)
+
 {
 	for (int i = 0; i < MSX; ++i)
 		for (int j = 0; j < MSY; ++j)
 			combinedViewMap[i][j] = 0.0;
+
+	currentState = new CommanderAnalyzingState();
+	currentState->OnEnter(this);
+}
+
+Commander::~Commander()
+{
+	delete currentState;
+}
+
+void Commander::SetState(CommanderState* newState)
+{
+	if (currentState)
+	{
+		currentState->OnExit(this);
+		delete currentState;
+	}
+
+	currentState = newState;
+
+	if (currentState)
+	{
+		currentState->OnEnter(this);
+	}
 }
 
 void Commander::CalculatePathAndMove()
@@ -63,8 +91,39 @@ void Commander::ReportInjury(NPC* injuredSoldier)
 
 void Commander::ReportLowAmmo(NPC* warrior)
 {
-	if (std::find(resupplySoldires.begin(), resupplySoldires.end(), warrior) == resupplySoldires.end())
-		resupplySoldires.push_back(warrior);
+	if (std::find(resupplySoldiers.begin(), resupplySoldiers.end(), warrior) == resupplySoldiers.end())
+		resupplySoldiers.push_back(warrior);
+}
+
+NPC* Commander::GetNextInjuredSoldier()
+{
+	if (injuredSoldiers.empty())
+		return nullptr;
+
+	NPC* soldier = injuredSoldiers.front();
+	injuredSoldiers.erase(injuredSoldiers.begin());
+	return soldier;
+}
+
+NPC* Commander::GetNextLowAmmoSoldier()
+{
+	if (resupplySoldiers.empty())
+		return nullptr;
+
+	NPC* soldier = resupplySoldiers.front();
+	resupplySoldiers.erase(resupplySoldiers.begin());
+	return soldier;
+}
+
+int Commander::GetWoundedCount() const
+{
+	int count = 0;
+	for (NPC* member : teamMembers)
+	{
+		if (member->IsAlive() && !member->CanFight())
+			count++;
+	}
+	return count;
 }
 
 Point Commander::FindSafePosition() const
@@ -131,98 +190,20 @@ Point Commander::FindAttackPosition() const
 
 void Commander::DoSomeWork(const double* pMap)
 {
-	if (!IsAlive()) return;
+	if (!IsAlive())
+		return;
 
 	BuildViewMap(pMap);
 
-	// 1. sum members maps
-	UpdateCombinedViewMap();
-	
-	// 2. handle ammo & injury reports
-	if (!injuredSoldiers.empty())
+	// Execute current state - THIS IS THE ONLY LINE YOU NEED!
+	if (currentState)
 	{
-		// TODO: send only to medic, afterwards: reset to CMD_NONE
-		NPC* target = injuredSoldiers.front();
-
-		IssueCommand(CMD_HEAL, target->GetLocation());
-		injuredSoldiers.erase(injuredSoldiers.begin());
-		// return;
+		currentState->Execute(this);
 	}
 
-	if (!resupplySoldires.empty()) 
-	{
-		// TODO: send only to SupplyAgent, afterwards: reset to CMD_NONE
-		NPC* target = resupplySoldires.front();
-		IssueCommand(CMD_RESUPPLY, target->GetLocation());
-
-		resupplySoldires.erase(resupplySoldires.begin());
-		// return;
-	}
-
-	// 3. attack or defend
-	if (!allSpottedEnemies.empty())
-	{
-		int woundedCount = 0;
-		for (NPC* member : teamMembers)
-		{
-			if (member->IsAlive() && !member->CanFight()) woundedCount++;
-		}
-
-		if (woundedCount >= teamMembers.size() / 2) // most are wounded
-		{
-			if (currentTeamCommand != CMD_DEFEND)
-			{
-				IssueCommand(CMD_DEFEND, location); // go for safe location
-				std::cout << "Commander (Team " << (team == TEAM_RED ? "RED" : "BLUE") <<
-					") ISSUED COMMAND: DEFEND (RETREAT)\n";
-
-				currentTeamCommand = CMD_DEFEND;
-				currentTeamTarget = location; // TODO:  <---earse this line
-			}
-		}
-		else // most are not wounded
-		{
-			Point attackPos = FindAttackPosition();
-
-			if (currentTeamCommand != CMD_ATTACK || (int)currentTeamTarget.x != (int)attackPos.x ||
-				(int)currentTeamTarget.y != (int)attackPos.y)
-			{
-				IssueCommand(CMD_ATTACK, attackPos);
-				std::cout << "Commander (Team " << (team == TEAM_RED ? "RED" : "BLUE") <<
-					") ISSUED COMMAND: ATTACK Target: (" << (int)attackPos.x << ", " <<
-					(int)attackPos.y << ")\n";
-
-				currentTeamCommand = CMD_ATTACK;
-				currentTeamTarget = attackPos;
-			}
-		}
-	}
-	// 4. no enemies spotted, change location
-	else
-	{
-		if (currentTeamCommand != CMD_MOVE)
-		{
-			Point newTarget = { MSX / 2.0, MSY / 2.0 };
-			IssueCommand(CMD_MOVE, newTarget);
-
-			std::cout << "Commander (Team " << (team == TEAM_RED ? "RED" : "BLUE") <<
-				") ISSUED COMMAND: MOVE to center (" << (int)newTarget.x << ", " <<
-				(int)newTarget.y << ")\n";
-
-			currentTeamCommand = CMD_MOVE;
-			currentTeamTarget = newTarget;
-		}
-	}
-
-	// 5. change commander position
-	if (!allSpottedEnemies.empty())
-	{
-		Point safePos = FindSafePosition();
-		SetDirection(safePos);
-	}
-	MoveToTarget();
-
-	printf("%d\n", currentTeamCommand);
-	printf("currentTeamTarget.x = %d\n", currentTeamTarget.x);
-	printf("currentTeamTarget.y = %d\n", currentTeamTarget.y);
+	// All the logic below is now handled by states!
+	// AnalyzingState handles: UpdateCombinedViewMap, injury/ammo reports
+	// PlanningState handles: attack/defend/move decisions
+	// IssuingOrdersState handles: IssueCommand calls
+	// RepositioningState handles: commander movement
 }
