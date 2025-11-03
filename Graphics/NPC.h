@@ -7,7 +7,7 @@
 #include <list>
 
 
-const double SPEED = 1.40 ;
+const double SPEED = 2; //1.40 ;
 const double MAX_HP = 100.0;
 const double CRITICAL_HP = MAX_HP * 0.25;
 
@@ -93,6 +93,7 @@ public:
 	bool IsAlive() const { return health > 0; }
 	bool CanFight() const { return health > CRITICAL_HP; }
 
+	// TODO: cancel virtual methods, implement in NPC.cpp
 	// report methods
 	virtual void ReportInjury(NPC* injuredSoldier) = 0;
 	virtual void ReportLowAmmo(NPC* warrior) = 0;

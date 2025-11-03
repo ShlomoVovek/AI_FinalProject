@@ -1,41 +1,187 @@
 ﻿D:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(534,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (Graphics.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  Commander.cpp
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(145,31): warning C4838: conversion from 'double' to 'int' requires a narrowing conversion
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(145,31): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(145,52): warning C4838: conversion from 'double' to 'int' requires a narrowing conversion
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(145,52): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(146,22): warning C4244: '=': conversion from 'const _Ty' to 'int', possible loss of data
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(146,22): warning C4244:         with
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(146,22): warning C4244:         [
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(146,22): warning C4244:             _Ty=double
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(146,22): warning C4244:         ]
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(147,22): warning C4244: '=': conversion from 'const _Ty' to 'int', possible loss of data
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(147,22): warning C4244:         with
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(147,22): warning C4244:         [
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(147,22): warning C4244:             _Ty=double
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(147,22): warning C4244:         ]
-  CommanderAnalyzingState.cpp
-  CommanderIssuingOrdersState.cpp
-  CommanderPlanningState.cpp
-  CommanderRepositioningState.cpp
-  GoToWarehouse.cpp
-  Medic.cpp
-  NPC.cpp
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\NPC.cpp(72,38): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\NPC.cpp(73,49): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\NPC.cpp(74,38): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\NPC.cpp(75,49): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-  SupplyAgent.cpp
-  Warrior.cpp
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(7,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-  (compiling source file 'Warrior.cpp')
-  
   main.cpp
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(7,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
   (compiling source file 'main.cpp')
   
 D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\main.cpp(153,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
 D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\main.cpp(154,20): warning C4305: 'argument': truncation from 'double' to 'GLclampf'
 D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\main.cpp(240,6): warning C4326: return type of 'main' should be 'int' instead of 'void'
+  Warrior.cpp
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  (compiling source file 'Warrior.cpp')
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(10,73): error C2440: 'initializing': cannot convert from 'WorriorState' to 'WarriorState *'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(10,73):
+      Conversion from integral type to pointer type requires reinterpret_cast, C-style cast or parenthesized function-style cast
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(10,73): error C2439: 'Warrior::currentState': member could not be initialized
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(39,16):
+      see declaration of 'Warrior::currentState'
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(96,10): error C2450: a switch expression of type 'WarriorState *' is not valid
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(96,10):
+      Integral expression required
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(109,19): error C2440: '=': cannot convert from 'WorriorState' to 'WarriorState *'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(109,19):
+      Conversion from integral type to pointer type requires reinterpret_cast, C-style cast or parenthesized function-style cast
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(157,34): error C2679: binary '==': no operator found which takes a right-hand operand of type 'WorriorState' (or there is no acceptable conversion)
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(157,34):
+      could be 'built-in C++ operator==(WarriorState *, WarriorState *)'
+          D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(157,34):
+          '==': cannot convert argument 2 from 'WorriorState' to 'WarriorState *'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(157,34):
+      while trying to match the argument list '(WarriorState *, WorriorState)'
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(158,33): error C2679: binary '==': no operator found which takes a right-hand operand of type 'WorriorState' (or there is no acceptable conversion)
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(158,33):
+      could be 'built-in C++ operator==(WarriorState *, WarriorState *)'
+          D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(158,33):
+          '==': cannot convert argument 2 from 'WorriorState' to 'WarriorState *'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(158,33):
+      while trying to match the argument list '(WarriorState *, WorriorState)'
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(159,33): error C2679: binary '==': no operator found which takes a right-hand operand of type 'WorriorState' (or there is no acceptable conversion)
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(159,33):
+      could be 'built-in C++ operator==(WarriorState *, WarriorState *)'
+          D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(159,33):
+          '==': cannot convert argument 2 from 'WorriorState' to 'WarriorState *'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(159,33):
+      while trying to match the argument list '(WarriorState *, WorriorState)'
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(164,19): error C2440: '=': cannot convert from 'WorriorState' to 'WarriorState *'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(164,19):
+      Conversion from integral type to pointer type requires reinterpret_cast, C-style cast or parenthesized function-style cast
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(175,18): error C2440: '=': cannot convert from 'WorriorState' to 'WarriorState *'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(175,18):
+      Conversion from integral type to pointer type requires reinterpret_cast, C-style cast or parenthesized function-style cast
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(196,19): error C2440: '=': cannot convert from 'WorriorState' to 'WarriorState *'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(196,19):
+      Conversion from integral type to pointer type requires reinterpret_cast, C-style cast or parenthesized function-style cast
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(202,18): error C2440: '=': cannot convert from 'WorriorState' to 'WarriorState *'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(202,18):
+      Conversion from integral type to pointer type requires reinterpret_cast, C-style cast or parenthesized function-style cast
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(226,19): error C2440: '=': cannot convert from 'WorriorState' to 'WarriorState *'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(226,19):
+      Conversion from integral type to pointer type requires reinterpret_cast, C-style cast or parenthesized function-style cast
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(233,18): error C2440: '=': cannot convert from 'WorriorState' to 'WarriorState *'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(233,18):
+      Conversion from integral type to pointer type requires reinterpret_cast, C-style cast or parenthesized function-style cast
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(257,20): error C2440: '=': cannot convert from 'WorriorState' to 'WarriorState *'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(257,20):
+      Conversion from integral type to pointer type requires reinterpret_cast, C-style cast or parenthesized function-style cast
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(263,19): error C2440: '=': cannot convert from 'WorriorState' to 'WarriorState *'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.cpp(263,19):
+      Conversion from integral type to pointer type requires reinterpret_cast, C-style cast or parenthesized function-style cast
+  
+  WarriorAdvancingState.cpp
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  (compiling source file 'WarriorAdvancingState.cpp')
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\WarriorAdvancingState.cpp(14,14): error C2248: 'Warrior::CalculatePathAndMove': cannot access protected member declared in class 'Warrior'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(48,7):
+      see declaration of 'Warrior::CalculatePathAndMove'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(30,7):
+      see declaration of 'Warrior'
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\WarriorAdvancingState.cpp(24,56): error C2039: 'IsMoving': is not a member of 'Warrior'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(30,7):
+      see declaration of 'Warrior'
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\WarriorAdvancingState.cpp(31,18): error C2039: 'GetHealth': is not a member of 'Warrior'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(30,7):
+      see declaration of 'Warrior'
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\WarriorAdvancingState.cpp(36,18): error C2039: 'GetAmmo': is not a member of 'Warrior'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(30,7):
+      see declaration of 'Warrior'
+  
+  WarriorAttackingState.cpp
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  (compiling source file 'WarriorAttackingState.cpp')
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\WarriorAttackingState.cpp(17,14): error C2248: 'Warrior::CalculatePathAndMove': cannot access protected member declared in class 'Warrior'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(48,7):
+      see declaration of 'Warrior::CalculatePathAndMove'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(30,7):
+      see declaration of 'Warrior'
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\WarriorAttackingState.cpp(24,45): error C2248: 'Warrior::GetLocation': cannot access protected member declared in class 'Warrior'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(49,8):
+      see declaration of 'Warrior::GetLocation'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(30,7):
+      see declaration of 'Warrior'
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\WarriorAttackingState.cpp(31,30): error C2039: 'GetAmmo': is not a member of 'Warrior'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(30,7):
+      see declaration of 'Warrior'
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\WarriorAttackingState.cpp(46,56): error C2039: 'GetGrenades': is not a member of 'Warrior'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(30,7):
+      see declaration of 'Warrior'
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\WarriorAttackingState.cpp(57,56): error C2039: 'IsMoving': is not a member of 'Warrior'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(30,7):
+      see declaration of 'Warrior'
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\WarriorAttackingState.cpp(64,18): error C2039: 'GetHealth': is not a member of 'Warrior'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(30,7):
+      see declaration of 'Warrior'
+  
+  WarriorIdleState.cpp
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  (compiling source file 'WarriorIdleState.cpp')
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\WarriorIdleState.cpp(14,18): error C2039: 'GetHealth': is not a member of 'Warrior'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(30,7):
+      see declaration of 'Warrior'
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\WarriorIdleState.cpp(19,18): error C2039: 'GetAmmo': is not a member of 'Warrior'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(30,7):
+      see declaration of 'Warrior'
+  
+  WarriorRetreatingState.cpp
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  (compiling source file 'WarriorRetreatingState.cpp')
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\WarriorRetreatingState.cpp(19,35): error C2248: 'Warrior::GetLocation': cannot access protected member declared in class 'Warrior'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(49,8):
+      see declaration of 'Warrior::GetLocation'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(30,7):
+      see declaration of 'Warrior'
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\WarriorRetreatingState.cpp(20,35): error C2248: 'Warrior::GetLocation': cannot access protected member declared in class 'Warrior'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(49,8):
+      see declaration of 'Warrior::GetLocation'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(30,7):
+      see declaration of 'Warrior'
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\WarriorRetreatingState.cpp(39,14): error C2248: 'Warrior::CalculatePathAndMove': cannot access protected member declared in class 'Warrior'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(48,7):
+      see declaration of 'Warrior::CalculatePathAndMove'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(30,7):
+      see declaration of 'Warrior'
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\WarriorRetreatingState.cpp(45,45): error C2248: 'Warrior::GetLocation': cannot access protected member declared in class 'Warrior'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(49,8):
+      see declaration of 'Warrior::GetLocation'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(30,7):
+      see declaration of 'Warrior'
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\WarriorRetreatingState.cpp(48,55): error C2039: 'GetAmmo': is not a member of 'Warrior'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(30,7):
+      see declaration of 'Warrior'
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\WarriorRetreatingState.cpp(61,56): error C2039: 'IsMoving': is not a member of 'Warrior'
+      D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(30,7):
+      see declaration of 'Warrior'
+  
   Generating Code...
-  Graphics.vcxproj -> D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Debug\AI_FinalProject.exe

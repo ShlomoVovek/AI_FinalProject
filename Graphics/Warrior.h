@@ -2,6 +2,8 @@
 #include "NPC.h"
 #include "IPathfinding.h"
 
+class WarriorState;
+
 // ammo
 const int MAX_AMMO = 30;
 const int CRITICAL_AMMO = (int) MAX_AMMO * 0.25;
@@ -32,27 +34,24 @@ private:
 	int grenades;
 	bool isAttacking;
 	Point currentAttackTarget;
-	WorriorState currentState;
+	
+	// fsm management
+	WarriorState* currentState;
+	bool requestedMedic;
+	bool requestedSupply;
 
 	int moveCooldown; // TODO: add in NPC.h
 
 	Point DetermineBestAttackPosition(Point enemyLoc);
 
-	// bool FindAStarPath(Point goal, const double* safteyMap) override;
-	// Point FindClosestSafePosition(double searchRange, const double* safetyMap) override;
-
 protected:
 	void CalculatePathAndMove() override;
-	void Shoot(Point enemyLoc);
-	void ThrowGrenade(Point enemyLoc);
-
-	// connect interface to NPC's methods
-	// bool IsWalkable(Point p) const { return IPathfinding::IsWalkable(this->GetViewMap(), p); }
 	Point GetLocation() const override { return NPC::GetLocation(); }
 
 public:
 	// constructor
 	Warrior(int x, int y, TeamColor t);
+	~Warrior();
 
 	void DoSomeWork(const double* pMap) override;
 	void RestorePath(Cell* goalCell, std::list<Point>& path);
@@ -64,5 +63,30 @@ public:
 	
 	// execute commmands
 	void ExecuteCommand(int commandCode, Point target) override;
+
+	// combat methods
+	void Shoot(Point enemyLoc);
+	void ThrowGrenade(Point enemyLoc);
+
+	// fsm management
+	void SetState(WarriorState* newState);
+	WarriorState* GetState() const { return currentState; }
+
+	// helper methods
+	bool ScanForEnemies(Point& outEnemyPos) const;
+	bool CanShootAt(Point target) const;
+
+	void RequestMedic();
+	void RequestSupply();
+	bool HasRequestedMedic() const { return requestedMedic; }
+	bool HasRequestedSupply() const { return requestedSupply; }
+
 	void Resupply(int amount);
+
+	// getters
+	int GetAmmo() const { return ammo; }
+	int GetGrenades() const { return grenades; }
+	double GetHealth() const { return health; }
+	bool IsMoving() const { return isMoving; }
+	const std::list<Point>& GetCurrentPath() const { return currentPath; }
 };

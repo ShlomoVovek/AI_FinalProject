@@ -143,6 +143,10 @@
     <ClCompile Include="SupplyGoToWarriorState.cpp" />
     <ClCompile Include="SupplyIdleState.cpp" />
     <ClCompile Include="Warrior.cpp" />
+    <ClCompile Include="WarriorAdvancingState.cpp" />
+    <ClCompile Include="WarriorAttackingState.cpp" />
+    <ClCompile Include="WarriorIdleState.cpp" />
+    <ClCompile Include="WarriorRetreatingState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cell.h" />
@@ -171,6 +175,11 @@
     <ClInclude Include="SupplyGoToWarriorState.h" />
     <ClInclude Include="SupplyIdleState.h" />
     <ClInclude Include="Warrior.h" />
+    <ClInclude Include="WarriorAdvancingState.h" />
+    <ClInclude Include="WarriorAttackingState.h" />
+    <ClInclude Include="WarriorIdleState.h" />
+    <ClInclude Include="WarriorRetreatingState.h" />
+    <ClInclude Include="WarriorState.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

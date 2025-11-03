@@ -25,33 +25,24 @@
     <Filter Include="Source Files\SupplyAgentStates">
       <UniqueIdentifier>{9fcdcce4-c48d-4b47-83ca-ede2852f8590}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\DELETE">
+      <UniqueIdentifier>{9add8225-2cbb-4187-a8f3-8b9c2995396e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DELETE">
+      <UniqueIdentifier>{77138a99-83e6-45ff-897b-126182392769}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\WarriorStates">
+      <UniqueIdentifier>{40749dce-d3bd-4dd3-ae7e-dfd9bf737121}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\WarriorStates">
+      <UniqueIdentifier>{2b7c5dea-836b-497f-a14d-6618b9529611}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="NPC.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="State.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GoToForest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Chopping.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GoToWarehouse.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Dropping.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GoHome.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="StayAtHome.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Map.cpp">
@@ -93,36 +84,48 @@
     <ClCompile Include="SupplyGoToWarehouseState.cpp">
       <Filter>Source Files\SupplyAgentStates</Filter>
     </ClCompile>
-    <ClCompile Include="SupplyGoToWarriorState.cpp">
-      <Filter>Source Files\CommanderStates</Filter>
-    </ClCompile>
     <ClCompile Include="SupplyDeliveringState.cpp">
-      <Filter>Source Files\CommanderStates</Filter>
+      <Filter>Source Files\SupplyAgentStates</Filter>
+    </ClCompile>
+    <ClCompile Include="SupplyGoToWarriorState.cpp">
+      <Filter>Source Files\SupplyAgentStates</Filter>
+    </ClCompile>
+    <ClCompile Include="Chopping.cpp">
+      <Filter>Source Files\DELETE</Filter>
+    </ClCompile>
+    <ClCompile Include="Dropping.cpp">
+      <Filter>Source Files\DELETE</Filter>
+    </ClCompile>
+    <ClCompile Include="GoHome.cpp">
+      <Filter>Source Files\DELETE</Filter>
+    </ClCompile>
+    <ClCompile Include="GoToForest.cpp">
+      <Filter>Source Files\DELETE</Filter>
+    </ClCompile>
+    <ClCompile Include="GoToWarehouse.cpp">
+      <Filter>Source Files\DELETE</Filter>
+    </ClCompile>
+    <ClCompile Include="StayAtHome.cpp">
+      <Filter>Source Files\DELETE</Filter>
+    </ClCompile>
+    <ClCompile Include="State.cpp">
+      <Filter>Source Files\DELETE</Filter>
+    </ClCompile>
+    <ClCompile Include="WarriorIdleState.cpp">
+      <Filter>Source Files\WarriorStates</Filter>
+    </ClCompile>
+    <ClCompile Include="WarriorAdvancingState.cpp">
+      <Filter>Source Files\WarriorStates</Filter>
+    </ClCompile>
+    <ClCompile Include="WarriorAttackingState.cpp">
+      <Filter>Source Files\WarriorStates</Filter>
+    </ClCompile>
+    <ClCompile Include="WarriorRetreatingState.cpp">
+      <Filter>Source Files\WarriorStates</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NPC.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="State.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GoToForest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Chopping.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GoToWarehouse.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Dropping.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GoHome.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="StayAtHome.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Map.h">
@@ -178,6 +181,42 @@
     </ClInclude>
     <ClInclude Include="SupplyDeliveringState.h">
       <Filter>Header Files\SupplyAgentState</Filter>
+    </ClInclude>
+    <ClInclude Include="Chopping.h">
+      <Filter>Header Files\DELETE</Filter>
+    </ClInclude>
+    <ClInclude Include="Dropping.h">
+      <Filter>Header Files\DELETE</Filter>
+    </ClInclude>
+    <ClInclude Include="GoHome.h">
+      <Filter>Header Files\DELETE</Filter>
+    </ClInclude>
+    <ClInclude Include="GoToForest.h">
+      <Filter>Header Files\DELETE</Filter>
+    </ClInclude>
+    <ClInclude Include="GoToWarehouse.h">
+      <Filter>Header Files\DELETE</Filter>
+    </ClInclude>
+    <ClInclude Include="StayAtHome.h">
+      <Filter>Header Files\DELETE</Filter>
+    </ClInclude>
+    <ClInclude Include="State.h">
+      <Filter>Header Files\DELETE</Filter>
+    </ClInclude>
+    <ClInclude Include="WarriorState.h">
+      <Filter>Header Files\WarriorStates</Filter>
+    </ClInclude>
+    <ClInclude Include="WarriorIdleState.h">
+      <Filter>Header Files\WarriorStates</Filter>
+    </ClInclude>
+    <ClInclude Include="WarriorAdvancingState.h">
+      <Filter>Header Files\WarriorStates</Filter>
+    </ClInclude>
+    <ClInclude Include="WarriorAttackingState.h">
+      <Filter>Header Files\WarriorStates</Filter>
+    </ClInclude>
+    <ClInclude Include="WarriorRetreatingState.h">
+      <Filter>Header Files\WarriorStates</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

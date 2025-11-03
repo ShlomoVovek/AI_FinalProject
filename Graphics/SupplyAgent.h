@@ -7,9 +7,11 @@ class SupplyAgentState;
 class SupplyAgent : public NPC, public IPathfinding
 {
 private:
-	SupplyAgentState* currentState;
+	SupplyAgentState* currentState; // fsm state
 	Point targetLocation;  // Location of warrior who needs ammo
+	Point targetWarehouse[2];
 	bool hasAmmo;          // Whether agent is carrying ammo
+	NPC* deliveryTarget;
 
 protected: 
 	void CalculatePathAndMove() override;
@@ -40,9 +42,7 @@ public:
 	// Getters
 	Point GetTargetLocation() const { return targetLocation; }
 	bool HasAmmo() const { return hasAmmo; }
-
-	// For pathfinding
-	bool IsMoving() const { return isMoving; }
+	bool IsMoving() const { return isMoving; } // for pathfinding
 
 	// Friend declarations for states
 	friend class SupplyIdleState;
