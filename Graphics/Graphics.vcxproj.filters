@@ -22,6 +22,9 @@
     <Filter Include="Header Files\SupplyAgentState">
       <UniqueIdentifier>{abba3f46-5b44-4c25-8524-7605803c0dd3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\SupplyAgentStates">
+      <UniqueIdentifier>{9fcdcce4-c48d-4b47-83ca-ede2852f8590}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -82,6 +85,18 @@
       <Filter>Source Files\CommanderStates</Filter>
     </ClCompile>
     <ClCompile Include="CommanderRepositioningState.cpp">
+      <Filter>Source Files\CommanderStates</Filter>
+    </ClCompile>
+    <ClCompile Include="SupplyIdleState.cpp">
+      <Filter>Source Files\SupplyAgentStates</Filter>
+    </ClCompile>
+    <ClCompile Include="SupplyGoToWarehouseState.cpp">
+      <Filter>Source Files\SupplyAgentStates</Filter>
+    </ClCompile>
+    <ClCompile Include="SupplyGoToWarriorState.cpp">
+      <Filter>Source Files\CommanderStates</Filter>
+    </ClCompile>
+    <ClCompile Include="SupplyDeliveringState.cpp">
       <Filter>Source Files\CommanderStates</Filter>
     </ClCompile>
   </ItemGroup>
@@ -150,6 +165,18 @@
       <Filter>Header Files\CommanderStates</Filter>
     </ClInclude>
     <ClInclude Include="SupplyAgentState.h">
+      <Filter>Header Files\SupplyAgentState</Filter>
+    </ClInclude>
+    <ClInclude Include="SupplyIdleState.h">
+      <Filter>Header Files\SupplyAgentState</Filter>
+    </ClInclude>
+    <ClInclude Include="SupplyGoToWarehouseState.h">
+      <Filter>Header Files\SupplyAgentState</Filter>
+    </ClInclude>
+    <ClInclude Include="SupplyGoToWarriorState.h">
+      <Filter>Header Files\SupplyAgentState</Filter>
+    </ClInclude>
+    <ClInclude Include="SupplyDeliveringState.h">
       <Filter>Header Files\SupplyAgentState</Filter>
     </ClInclude>
   </ItemGroup>

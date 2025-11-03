@@ -138,6 +138,10 @@
     <ClCompile Include="State.cpp" />
     <ClCompile Include="StayAtHome.cpp" />
     <ClCompile Include="SupplyAgent.cpp" />
+    <ClCompile Include="SupplyDeliveringState.cpp" />
+    <ClCompile Include="SupplyGoToWarehouseState.cpp" />
+    <ClCompile Include="SupplyGoToWarriorState.cpp" />
+    <ClCompile Include="SupplyIdleState.cpp" />
     <ClCompile Include="Warrior.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -162,6 +166,10 @@
     <ClInclude Include="StayAtHome.h" />
     <ClInclude Include="SupplyAgent.h" />
     <ClInclude Include="SupplyAgentState.h" />
+    <ClInclude Include="SupplyDeliveringState.h" />
+    <ClInclude Include="SupplyGoToWarehouseState.h" />
+    <ClInclude Include="SupplyGoToWarriorState.h" />
+    <ClInclude Include="SupplyIdleState.h" />
     <ClInclude Include="Warrior.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
