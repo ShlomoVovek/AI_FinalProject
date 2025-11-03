@@ -11,21 +11,9 @@ const int MAX_GRENADE = 3;
 const int CRITICAL_GRENADE = 1;
 
 // range
-const double RILFE_RANGE = 40.0;
-const double GRENADE_RANGE = 20.0;
+const double RIFLE_RANGE = 40.0;
+const double GRENADE_RANGE = 15.0;
 const double ATTACK_THRESHOLD = 5.0;
-
-// possilbe states
-enum WorriorState
-{
-	W_IDLE,
-	W_ADVANCE, // CMD_MOVE
-	W_ATTACK,  // CMD_ATTACK
-	W_RETREAT, // CMD_DEFEND
-	W_INJURED,
-	W_RESUPPLY
-};
-
 
 class Warrior : public NPC, public IPathfinding
 {
@@ -49,6 +37,11 @@ protected:
 	Point GetLocation() const override { return NPC::GetLocation(); }
 
 public:
+	friend class WarriorIdleState;
+	friend class WarriorAdvancingState;
+	friend class WarriorAttackingState;
+	friend class WarriorRetreatingState;
+
 	// constructor
 	Warrior(int x, int y, TeamColor t);
 	~Warrior();

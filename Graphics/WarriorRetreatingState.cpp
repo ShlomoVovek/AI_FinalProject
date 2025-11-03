@@ -45,7 +45,7 @@ void WarriorRetreatingState::Execute(Warrior* warrior)
         double distance = Distance(warrior->GetLocation(), enemyPos);
 
         // Only shoot if enemy is dangerously close
-        if (distance <= RILFE_RANGE * 0.7 && warrior->GetAmmo() > 5)
+        if (distance <= RIFLE_RANGE * 0.7 && warrior->GetAmmo() > 5)
         {
             if (warrior->CanShootAt(enemyPos))
             {

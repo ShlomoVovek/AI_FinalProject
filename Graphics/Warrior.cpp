@@ -1,14 +1,46 @@
 #include "Warrior.h"
 #include "Definition.h"
 #include "Commander.h"
+#include "WarriorIdleState.h"
+#include "WarriorAdvancingState.h"
+#include "WarriorAttackingState.h"
+#include "WarriorRetreatingState.h"
 #include <iostream>
 #include <queue>
 #include <map>
 #include <algorithm>
 
 Warrior::Warrior(int x, int y, TeamColor t) :
-	NPC(x, y, t, WARRIOR), ammo(MAX_AMMO), isAttacking(false), currentState(W_IDLE), moveCooldown(0)
+	NPC(x, y, t, WARRIOR), ammo(MAX_AMMO), isAttacking(false),
+	requestedMedic(false), requestedSupply(false), moveCooldown(0)
 {
+	currentState = new WarriorIdleState();
+	currentState->OnEnter(this);
+}
+
+Warrior::~Warrior()
+{
+	if (currentState)
+	{
+		delete currentState;
+		currentState = nullptr;
+	}
+}
+
+void Warrior::SetState(WarriorState* newState)
+{
+	if (currentState)
+	{
+		currentState->OnExit(this);
+		delete currentState;
+	}
+
+	currentState = newState;
+
+	if (currentState)
+	{
+		currentState->OnEnter(this);
+	}
 }
 
 // TODO: build this method
@@ -25,12 +57,13 @@ Point Warrior::DetermineBestAttackPosition(Point enemyLoc)
 
 	if (manhattanDist < 1) manhattanDist = 1;
 
-	double euclideanDist = sqrt(dx * dx + dy * dy);
+	double euclideanDist = Distance(dx,dy,dx,dy); // sqrt(dx * dx + dy * dy);
 	if (euclideanDist < 1.0) euclideanDist = 1.0;
 
 	Point attackPos;
-	attackPos.x = (int)(location.x + (dx / euclideanDist) * (manhattanDist - 10));
-	attackPos.y = (int)(location.y + (dy / euclideanDist) * (manhattanDist - 10));
+	double targetDist = RIFLE_RANGE * 0.7; // Stay at 70% of max range
+	attackPos.x = (int)(enemyLoc.x - (dx / euclideanDist) * targetDist);
+	attackPos.y = (int)(enemyLoc.y - (dy / euclideanDist) * targetDist);
 
 	// Clamp to SAFE boundaries
 	if (attackPos.x < 1) attackPos.x = 1;
@@ -40,8 +73,7 @@ Point Warrior::DetermineBestAttackPosition(Point enemyLoc)
 
 	std::cout << "Warrior determining attack position: ("
 		<< attackPos.x << ", " << attackPos.y << ") towards enemy at ("
-		<< enemyLoc.x << ", " << enemyLoc.y << ") Manhattan dist: "
-		<< manhattanDist << "\n";
+		<< enemyLoc.x << ", " << enemyLoc.y << ")\n";
 
 	return attackPos;
 }
@@ -76,7 +108,19 @@ void Warrior::Shoot(Point enemyLocation)
 	if (ammo > 0)
 	{
 		ammo--;
-		std::cout << "Warrior shooting! Ammo left: " << ammo << "\n";
+		std::cout << "Warrior (Team " << (team == TEAM_RED ? "RED" : "BLUE")
+			<< ") shooting! Ammo left: " << ammo << "\n";
+
+		// Check if low on ammo
+		if (ammo <= CRITICAL_AMMO && !requestedSupply)
+		{
+			RequestSupply();
+		}
+	}
+	else
+	{
+		std::cout << "Warrior out of ammo!\n";
+		RequestSupply();
 	}
 }
 void Warrior::ThrowGrenade(Point enemyLocation)
@@ -84,34 +128,134 @@ void Warrior::ThrowGrenade(Point enemyLocation)
 	if (grenades > 0)
 	{
 		grenades--;
-		std::cout << "Warrior throwing grenade!\n";
+		std::cout << "Warrior (Team " << (team == TEAM_RED ? "RED" : "BLUE")
+			<< ") throwing grenade! Grenades left: " << grenades << "\n";
 	}
 }
+
 void Warrior::DoSomeWork(const double* pMap)
 {
 	if (!IsAlive()) return;
 
 	BuildViewMap(pMap);
 
-	switch (currentState)
+	// Execute current state - FSM handles all logic!
+	if (currentState)
 	{
-	case W_IDLE:
+		currentState->Execute(this);
+	}
+}
+void Warrior::ExecuteCommand(int commandCode, Point target)
+{
+	if (!IsAlive()) return;
+
+	// Clamp target to map boundaries
+	if (target.x < 1) target.x = 1;
+	if (target.x >= MSX - 1) target.x = MSX - 2;
+	if (target.y < 1) target.y = 1;
+	if (target.y >= MSY - 1) target.y = MSY - 2;
+
+	std::cout << "Warrior (Team " << (team == TEAM_RED ? "RED" : "BLUE")
+		<< ") at (" << location.x << ", " << location.y
+		<< ") received command: " << commandCode
+		<< " target: (" << target.x << ", " << target.y << ")\n";
+
+	// Clear old path
+	currentPath.clear();
+
+	switch (commandCode)
+	{
+	case CMD_MOVE:
+		std::cout << "Warrior ADVANCING to (" << target.x << ", " << target.y << ")\n";
+
+		if (FindAStarPath(target, &viewMap[0][0]))
+		{
+			if (!currentPath.empty())
+			{
+				SetDirection(currentPath.front());
+				SetState(new WarriorAdvancingState());
+				std::cout << "Path found! Steps: " << currentPath.size() << "\n";
+			}
+		}
+		else
+		{
+			std::cout << "ERROR: No path found to target!\n";
+		}
 		break;
 
-	case W_ADVANCE:
-	case W_ATTACK:
-	case W_RETREAT:
+	case CMD_ATTACK:
 	{
-		CalculatePathAndMove();
+		currentAttackTarget = target;
+		Point attackPos = DetermineBestAttackPosition(target);
 
-		if (currentPath.empty() && !isMoving)
+		std::cout << "Warrior ATTACKING - moving to position ("
+			<< attackPos.x << ", " << attackPos.y << ")\n";
+
+		if (FindAStarPath(attackPos, &viewMap[0][0]))
 		{
-			currentState = W_IDLE;
+			if (!currentPath.empty())
+			{
+				SetDirection(currentPath.front());
+				SetState(new WarriorAttackingState());
+				std::cout << "Attack path found! Steps: " << currentPath.size() << "\n";
+			}
+		}
+		else
+		{
+			std::cout << "ERROR: No attack path found!\n";
 		}
 		break;
 	}
 
+	case CMD_DEFEND:
+	{
+		std::cout << "Warrior RETREATING from (" << location.x << ", " << location.y << ")\n";
+
+		double searchRange = 50.0;
+		Point safePos = FindClosestSafePosition(searchRange, &viewMap[0][0]);
+
+		if (safePos.x != location.x || safePos.y != location.y)
+		{
+			std::cout << "Safe position found at (" << safePos.x << ", " << safePos.y << ")\n";
+
+			if (FindAStarPath(safePos, &viewMap[0][0]))
+			{
+				if (!currentPath.empty())
+				{
+					SetDirection(currentPath.front());
+					SetState(new WarriorRetreatingState());
+					std::cout << "Retreat path found! Steps: " << currentPath.size() << "\n";
+				}
+			}
+			else
+			{
+				std::cout << "ERROR: No retreat path found!\n";
+			}
+		}
+		else
+		{
+			std::cout << "Already at safe position\n";
+			SetState(new WarriorIdleState());
+		}
+		break;
+	}
+
+	case CMD_HEAL:
+		// Warrior received heal - reset medic request
+		std::cout << "Warrior received healing\n";
+		requestedMedic = false;
+		health = MAX_HP;
+		break;
+
+	case CMD_RESUPPLY:
+		// Warrior received ammo - reset supply request
+		std::cout << "Warrior received ammo resupply\n";
+		requestedSupply = false;
+		Resupply(MAX_AMMO - ammo);
+		break;
+
 	default:
+		std::cout << "Unknown command: " << commandCode << "\n";
 		break;
 	}
 }
@@ -134,149 +278,75 @@ void Warrior::ReportInjury(NPC* injuredSoldier)
 {
 	if (myCommander)
 	{
-		myCommander->ReportLowAmmo(injuredSoldier);
+		myCommander->ReportInjury(injuredSoldier);
 	}
-
 }
-void Warrior::ExecuteCommand(int commandCode, Point target)
+
+void Warrior::RequestMedic()
 {
-	if (!IsAlive()) return;
-
-	// map boundaries
-	if (target.x < 1) target.x = 1;
-	if (target.x >= MSX - 1) target.x = MSX - 2;
-	if (target.y < 1) target.y = 1;
-	if (target.y >= MSY - 1) target.y = MSY - 2;
-
-	std::cout << "Warrior (Team " << (team == TEAM_RED ? "RED" : "BLUE")
-		<< ") at (" << location.x << ", " << location.y
-		<< ") received command: " << commandCode
-		<< " target: (" << target.x << ", " << target.y << ")\n";
-
-	// Don't re-execute same command with same target
-	if ((commandCode == CMD_MOVE && currentState == W_ADVANCE) ||
-		(commandCode == CMD_ATTACK && currentState == W_ATTACK) ||
-		(commandCode == CMD_DEFEND && currentState == W_RETREAT))
+	if (!requestedMedic)
 	{
-		// Check if target is same
-		if (location.x == target.x && location.y == target.y)
-		{
-			currentState = W_IDLE;
-			return;
-		}
+		std::cout << "Warrior (Team " << (team == TEAM_RED ? "RED" : "BLUE")
+			<< ") requesting medic! Health: " << health << "\n";
+		requestedMedic = true;
+		ReportInjury(this);
 	}
-
-	// Clear old path
-	currentPath.clear();
-
-	switch (commandCode)
-	{
-	case CMD_MOVE:
-		currentState = W_ADVANCE;
-
-		std::cout << "Warrior ADVANCING from (" << location.x << ", " << location.y
-			<< ") to (" << target.x << ", " << target.y << ")\n";
-
-		// CRITICAL FIX: Cast viewMap correctly as 1D array
-		if (FindAStarPath(target, &viewMap[0][0]))
-		{
-			if (!currentPath.empty())
-			{
-				SetDirection(currentPath.front());
-				std::cout << "Path found! Steps: " << currentPath.size() << "\n";
-			}
-			else
-			{
-				std::cout << "ERROR: Path found but empty!\n";
-			}
-		}
-		else
-		{
-			std::cout << "ERROR: No path found to target!\n";
-			currentState = W_IDLE;
-		}
-		break;
-
-	case CMD_ATTACK:
-	{
-		currentState = W_ATTACK;
-		currentAttackTarget = target;
-
-		Point attackPos = DetermineBestAttackPosition(target);
-
-		std::cout << "Warrior ATTACKING from (" << location.x << ", " << location.y
-			<< ") moving to attack position (" << attackPos.x << ", " << attackPos.y << ")\n";
-
-		// CRITICAL FIX: Cast viewMap correctly as 1D array
-		if (FindAStarPath(attackPos, &viewMap[0][0]))
-		{
-			if (!currentPath.empty())
-			{
-				SetDirection(currentPath.front());
-				std::cout << "Attack path found! Steps: " << currentPath.size() << "\n";
-			}
-			else
-			{
-				std::cout << "ERROR: Attack path found but empty!\n";
-			}
-		}
-		else
-		{
-			std::cout << "ERROR: No attack path found!\n";
-			currentState = W_IDLE;
-		}
-		break;
-	}
-
-	case CMD_DEFEND:
-	{
-		currentState = W_RETREAT;
-		double searchRange = 50.0;
-
-		std::cout << "Warrior RETREATING from (" << location.x << ", " << location.y << ")\n";
-
-		// CRITICAL FIX: Cast viewMap correctly as 1D array
-		Point safePos = FindClosestSafePosition(searchRange, &viewMap[0][0]);
-
-		if (safePos.x != location.x || safePos.y != location.y)
-		{
-			std::cout << "Safe position found at (" << safePos.x << ", " << safePos.y << ")\n";
-
-			// CRITICAL FIX: Cast viewMap correctly as 1D array
-			if (FindAStarPath(safePos, &viewMap[0][0]))
-			{
-				if (!currentPath.empty())
-				{
-					SetDirection(currentPath.front());
-					std::cout << "Retreat path found! Steps: " << currentPath.size() << "\n";
-				}
-			}
-			else
-			{
-				std::cout << "ERROR: No retreat path found!\n";
-				currentState = W_IDLE;
-			}
-		}
-		else
-		{
-			std::cout << "Already at safe position\n";
-			currentState = W_IDLE;
-		}
-		break;
-	}
-
-	default:
-		std::cout << "Unknown command: " << commandCode << "\n";
-		break;
-	}
-	/* add:
-		supply
-		injured
-	*/
-
 }
+
+void Warrior::RequestSupply()
+{
+	if (!requestedSupply)
+	{
+		std::cout << "Warrior (Team " << (team == TEAM_RED ? "RED" : "BLUE")
+			<< ") requesting ammo! Ammo: " << ammo << "\n";
+		requestedSupply = true;
+		ReportLowAmmo(this);
+	}
+}
+
 void Warrior::Resupply(int amount)
 {
-
+	ammo = std::min(ammo + amount, MAX_AMMO);
+	std::cout << "Warrior resupplied. Ammo now: " << ammo << "\n";
 }
 
+bool Warrior::ScanForEnemies(Point& outEnemyPos) const
+{
+	// Scan the view map for enemy units
+	// Note: This is a simplified version. In real implementation,
+	// you need to check against actual enemy positions from the game
+
+	for (int i = 0; i < MSX; i++)
+	{
+		for (int j = 0; j < MSY; j++)
+		{
+			// Check if cell is visible
+			if (viewMap[i][j] > 0.5)
+			{
+				// TODO: Integrate with game's enemy tracking system
+				// For now, this returns false - override this when you have
+				// access to enemy positions in your main game loop
+			}
+		}
+	}
+	return false;
+}
+
+bool Warrior::CanShootAt(Point target) const
+{
+	// Check distance
+	double dist = Distance(location, target);
+	if (dist > RIFLE_RANGE)
+		return false;
+
+	// Check line of sight - use view map
+	int tx = (int)target.x;
+	int ty = (int)target.y;
+
+	if (tx >= 0 && tx < MSX && ty >= 0 && ty < MSY)
+	{
+		return viewMap[tx][ty] > 0.5; // Can see target
+	}
+
+	return false;
+}

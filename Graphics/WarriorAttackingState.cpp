@@ -2,11 +2,12 @@
 #include "WarriorIdleState.h"
 #include "Warrior.h"
 #include <iostream>
+#include <cmath>
 
 void WarriorAttackingState::OnEnter(Warrior* warrior)
 {
     std::cout << "Warrior entering ATTACKING state\n";
-    framesSinceLastShot = SHOOT_COOLDOWN; // Allow immediate first shot
+    framesSinceLastShot = SHOOT_COOLDOWN; // allow immediate first shot
 }
 
 void WarriorAttackingState::Execute(Warrior* warrior)
@@ -20,10 +21,13 @@ void WarriorAttackingState::Execute(Warrior* warrior)
     Point enemyPos;
     if (warrior->ScanForEnemies(enemyPos))
     {
-        // Check if enemy is in shooting range
-        double distance = Distance(warrior->GetLocation(), enemyPos);
+        // Calculate distance to enemy
+        Point myPos = warrior->GetLocation();
+        double dx = enemyPos.x - myPos.x;
+        double dy = enemyPos.y - myPos.y;
+        double distance = sqrt(dx * dx + dy * dy);
 
-        if (distance <= RILFE_RANGE && warrior->CanShootAt(enemyPos))
+        if (distance <= RIFLE_RANGE && warrior->CanShootAt(enemyPos))
         {
             // Shoot if cooldown passed
             if (framesSinceLastShot >= SHOOT_COOLDOWN)
