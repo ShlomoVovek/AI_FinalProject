@@ -15,6 +15,18 @@ const double RIFLE_RANGE = 40.0;
 const double GRENADE_RANGE = 15.0;
 const double ATTACK_THRESHOLD = 5.0;
 
+// Shot visualization
+const int SHOT_DISPLAY_FRAMES = 15;
+
+struct ShotInfo
+{
+	Point start;
+	Point target;
+	int framesRemaining;
+
+	ShotInfo(Point s, Point t) : start(s), target(t), framesRemaining(SHOT_DISPLAY_FRAMES) {}
+};
+
 class Warrior : public NPC, public IPathfinding
 {
 private:
@@ -29,6 +41,9 @@ private:
 	bool requestedSupply;
 
 	int moveCooldown; // TODO: add in NPC.h
+
+	// Shot visualization
+	std::vector<ShotInfo> activeShots;
 
 	Point DetermineBestAttackPosition(Point enemyLoc);
 
@@ -60,6 +75,12 @@ public:
 	// combat methods
 	void Shoot(Point enemyLoc);
 	void ThrowGrenade(Point enemyLoc);
+
+	// visualization
+	void DrawShots() const;
+	void UpdateShots();
+
+	void Show() const override;
 
 	// fsm management
 	void SetState(WarriorState* newState);

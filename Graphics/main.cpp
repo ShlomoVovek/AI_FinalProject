@@ -18,6 +18,7 @@ const double ASPECT_RATIO = (double)MSX / MSY;
 int id = 0;
 Map* gameMap = nullptr;
 std::vector<NPC*> allAgents;
+std::vector<Warrior*> allWarriors;
 
 void InitCharacters()
 {
@@ -25,6 +26,7 @@ void InitCharacters()
 	for (NPC* agent : allAgents)
 		delete agent;
 	allAgents.clear();
+	allWarriors.clear();
 
 	// Store all occupied locations both obstacles & characters
 	std::set<std::pair<int, int>> occupiedPositions;
@@ -51,9 +53,9 @@ void InitCharacters()
 			// Check if position is free:
 			std::pair<int, int> pos = { x, y };
 
-			// Check if occupied by another character
 			if (occupiedPositions.find(pos) == occupiedPositions.end())
 			{
+				// TODO: handle NULL position
 				CellType obstacleType = (CellType)gameMap->CheckPositionContent(x, y);
 
 				if (gameMap) // is not null
@@ -84,10 +86,14 @@ void InitCharacters()
 	allAgents.push_back(new Commander((int)pos.x, (int)pos.y, TEAM_RED));
 
 	pos = findRandomPosition(TEAM_RED);
-	allAgents.push_back(new Warrior((int)pos.x, (int)pos.y, TEAM_RED));
+	Warrior* redWarrior1 = new Warrior((int)pos.x, (int)pos.y, TEAM_RED);
+	allAgents.push_back(redWarrior1);
+	allWarriors.push_back(redWarrior1);
 
 	pos = findRandomPosition(TEAM_RED);
-	allAgents.push_back(new Warrior((int)pos.x, (int)pos.y, TEAM_RED));
+	Warrior* redWarrior2 = new Warrior((int)pos.x, (int)pos.y, TEAM_RED);
+	allAgents.push_back(redWarrior2);
+	allWarriors.push_back(redWarrior2);
 
 	pos = findRandomPosition(TEAM_RED);
 	allAgents.push_back(new Medic((int)pos.x, (int)pos.y, TEAM_RED));
@@ -100,10 +106,14 @@ void InitCharacters()
 	allAgents.push_back(new Commander((int)pos.x, (int)pos.y, TEAM_BLUE));
 
 	pos = findRandomPosition(TEAM_BLUE);
-	allAgents.push_back(new Warrior((int)pos.x, (int)pos.y, TEAM_BLUE));
+	Warrior* blueWarrior1 = new Warrior((int)pos.x, (int)pos.y, TEAM_BLUE);
+	allAgents.push_back(blueWarrior1);
+	allWarriors.push_back(blueWarrior1);
 
 	pos = findRandomPosition(TEAM_BLUE);
-	allAgents.push_back(new Warrior((int)pos.x, (int)pos.y, TEAM_BLUE));
+	Warrior* blueWarrior2 = new Warrior((int)pos.x, (int)pos.y, TEAM_BLUE);
+	allAgents.push_back(blueWarrior2);
+	allWarriors.push_back(blueWarrior2);
 
 	pos = findRandomPosition(TEAM_BLUE);
 	allAgents.push_back(new Medic((int)pos.x, (int)pos.y, TEAM_BLUE));
@@ -209,14 +219,13 @@ void viewMenu(int choice)
 void display()
 {
 	glClear(GL_COLOR_BUFFER_BIT); // clean frame buffer
-	
+
 	if (gameMap)
 		gameMap->DrawField();
 
-	// draw all characters
+	// draw all characters (this will now include the shot lines for warriors)
 	for (NPC* agent : allAgents)
 		agent->Show();
-
 
 	glutSwapBuffers(); // show all
 }

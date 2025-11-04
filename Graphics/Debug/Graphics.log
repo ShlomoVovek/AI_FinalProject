@@ -1,3 +1,14 @@
 ﻿D:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(534,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (Graphics.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  CommanderPlanningState.cpp
+  Warrior.cpp
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  (compiling source file 'Warrior.cpp')
+  
+StayAtHome.obj : warning LNK4099: PDB '' was not found with 'StayAtHome.obj' or at ''; linking object as if no debug info
+State.obj : warning LNK4099: PDB '' was not found with 'State.obj' or at ''; linking object as if no debug info
+Map.obj : warning LNK4099: PDB '' was not found with 'Map.obj' or at ''; linking object as if no debug info
+GoToForest.obj : warning LNK4099: PDB '' was not found with 'GoToForest.obj' or at ''; linking object as if no debug info
+GoHome.obj : warning LNK4099: PDB '' was not found with 'GoHome.obj' or at ''; linking object as if no debug info
+Dropping.obj : warning LNK4099: PDB '' was not found with 'Dropping.obj' or at ''; linking object as if no debug info
+Chopping.obj : warning LNK4099: PDB '' was not found with 'Chopping.obj' or at ''; linking object as if no debug info
+Cell.obj : warning LNK4099: PDB '' was not found with 'Cell.obj' or at ''; linking object as if no debug info
   Graphics.vcxproj -> D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Debug\AI_FinalProject.exe

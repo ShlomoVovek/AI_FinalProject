@@ -57,7 +57,7 @@ Point Warrior::DetermineBestAttackPosition(Point enemyLoc)
 
 	if (manhattanDist < 1) manhattanDist = 1;
 
-	double euclideanDist = Distance(dx,dy,dx,dy); // sqrt(dx * dx + dy * dy);
+	double euclideanDist = Distance(dx,dy,dx,dy);
 	if (euclideanDist < 1.0) euclideanDist = 1.0;
 
 	Point attackPos;
@@ -107,6 +107,8 @@ void Warrior::Shoot(Point enemyLocation)
 {
 	if (ammo > 0)
 	{
+		activeShots.push_back(ShotInfo(location, enemyLocation));
+
 		ammo--;
 		std::cout << "Warrior (Team " << (team == TEAM_RED ? "RED" : "BLUE")
 			<< ") shooting! Ammo left: " << ammo << "\n";
@@ -133,11 +135,62 @@ void Warrior::ThrowGrenade(Point enemyLocation)
 	}
 }
 
+void Warrior::DrawShots() const
+{
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	// Draw all active shots
+	for (const auto& shot : activeShots)
+	{
+		// Calculate alpha based on remaining frames for fade effect
+		double alpha = (double)shot.framesRemaining / SHOT_DISPLAY_FRAMES;
+
+		// Draw red line from warrior to target
+		glColor4d(1.0, 0.0, 0.0, alpha); // Red with alpha
+		glLineWidth(2.0);
+
+		glBegin(GL_LINES);
+		glVertex2d(shot.start.x, shot.start.y);
+		glVertex2d(shot.target.x, shot.target.y);
+		glEnd();
+	}
+
+	glDisable(GL_BLEND);
+	glLineWidth(1.0); // Reset line width
+}
+
+void Warrior::UpdateShots()
+{
+	// Update all active shots and remove expired ones
+	for (auto it = activeShots.begin(); it != activeShots.end(); )
+	{
+		it->framesRemaining--;
+
+		if (it->framesRemaining <= 0)
+		{
+			it = activeShots.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
+}
+void Warrior::Show() const
+{
+	NPC::Show();
+	
+	DrawShots(); // Draw shooting lines on top
+}
+
 void Warrior::DoSomeWork(const double* pMap)
 {
 	if (!IsAlive()) return;
 
 	BuildViewMap(pMap);
+
+	UpdateShots();
 
 	// Execute current state - FSM handles all logic!
 	if (currentState)
