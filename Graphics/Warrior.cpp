@@ -202,6 +202,13 @@ void Warrior::ExecuteCommand(int commandCode, Point target)
 {
 	if (!IsAlive()) return;
 
+	double distToTarget = Distance(location, target);
+	if (distToTarget < 2.0 && dynamic_cast<WarriorIdleState*>(currentState))
+	{
+		std::cout << "Warrior already at target, ignoring redundant command\n";
+		return;
+	}
+
 	// Clamp target to map boundaries
 	if (target.x < 1) target.x = 1;
 	if (target.x >= MSX - 1) target.x = MSX - 2;
@@ -228,6 +235,14 @@ void Warrior::ExecuteCommand(int commandCode, Point target)
 				SetDirection(currentPath.front());
 				SetState(new WarriorAdvancingState());
 				std::cout << "Path found! Steps: " << currentPath.size() << "\n";
+			}
+			else
+			{
+				std::cout << "Warrior already at target, remaining IDLE\n";
+				if (!dynamic_cast<WarriorIdleState*>(currentState))
+				{
+					SetState(new WarriorIdleState());
+				}
 			}
 		}
 		else
@@ -365,21 +380,25 @@ void Warrior::Resupply(int amount)
 
 bool Warrior::ScanForEnemies(Point& outEnemyPos) const
 {
-	// Scan the view map for enemy units
-	// Note: This is a simplified version. In real implementation,
-	// you need to check against actual enemy positions from the game
+	if (!npcList) { return false; }
 
-	for (int i = 0; i < MSX; i++)
+	for (NPC* agent : *npcList)
 	{
-		for (int j = 0; j < MSY; j++)
+		if (!agent->IsAlive() || agent->GetTeam() == this->GetTeam())
 		{
-			// Check if cell is visible
-			if (viewMap[i][j] > 0.5)
-			{
-				// TODO: Integrate with game's enemy tracking system
-				// For now, this returns false - override this when you have
-				// access to enemy positions in your main game loop
-			}
+			continue;
+		}
+
+		Point enemyPos = agent->GetLocation();
+		int ex = (int)enemyPos.x;
+		int ey = (int)enemyPos.y;
+
+		if (ex >= 0 && ex < MSX && ey >= 0 && ey < MSY &&
+			viewMap[ex][ey] > 0.5)
+		{
+			// found enemy
+			outEnemyPos = enemyPos;
+			return true;           
 		}
 	}
 	return false;

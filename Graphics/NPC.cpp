@@ -7,7 +7,7 @@
 
 
 NPC::NPC(int x, int y, TeamColor t, NpcType nt) :
-	team(t), type(nt), health(MAX_HP), isMoving(false), myCommander(nullptr)
+	team(t), type(nt), health(MAX_HP), isMoving(false), myCommander(nullptr), npcList(nullptr)
 {
 	location.x = x;
 	location.y = y;

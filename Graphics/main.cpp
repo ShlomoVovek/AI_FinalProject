@@ -126,7 +126,6 @@ void InitCharacters()
 	Commander* blueCommander = nullptr;
 
 	// TODO: call for another helper method, 
-	// TODO: populate the Commander* ptr in creation
 	
 	// find Commander
 	for (NPC* agent : allAgents)
@@ -138,6 +137,7 @@ void InitCharacters()
 			else
 				blueCommander = dynamic_cast<Commander*>(agent);
 		}
+		agent->SetNpcList(&allAgents);
 	}
 	// connect to the right color
 	for (NPC* agent : allAgents)

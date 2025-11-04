@@ -46,7 +46,9 @@ void CommanderPlanningState::Execute(Commander* commander)
         // No enemies spotted - move to center or patrol
         std::cout << "Commander planning: MOVE (no enemies spotted)\n";
 
-        Point strategicPoint = { MSX / 2, commander->GetLocation().y};
+        int targetY = commander->GetLocation().y;
+
+        Point strategicPoint = { MSX / 2, targetY };
         commander->SetPlannedCommand(CMD_MOVE, strategicPoint);
 
         commander->SetState(new CommanderIssuingOrdersState());

@@ -59,6 +59,8 @@ protected:
 	bool isMoving;
 
 	double viewMap[MSX][MSY];
+	// pointer to all NPCs vector
+	const std::vector<NPC*>* npcList; 
 
 	// drawing methods
 	void DrawNpcBase() const;
@@ -84,8 +86,8 @@ public:
 	void SetCommander(Commander* pCommander);
 	virtual void Show() const;
 
-	// update loop, called in every frame by idle():
-	// checks currentState value and do NPC's work
+	void SetNpcList(const std::vector<NPC*>* list) { npcList = list; }
+	
 	virtual void DoSomeWork(const double* pMap) = 0;
 		
 
