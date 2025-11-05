@@ -56,8 +56,8 @@ Point Warrior::DetermineBestAttackPosition(Point enemyLoc)
 	);
 
 	if (manhattanDist < 1) manhattanDist = 1;
-
-	double euclideanDist = Distance(dx,dy,dx,dy);
+	
+	double euclideanDist = EuclideanDist(dx,dy);
 	if (euclideanDist < 1.0) euclideanDist = 1.0;
 
 	Point attackPos;
@@ -103,6 +103,8 @@ void Warrior::CalculatePathAndMove()
 		}
 	}
 }
+
+// TODO: delete shoots when is not alive
 void Warrior::Shoot(NPC* pEnemy)
 {
 	if (pEnemy == nullptr) return;
@@ -142,9 +144,11 @@ void Warrior::ThrowGrenade(Point enemyLocation)
 			<< ") throwing grenade! Grenades left: " << grenades << "\n";
 	}
 }
-
+// TODO: each shot increase danger in map where it crosses, color in red
 void Warrior::DrawShots() const
 {
+	if (!this->IsAlive()) return;
+
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 

@@ -61,6 +61,7 @@ void NPC::SetDirection(Point target)
 	}
 }
 
+// TODO: fix movement: obligate movement near frame
 void NPC::MoveToTarget()
 {
 	if (isMoving)
@@ -69,10 +70,10 @@ void NPC::MoveToTarget()
 		location.y += (int)(SPEED * directionY);
 
 		// map boundaries
-		if (location.x < 0.5) location.x = 0.5;
-		if (location.x >= MSX - 0.5) location.x = MSX - 0.5;
-		if (location.y < 0.5) location.y = 0.5;
-		if (location.y >= MSY - 0.5) location.y = MSY - 0.5;
+		if (location.x < 0.5) location.x = 1.5;
+		if (location.x >= MSX - 1.5) location.x = MSX - 1.5;
+		if (location.y < 1.5) location.y = 1.5;
+		if (location.y >= MSY - 1.5) location.y = MSY - 1.5;
 
 		double manhattanDist = ManhattanDistance(
 			(int)location.x, (int)location.y,

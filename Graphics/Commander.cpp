@@ -68,7 +68,8 @@ void Commander::UpdateCombinedViewMap()
 			for (int j = 0; j < MSY; j++)
 			{
 				int index = i * MSY + j;
-				if (memberViewMap[index] > combinedViewMap[i][j])
+				if (combinedViewMap[i][j] != NULL &&
+					memberViewMap[index] > combinedViewMap[i][j])
 					combinedViewMap[i][j] = memberViewMap[index];
 			}
 	}

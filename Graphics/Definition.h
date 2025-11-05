@@ -3,7 +3,7 @@
 
 
 const double PI = 3.14;
-const double SIGHT_RANGE = 15.0;
+const double SIGHT_RANGE = 25.0;
 const int MSX = 80;
 const int MSY = 48;
 
@@ -45,6 +45,11 @@ inline double Distance(double x1, double y1, double x2, double y2)
 inline double Distance(Point a, Point b)
 {
 	return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2));
+}
+
+inline double EuclideanDist(double dx, double dy)
+{
+	return sqrt((dx * dx) + (dy * dy));
 }
 
 inline int ManhattanDistance(int x1, int y1, int x2, int y2)

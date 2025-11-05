@@ -36,9 +36,9 @@ bool Map::IsOccupied(int x, int y) const
 
 void Map::GenerateRandomElements()
 {
-    int numTrees = 15 + rand() % 10;
-    int numRocks = 10 + rand() % 3;
-    int numWater = 7 + rand() % 3;
+    int numTrees = (int)(MSX / 5 + rand() % 10);
+    int numRocks = (int)(MSX / 5 + rand() % 5);
+    int numWater = (int)(MSX / 5 + + rand() % 5);
     // int numWarehouses = 4;
 
     auto generatePoint = [this]() -> Point // random coordinates

@@ -120,23 +120,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Cell.cpp" />
-    <ClCompile Include="Chopping.cpp" />
     <ClCompile Include="Commander.cpp" />
     <ClCompile Include="CommanderAnalyzingState.cpp" />
     <ClCompile Include="CommanderIssuingOrdersState.cpp" />
     <ClCompile Include="CommanderPlanningState.cpp" />
     <ClCompile Include="CommanderRepositioningState.cpp" />
-    <ClCompile Include="Dropping.cpp" />
-    <ClCompile Include="GoHome.cpp" />
-    <ClCompile Include="GoToForest.cpp" />
-    <ClCompile Include="GoToWarehouse.cpp" />
     <ClCompile Include="IPathfinding.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Medic.cpp" />
     <ClCompile Include="NPC.cpp" />
-    <ClCompile Include="State.cpp" />
-    <ClCompile Include="StayAtHome.cpp" />
     <ClCompile Include="SupplyAgent.cpp" />
     <ClCompile Include="SupplyDeliveringState.cpp" />
     <ClCompile Include="SupplyGoToWarehouseState.cpp" />
@@ -150,7 +143,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cell.h" />
-    <ClInclude Include="Chopping.h" />
     <ClInclude Include="Commander.h" />
     <ClInclude Include="CommanderAnalyzingState.h" />
     <ClInclude Include="CommanderIssuingOrdersState.h" />
@@ -158,16 +150,10 @@
     <ClInclude Include="CommanderRepositioningState.h" />
     <ClInclude Include="CommanderState.h" />
     <ClInclude Include="Definition.h" />
-    <ClInclude Include="Dropping.h" />
-    <ClInclude Include="GoHome.h" />
-    <ClInclude Include="GoToForest.h" />
-    <ClInclude Include="GoToWarehouse.h" />
     <ClInclude Include="IPathfinding.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Medic.h" />
     <ClInclude Include="NPC.h" />
-    <ClInclude Include="State.h" />
-    <ClInclude Include="StayAtHome.h" />
     <ClInclude Include="SupplyAgent.h" />
     <ClInclude Include="SupplyAgentState.h" />
     <ClInclude Include="SupplyDeliveringState.h" />

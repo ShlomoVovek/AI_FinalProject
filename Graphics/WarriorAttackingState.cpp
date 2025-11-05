@@ -62,6 +62,20 @@ void WarriorAttackingState::Execute(Warrior* warrior)
     // 3. Check if reached attack position
     if (warrior->GetCurrentPath().empty() && !warrior->IsMoving())
     {
+        if (pEnemy == nullptr)
+        {
+            // We've arrived AND we don't see an enemy.
+            // The enemy is dead or fled. Go back to IDLE.
+            std::cout << "Warrior reached attack position, no enemy in sight. Returning to IDLE.\n";
+            warrior->SetState(new WarriorIdleState());
+            return; // Exit after changing state
+        }
+        else
+        {
+            // We've arrived AND we DO see an enemy.
+            // Stay here and keep scanning/shooting.
+            std::cout << "Warrior reached attack position, scanning for enemies\n";
+        }
         std::cout << "Warrior reached attack position, scanning for enemies\n";
         // Stay in attack mode, continue scanning
     }
