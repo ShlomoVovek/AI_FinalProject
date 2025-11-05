@@ -14,4 +14,15 @@ D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProj
 D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(148,22): warning C4244:         [
 D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(148,22): warning C4244:             _Ty=double
 D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(148,22): warning C4244:         ]
+  Medic.cpp
+  MedicGoToBaseState.cpp
+  WarriorAdvancingState.cpp
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  (compiling source file 'WarriorAdvancingState.cpp')
+  
+  WarriorRetreatingState.cpp
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  (compiling source file 'WarriorRetreatingState.cpp')
+  
+  Generating Code...
   Graphics.vcxproj -> D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Debug\AI_FinalProject.exe

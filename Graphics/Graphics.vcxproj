@@ -129,6 +129,10 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Medic.cpp" />
+    <ClCompile Include="MedicGoToBaseState.cpp" />
+    <ClCompile Include="MedicGoToTargetState.cpp" />
+    <ClCompile Include="MedicHealingState.cpp" />
+    <ClCompile Include="MedicIdleState.cpp" />
     <ClCompile Include="NPC.cpp" />
     <ClCompile Include="SupplyAgent.cpp" />
     <ClCompile Include="SupplyDeliveringState.cpp" />
@@ -153,6 +157,11 @@
     <ClInclude Include="IPathfinding.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Medic.h" />
+    <ClInclude Include="MedicGoToBaseState.h" />
+    <ClInclude Include="MedicGoToTargetState.h" />
+    <ClInclude Include="MedicHealingState.h" />
+    <ClInclude Include="MedicIdleState.h" />
+    <ClInclude Include="MedicState.h" />
     <ClInclude Include="NPC.h" />
     <ClInclude Include="SupplyAgent.h" />
     <ClInclude Include="SupplyAgentState.h" />

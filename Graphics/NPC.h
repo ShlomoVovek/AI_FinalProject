@@ -22,7 +22,7 @@ enum NpcType
 	COMMANDER = 'C',
 	WARRIOR = 'W',
 	MEDIC = 'M',
-	SUPPLIER = 'S'
+	SUPPLIER = 'P'
 };
 
 enum CommandType

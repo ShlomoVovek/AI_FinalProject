@@ -232,6 +232,7 @@ void display()
 	glutSwapBuffers(); // show all
 }
 
+// TODO: check if group is winner
 void idle() 
 {
 	if (gameMap == nullptr)

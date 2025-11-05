@@ -31,6 +31,12 @@
     <Filter Include="Header Files\WarriorStates">
       <UniqueIdentifier>{2b7c5dea-836b-497f-a14d-6618b9529611}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\MedicStates">
+      <UniqueIdentifier>{ca74b59e-fddc-44f0-9a5e-8ceffe12d252}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\MedicStates">
+      <UniqueIdentifier>{8e4a19d5-d70f-4d12-9a37-87c186683f0d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -95,6 +101,18 @@
     </ClCompile>
     <ClCompile Include="WarriorRetreatingState.cpp">
       <Filter>Source Files\WarriorStates</Filter>
+    </ClCompile>
+    <ClCompile Include="MedicIdleState.cpp">
+      <Filter>Source Files\MedicStates</Filter>
+    </ClCompile>
+    <ClCompile Include="MedicGoToBaseState.cpp">
+      <Filter>Source Files\MedicStates</Filter>
+    </ClCompile>
+    <ClCompile Include="MedicGoToTargetState.cpp">
+      <Filter>Source Files\MedicStates</Filter>
+    </ClCompile>
+    <ClCompile Include="MedicHealingState.cpp">
+      <Filter>Source Files\MedicStates</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -169,6 +187,21 @@
     </ClInclude>
     <ClInclude Include="WarriorRetreatingState.h">
       <Filter>Header Files\WarriorStates</Filter>
+    </ClInclude>
+    <ClInclude Include="MedicState.h">
+      <Filter>Header Files\MedicStates</Filter>
+    </ClInclude>
+    <ClInclude Include="MedicIdleState.h">
+      <Filter>Header Files\MedicStates</Filter>
+    </ClInclude>
+    <ClInclude Include="MedicGoToBaseState.h">
+      <Filter>Header Files\MedicStates</Filter>
+    </ClInclude>
+    <ClInclude Include="MedicGoToTargetState.h">
+      <Filter>Header Files\MedicStates</Filter>
+    </ClInclude>
+    <ClInclude Include="MedicHealingState.h">
+      <Filter>Header Files\MedicStates</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -36,7 +36,6 @@ public:
 
 	void DrawField();
 
-	// CellType GetCellType(int x, int y) const;
 	// getters
 	const std::vector<Point>& GetTrees() const { return trees; }
 	const std::vector<Point>& GetRocks() const { return rocks; }
