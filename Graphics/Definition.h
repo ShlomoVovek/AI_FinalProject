@@ -10,7 +10,7 @@ const int MSY = 48;
 const double COST_UNKNOWN = 10.0;
 const double COST_SAFE = 1.0;
 const double COST_DANGER = 15.0;
-
+const double WARRIOR_HIT_DAMAGE = 10.0;
 
 // types of cells in map
 enum CellType

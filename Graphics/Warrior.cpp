@@ -103,15 +103,23 @@ void Warrior::CalculatePathAndMove()
 		}
 	}
 }
-void Warrior::Shoot(Point enemyLocation)
+void Warrior::Shoot(NPC* pEnemy)
 {
+	if (pEnemy == nullptr) return;
 	if (ammo > 0)
 	{
-		activeShots.push_back(ShotInfo(location, enemyLocation));
+		activeShots.push_back(ShotInfo(location, pEnemy->GetLocation()));
 
 		ammo--;
 		std::cout << "Warrior (Team " << (team == TEAM_RED ? "RED" : "BLUE")
 			<< ") shooting! Ammo left: " << ammo << "\n";
+
+		pEnemy->TakeDamage(WARRIOR_HIT_DAMAGE);
+
+		if (!pEnemy->IsAlive())
+		{
+			std::cout << "Enemy neutralized!\n";
+		}
 
 		// Check if low on ammo
 		if (ammo <= CRITICAL_AMMO && !requestedSupply)
@@ -378,9 +386,9 @@ void Warrior::Resupply(int amount)
 	std::cout << "Warrior resupplied. Ammo now: " << ammo << "\n";
 }
 
-bool Warrior::ScanForEnemies(Point& outEnemyPos) const
+NPC* Warrior::ScanForEnemies() const
 {
-	if (!npcList) { return false; }
+	if (!npcList) { return nullptr; }
 
 	for (NPC* agent : *npcList)
 	{
@@ -397,11 +405,10 @@ bool Warrior::ScanForEnemies(Point& outEnemyPos) const
 			viewMap[ex][ey] > 0.5)
 		{
 			// found enemy
-			outEnemyPos = enemyPos;
-			return true;           
+			return agent;           
 		}
 	}
-	return false;
+	return nullptr;
 }
 
 bool Warrior::CanShootAt(Point target) const

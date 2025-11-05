@@ -73,7 +73,7 @@ public:
 	void ExecuteCommand(int commandCode, Point target) override;
 
 	// combat methods
-	void Shoot(Point enemyLoc);
+	void Shoot(NPC* pEnemy);
 	void ThrowGrenade(Point enemyLoc);
 
 	// visualization
@@ -87,7 +87,7 @@ public:
 	WarriorState* GetState() const { return currentState; }
 
 	// helper methods
-	bool ScanForEnemies(Point& outEnemyPos) const;
+	NPC* ScanForEnemies() const;
 	bool CanShootAt(Point target) const;
 
 	void RequestMedic();

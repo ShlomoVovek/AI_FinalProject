@@ -18,9 +18,11 @@ void WarriorAttackingState::Execute(Warrior* warrior)
     warrior->CalculatePathAndMove();
 
     // 2. Scan for enemies
-    Point enemyPos;
-    if (warrior->ScanForEnemies(enemyPos))
+    NPC* pEnemy = warrior->ScanForEnemies();
+    if (pEnemy != nullptr)
     {
+        Point enemyPos = pEnemy->GetLocation();
+
         // Calculate distance to enemy
         Point myPos = warrior->GetLocation();
         double dx = enemyPos.x - myPos.x;
@@ -34,7 +36,7 @@ void WarriorAttackingState::Execute(Warrior* warrior)
             {
                 if (warrior->GetAmmo() > 0)
                 {
-                    warrior->Shoot(enemyPos);
+                    warrior->Shoot(pEnemy);
                     framesSinceLastShot = 0;
                     std::cout << "Warrior shooting at enemy at ("
                         << enemyPos.x << ", " << enemyPos.y << ")\n";

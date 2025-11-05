@@ -39,9 +39,10 @@ void WarriorRetreatingState::Execute(Warrior* warrior)
     warrior->CalculatePathAndMove();
 
     // 3. Defensive shooting - shoot if enemy is close
-    Point enemyPos;
-    if (warrior->ScanForEnemies(enemyPos))
+    NPC* pEnemy = warrior->ScanForEnemies();
+    if (pEnemy != nullptr)
     {
+        Point enemyPos = pEnemy->GetLocation();
         double distance = Distance(warrior->GetLocation(), enemyPos);
 
         // Only shoot if enemy is dangerously close
@@ -49,7 +50,7 @@ void WarriorRetreatingState::Execute(Warrior* warrior)
         {
             if (warrior->CanShootAt(enemyPos))
             {
-                warrior->Shoot(enemyPos);
+                warrior->Shoot(pEnemy);
                 std::cout << "Warrior defensive shot while retreating\n";
             }
         }

@@ -14,9 +14,10 @@ void WarriorAdvancingState::Execute(Warrior* warrior)
     warrior->CalculatePathAndMove();
 
     // 2. Check for enemies while moving
-    Point enemyPos;
-    if (warrior->ScanForEnemies(enemyPos))
+    NPC* pEnemy = warrior->ScanForEnemies();
+    if (pEnemy != nullptr)
     {
+        Point enemyPos = pEnemy->GetLocation();
         warrior->ReportSighting(WARRIOR, enemyPos);
     }
 

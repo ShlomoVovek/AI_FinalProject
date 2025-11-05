@@ -3,6 +3,8 @@
 #include <time.h>
 #include <math.h>
 #include <set>
+#include <chrono>
+#include <thread>
 #include "glut.h"
 #include "NPC.h"
 #include "Commander.h"
@@ -244,6 +246,8 @@ void idle()
 	}
 	printf("id = %d\n", id++);
 	glutPostRedisplay();
+	// std::this_thread::sleep_for(std::chrono::milliseconds(50));
+	Sleep(50);
 }
 
 void main(int argc, char* argv[]) 

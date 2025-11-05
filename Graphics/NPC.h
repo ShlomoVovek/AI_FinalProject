@@ -105,6 +105,7 @@ public:
 	void heal(double amount) { health = (health + amount > MAX_HP) ? MAX_HP : health + amount; }
 
 	// getters
+	double GetHealth() const { return health; }
 	Point GetLocation() const { return location;}
 	NpcType GetType() const { return type; }
 	TeamColor GetTeam() const { return team; }
