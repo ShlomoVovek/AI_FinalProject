@@ -43,6 +43,7 @@ void NPC::SetDirection(Point target)
 	if (manhattanDist > 0.1)
 	{
 		// For diagonal movement, normalize the vector
+		// TODO: DELETE diagonal movement
 		double euclideanLength = sqrt(dx * dx + dy * dy);
 		if (euclideanLength > 0.1)
 		{

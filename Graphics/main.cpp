@@ -54,14 +54,14 @@ void InitCharacters()
 
 			// Check if position is free:
 			std::pair<int, int> pos = { x, y };
+			int obstacleType;
 
 			if (occupiedPositions.find(pos) == occupiedPositions.end())
 			{
-				// TODO: handle NULL position
-				CellType obstacleType = (CellType)gameMap->CheckPositionContent(x, y);
-
-				if (gameMap) // is not null
+				if (gameMap->CheckPositionContent(x, y) != NULL)
 				{
+					obstacleType = gameMap->CheckPositionContent(x, y);
+
 					// Rule 1: Can spawn on EMPTY tiles
 					// Rule 2: Can spawn on TREE tiles
 					// Rule 3: CANNOT spawn on ROCK, WATER, or BASE
@@ -247,8 +247,7 @@ void idle()
 	}
 	printf("id = %d\n", id++);
 	glutPostRedisplay();
-	// std::this_thread::sleep_for(std::chrono::milliseconds(50));
-	Sleep(50);
+	Sleep(100);
 }
 
 void main(int argc, char* argv[]) 
