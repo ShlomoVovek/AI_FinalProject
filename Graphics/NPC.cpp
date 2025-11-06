@@ -7,7 +7,8 @@
 
 
 NPC::NPC(int x, int y, TeamColor t, NpcType nt) :
-	team(t), type(nt), health(MAX_HP), isMoving(false), myCommander(nullptr), npcList(nullptr)
+	team(t), type(nt), health(MAX_HP), isMoving(false), myCommander(nullptr), npcList(nullptr),
+	directionX(0.0), directionY(0.0), gameMapPtr(nullptr)
 {
 	location.x = x;
 	location.y = y;
@@ -65,23 +66,37 @@ void NPC::SetDirection(Point target)
 // TODO: fix movement: obligate movement near frame
 void NPC::MoveToTarget()
 {
-	if (isMoving)
+	if (isMoving && gameMapPtr != nullptr)
 	{
-		location.x += (int)(SPEED * directionX);
-		location.y += (int)(SPEED * directionY);
 
-		// map boundaries
-		if (location.x < 0.5) location.x = 1.5;
-		if (location.x >= MSX - 1.5) location.x = MSX - 1.5;
-		if (location.y < 1.5) location.y = 1.5;
-		if (location.y >= MSY - 1.5) location.y = MSY - 1.5;
+		double nextX = location.x + (int)(SPEED * directionX);
+		double nextY = location.y + (int)(SPEED * directionY);
 
-		double manhattanDist = ManhattanDistance(
-			(int)location.x, (int)location.y,
-			targetLocation.x, targetLocation.y
-		);
+		int nextGridX = (int)nextX;
+		int nextGridY = (int)nextY;
+		int currentGridX = (int)location.x;
+		int currentGridY = (int)location.y;
 
-		if (manhattanDist <= 1)  // Reached within 1 cell
+
+		double manhattanDist = ManhattanDistance(currentGridX, currentGridY, targetLocation.x, targetLocation.y);
+		if (manhattanDist < SPEED)
+		{
+			isMoving = false;
+			location.x = targetLocation.x;
+			location.y = targetLocation.y;
+
+			gameMapPtr->RegisterAgentMove(currentGridX, currentGridY, targetLocation.x, targetLocation.y);
+			return;
+		}
+
+		if (gameMapPtr->IsWalkable(nextGridX, nextGridY))
+		{
+			gameMapPtr->RegisterAgentMove(currentGridX, currentGridY, nextGridX, nextGridY);
+
+			location.x = nextX;
+			location.y = nextY;
+		}
+		else
 		{
 			isMoving = false;
 		}
@@ -165,6 +180,19 @@ void NPC::BuildViewMap(const double* pMap)
 			}
 			else // out of borders
 				break;
+		}
+	}
+}
+
+void NPC::TakeDamage(double dmg)
+{
+	health -= dmg;
+
+	if (health <= 0 && health + dmg > 0)
+	{
+		if (gameMapPtr != nullptr)
+		{
+			gameMapPtr->RegisterAgentDeath((int)location.x, (int)location.y);
 		}
 	}
 }

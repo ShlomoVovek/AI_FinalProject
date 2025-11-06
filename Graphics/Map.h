@@ -3,12 +3,14 @@
 #include "glut.h"
 #include "Definition.h"
 #include <vector>
+#include <set>
 
 class Map 
 {
 private: 
 	int mapWidth;
 	int mapHeight;
+	std::set<std::pair<int, int>> agentPositions;
 
 	// for saving the random coordinates
 	std::vector<Point> trees;
@@ -33,7 +35,7 @@ public:
 
 	double gameMapData[MSX][MSY];
 
-
+	void ClearAgents() { agentPositions.clear(); }
 	void DrawField();
 
 	// getters
@@ -41,6 +43,15 @@ public:
 	const std::vector<Point>& GetRocks() const { return rocks; }
 	const std::vector<Point>& GetWater() const { return waterBlocks; }
 	const std::vector<Point>& GetWarehouses() const { return warehouses; }
+
+	// point info
+	bool IsStaticObstacle(int x, int y) const;
+	bool IsAgentAt(int x, int y) const { return agentPositions.count({ x, y }) > 0; }
+	bool IsWalkable(int x, int y) const;
+
+	void RegisterNewAgent(int x, int y);
+	void RegisterAgentDeath(int x, int y);
+	void RegisterAgentMove(int oldX, int oldY, int newX, int newY);
 
 	// returns what this cell contains
 	int CheckPositionContent(int x, int y) const

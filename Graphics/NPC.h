@@ -46,6 +46,7 @@ class Commander; // forward declaration for myCommander pointer attribute
 class NPC // abstract class
 {
 protected:
+	Map* gameMapPtr;
 	Point location;
 	TeamColor team;
 	NpcType type;
@@ -83,6 +84,7 @@ public:
 	// constructor
 	NPC(int x, int y, TeamColor t, NpcType nt);
 
+	void SetMap(Map* map) { gameMapPtr = map; }
 	void SetCommander(Commander* pCommander);
 	virtual void Show() const;
 
@@ -101,7 +103,7 @@ public:
 	virtual void ReportLowAmmo(NPC* warrior) = 0;
 
 
-	void TakeDamage(double dmg) { health -= dmg; }
+	void TakeDamage(double dmg);
 	void heal(double amount) { health = (health + amount > MAX_HP) ? MAX_HP : health + amount; }
 
 	// getters

@@ -1,20 +1,29 @@
 ﻿D:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(534,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (Graphics.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  Commander.cpp
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(146,31): warning C4838: conversion from 'double' to 'int' requires a narrowing conversion
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(146,31): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(146,52): warning C4838: conversion from 'double' to 'int' requires a narrowing conversion
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(146,52): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(147,22): warning C4244: '=': conversion from 'const _Ty' to 'int', possible loss of data
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(147,22): warning C4244:         with
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(147,22): warning C4244:         [
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(147,22): warning C4244:             _Ty=double
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(147,22): warning C4244:         ]
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(148,22): warning C4244: '=': conversion from 'const _Ty' to 'int', possible loss of data
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(148,22): warning C4244:         with
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(148,22): warning C4244:         [
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(148,22): warning C4244:             _Ty=double
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Commander.cpp(148,22): warning C4244:         ]
-  CommanderAnalyzingState.cpp
-  CommanderRepositioningState.cpp
+  Warrior.cpp
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  (compiling source file 'Warrior.cpp')
+  
+  WarriorAdvancingState.cpp
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  (compiling source file 'WarriorAdvancingState.cpp')
+  
+  WarriorAttackingState.cpp
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  (compiling source file 'WarriorAttackingState.cpp')
+  
+  WarriorIdleState.cpp
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  (compiling source file 'WarriorIdleState.cpp')
+  
+  WarriorRetreatingState.cpp
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  (compiling source file 'WarriorRetreatingState.cpp')
+  
+  main.cpp
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  (compiling source file 'main.cpp')
+  
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\main.cpp(187,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\main.cpp(188,20): warning C4305: 'argument': truncation from 'double' to 'GLclampf'
   Generating Code...
   Graphics.vcxproj -> D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Debug\AI_FinalProject.exe

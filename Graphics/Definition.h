@@ -4,13 +4,12 @@
 
 const double PI = 3.14;
 const double SIGHT_RANGE = 25.0;
-const int MSX = 80;
-const int MSY = 48;
+const int MSX = 60;
+const int MSY = 36;
 
 const double COST_UNKNOWN = 10.0;
 const double COST_SAFE = 1.0;
 const double COST_DANGER = 15.0;
-const double WARRIOR_HIT_DAMAGE = 10.0;
 
 // types of cells in map
 enum CellType

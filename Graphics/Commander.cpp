@@ -196,15 +196,8 @@ void Commander::DoSomeWork(const double* pMap)
 
 	BuildViewMap(pMap);
 
-	// Execute current state - THIS IS THE ONLY LINE YOU NEED!
 	if (currentState)
 	{
 		currentState->Execute(this);
 	}
-
-	// All the logic below is now handled by states!
-	// AnalyzingState handles: UpdateCombinedViewMap, injury/ammo reports
-	// PlanningState handles: attack/defend/move decisions
-	// IssuingOrdersState handles: IssueCommand calls
-	// RepositioningState handles: commander movement
 }

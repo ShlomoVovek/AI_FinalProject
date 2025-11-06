@@ -34,6 +34,37 @@ bool Map::IsOccupied(int x, int y) const
     return false;
 }
 
+// map info and position managment
+bool Map::IsStaticObstacle(int x, int y) const
+{
+    if (x < 0 || x >= mapWidth || y < 0 || y >= mapHeight)
+        return true;
+
+    int type = gameMapData[x][y];
+    return (type == ROCK || type == WATER); 
+}
+
+bool Map::IsWalkable(int x, int y) const
+{
+    return !IsStaticObstacle(x, y) && !IsAgentAt(x, y);
+}
+
+void Map::RegisterNewAgent(int x, int y)
+{
+    agentPositions.insert({ x, y });
+}
+
+void Map::RegisterAgentDeath(int x, int y)
+{
+    agentPositions.erase({ x, y });
+}
+
+void Map::RegisterAgentMove(int oldX, int oldY, int newX, int newY)
+{
+    agentPositions.erase({ oldX, oldY });
+    agentPositions.insert({ newX, newY });
+}
+
 void Map::GenerateRandomElements()
 {
     int numTrees = (int)(MSX / 5 + rand() % 10);
@@ -78,7 +109,6 @@ void Map::GenerateRandomElements()
     }
 
  // warehaouses
-    Point warehouse;
 
     // left on X axis
     int minX_Left = 4;

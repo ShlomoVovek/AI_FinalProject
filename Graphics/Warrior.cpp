@@ -12,7 +12,7 @@
 
 Warrior::Warrior(int x, int y, TeamColor t) :
 	NPC(x, y, t, WARRIOR), ammo(MAX_AMMO), isAttacking(false),
-	requestedMedic(false), requestedSupply(false), moveCooldown(0)
+	requestedMedic(false), requestedSupply(false)
 {
 	currentState = new WarriorIdleState();
 	currentState->OnEnter(this);
@@ -116,7 +116,7 @@ void Warrior::Shoot(NPC* pEnemy)
 		std::cout << "Warrior (Team " << (team == TEAM_RED ? "RED" : "BLUE")
 			<< ") shooting! Ammo left: " << ammo << "\n";
 
-		pEnemy->TakeDamage(WARRIOR_HIT_DAMAGE);
+		pEnemy->TakeDamage(GUN_HIT_DAMAGE);
 
 		if (!pEnemy->IsAlive())
 		{
@@ -159,7 +159,11 @@ void Warrior::DrawShots() const
 		double alpha = (double)shot.framesRemaining / SHOT_DISPLAY_FRAMES;
 
 		// Draw red line from warrior to target
-		glColor4d(1.0, 0.0, 0.0, alpha); // Red with alpha
+		if (this->GetTeam() == TEAM_RED)
+			glColor4d(1.0, 0.0, 0.0, alpha); // Red with alpha
+		else
+			glColor4d(0.0, 0.0, 1.0, alpha);
+
 		glLineWidth(2.0);
 
 		glBegin(GL_LINES);
@@ -265,6 +269,8 @@ void Warrior::ExecuteCommand(int commandCode, Point target)
 
 	case CMD_ATTACK:
 	{
+		if (ammo == 0) break;
+
 		currentAttackTarget = target;
 		Point attackPos = DetermineBestAttackPosition(target);
 

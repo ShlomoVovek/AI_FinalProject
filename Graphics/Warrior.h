@@ -5,10 +5,12 @@
 class WarriorState;
 
 // ammo
-const int MAX_AMMO = 30;
+const int MAX_AMMO = 15;
 const int CRITICAL_AMMO = (int) MAX_AMMO * 0.25;
 const int MAX_GRENADE = 3;
 const int CRITICAL_GRENADE = 1;
+const double GUN_HIT_DAMAGE = 7.5;
+const double GRENADE_HIT_DAMAGE = 30.0;
 
 // range
 const double RIFLE_RANGE = 40.0;
@@ -39,8 +41,6 @@ private:
 	WarriorState* currentState;
 	bool requestedMedic;
 	bool requestedSupply;
-
-	int moveCooldown; // TODO: add in NPC.h
 
 	// Shot visualization
 	std::vector<ShotInfo> activeShots;

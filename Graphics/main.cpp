@@ -30,8 +30,13 @@ void InitCharacters()
 	allAgents.clear();
 	allWarriors.clear();
 
-	// Store all occupied locations both obstacles & characters
-	std::set<std::pair<int, int>> occupiedPositions;
+	if (gameMap != nullptr)
+		gameMap->ClearAgents();
+	else
+	{
+		printf("ERROR: gameMap is null during InitCharacters\n");
+		exit(1);
+	}
 
 	auto findRandomPosition = [&](TeamColor team) -> Point
 	{
@@ -41,8 +46,6 @@ void InitCharacters()
 		while (attempt < maxAttempts)
 		{
 			int x, y;
-			// Red team: left half (x from 5 to MSX/2 - 5)
-			// Blue team: right half (x from MSX/2 + 5 to MSX - 5)
 
 			if (team == TEAM_RED)
 				x = 5 + rand() % (MSX / 2 - 10);
@@ -53,23 +56,15 @@ void InitCharacters()
 			y = 5 + rand() % (MSY - 10); // Y can be anywhere
 
 			// Check if position is free:
-			std::pair<int, int> pos = { x, y };
-			int obstacleType;
+			int obstacleType = gameMap->CheckPositionContent(x, y);
 
-			if (occupiedPositions.find(pos) == occupiedPositions.end())
+			if ((obstacleType == EMPTY || obstacleType == TREE) &&
+				!gameMap->IsAgentAt(x, y))
 			{
-				if (gameMap->CheckPositionContent(x, y) != NULL)
+				obstacleType = gameMap->CheckPositionContent(x, y);
+				if (obstacleType == EMPTY || obstacleType == TREE)
 				{
-					obstacleType = gameMap->CheckPositionContent(x, y);
-
-					// Rule 1: Can spawn on EMPTY tiles
-					// Rule 2: Can spawn on TREE tiles
-					// Rule 3: CANNOT spawn on ROCK, WATER, or BASE
-					if (obstacleType == EMPTY || obstacleType == TREE)
-					{
-						occupiedPositions.insert(pos);
-						return { (int)x, (int)y };
-					}
+					return { (int)x, (int)y };
 				}
 			}
 			attempt++;
@@ -84,44 +79,71 @@ void InitCharacters()
 	};
 	Point pos;
 
+	// --- RED Team ---
 	pos = findRandomPosition(TEAM_RED);
-	allAgents.push_back(new Commander((int)pos.x, (int)pos.y, TEAM_RED));
+	NPC* newCommanderR = new Commander((int)pos.x, (int)pos.y, TEAM_RED);
+	newCommanderR->SetMap(gameMap);
+	gameMap->RegisterNewAgent((int)pos.x, (int)pos.y);
+	allAgents.push_back(newCommanderR);
 
 	pos = findRandomPosition(TEAM_RED);
 	Warrior* redWarrior1 = new Warrior((int)pos.x, (int)pos.y, TEAM_RED);
+	redWarrior1->SetMap(gameMap);
+	gameMap->RegisterNewAgent((int)pos.x, (int)pos.y);
 	allAgents.push_back(redWarrior1);
 	allWarriors.push_back(redWarrior1);
 
 	pos = findRandomPosition(TEAM_RED);
 	Warrior* redWarrior2 = new Warrior((int)pos.x, (int)pos.y, TEAM_RED);
+	redWarrior2->SetMap(gameMap);
+	gameMap->RegisterNewAgent((int)pos.x, (int)pos.y);
 	allAgents.push_back(redWarrior2);
 	allWarriors.push_back(redWarrior2);
 
 	pos = findRandomPosition(TEAM_RED);
-	allAgents.push_back(new Medic((int)pos.x, (int)pos.y, TEAM_RED));
+	NPC* newMedicR = new Medic((int)pos.x, (int)pos.y, TEAM_RED);
+	newMedicR->SetMap(gameMap);
+	gameMap->RegisterNewAgent((int)pos.x, (int)pos.y);
+	allAgents.push_back(newMedicR);
 
 	pos = findRandomPosition(TEAM_RED);
-	allAgents.push_back(new SupplyAgent((int)pos.x, (int)pos.y, TEAM_RED));
+	NPC* newSupplierR = new SupplyAgent((int)pos.x, (int)pos.y, TEAM_RED);
+	newSupplierR->SetMap(gameMap);
+	gameMap->RegisterNewAgent((int)pos.x, (int)pos.y);
+	allAgents.push_back(newSupplierR);
 
-	// BLUE team creation
+	// --- BLUE Team ---
 	pos = findRandomPosition(TEAM_BLUE);
-	allAgents.push_back(new Commander((int)pos.x, (int)pos.y, TEAM_BLUE));
+	NPC* newCommanderB = new Commander((int)pos.x, (int)pos.y, TEAM_BLUE);
+	newCommanderB->SetMap(gameMap);
+	gameMap->RegisterNewAgent((int)pos.x, (int)pos.y);
+	allAgents.push_back(newCommanderB);
 
 	pos = findRandomPosition(TEAM_BLUE);
 	Warrior* blueWarrior1 = new Warrior((int)pos.x, (int)pos.y, TEAM_BLUE);
+	blueWarrior1->SetMap(gameMap);
+	gameMap->RegisterNewAgent((int)pos.x, (int)pos.y);
 	allAgents.push_back(blueWarrior1);
 	allWarriors.push_back(blueWarrior1);
 
 	pos = findRandomPosition(TEAM_BLUE);
 	Warrior* blueWarrior2 = new Warrior((int)pos.x, (int)pos.y, TEAM_BLUE);
+	blueWarrior2->SetMap(gameMap);
+	gameMap->RegisterNewAgent((int)pos.x, (int)pos.y);
 	allAgents.push_back(blueWarrior2);
 	allWarriors.push_back(blueWarrior2);
 
 	pos = findRandomPosition(TEAM_BLUE);
-	allAgents.push_back(new Medic((int)pos.x, (int)pos.y, TEAM_BLUE));
+	NPC* newMedicB = new Medic((int)pos.x, (int)pos.y, TEAM_BLUE);
+	newMedicB->SetMap(gameMap);
+	gameMap->RegisterNewAgent((int)pos.x, (int)pos.y);
+	allAgents.push_back(newMedicB);
 
 	pos = findRandomPosition(TEAM_BLUE);
-	allAgents.push_back(new SupplyAgent((int)pos.x, (int)pos.y, TEAM_BLUE));
+	NPC* newSupplierB = new SupplyAgent((int)pos.x, (int)pos.y, TEAM_BLUE);
+	newSupplierB->SetMap(gameMap);
+	gameMap->RegisterNewAgent((int)pos.x, (int)pos.y);
+	allAgents.push_back(newSupplierB);
 
 	// connect soldier to Commander
 	Commander* redCommander = nullptr;
@@ -245,12 +267,12 @@ void idle()
 		agent->DoSomeWork(pMapData);
 		
 	}
-	printf("id = %d\n", id++);
+
 	glutPostRedisplay();
-	Sleep(100);
+	Sleep(50);
 }
 
-void main(int argc, char* argv[]) 
+int main(int argc, char* argv[]) 
 {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
@@ -274,4 +296,6 @@ void main(int argc, char* argv[])
 	init();
 
 	glutMainLoop();
+
+	return 0;
 }
