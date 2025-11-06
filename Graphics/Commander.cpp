@@ -86,14 +86,38 @@ void Commander::IssueCommand(int commandCode, Point target)
 
 void Commander::ReportInjury(NPC* injuredSoldier)
 {
-	if (std::find(injuredSoldiers.begin(), injuredSoldiers.end(), injuredSoldier) == injuredSoldiers.end())
+	bool alreadyInQueue = false;
+	for (NPC* w : injuredSoldiers) {
+		if (w == injuredSoldier) {
+			alreadyInQueue = true;
+			break;
+		}
+	}
+
+	if (!alreadyInQueue && injuredSoldier->IsAlive()) {
 		injuredSoldiers.push_back(injuredSoldier);
+		std::cout << "Commander: Added soldier to medic queue.\n";
+	}
 }
 
 void Commander::ReportLowAmmo(NPC* warrior)
 {
-	if (std::find(resupplySoldiers.begin(), resupplySoldiers.end(), warrior) == resupplySoldiers.end())
+	bool alreadyInQueue = false;
+	for (NPC* w : resupplySoldiers)
+	{
+		if (w == warrior)
+		{
+			alreadyInQueue = true;
+			break;
+		}
+	}
+
+	if (!alreadyInQueue && warrior->IsAlive())
+	{
 		resupplySoldiers.push_back(warrior);
+		std::cout << "Commander: Added " << warrior->GetType()
+			<< " to supply request queue.\n";
+	}
 }
 
 NPC* Commander::GetNextInjuredSoldier()

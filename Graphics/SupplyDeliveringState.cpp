@@ -8,27 +8,35 @@
 void SupplyDeliveringState::OnEnter(SupplyAgent* agent)
 {
     std::cout << "SupplyAgent entering Delivering state.\n";
-    agent->isMoving = false;
-    agent->currentPath.clear();
 }
 
 void SupplyDeliveringState::Execute(SupplyAgent* agent)
 {
+    NPC* targetWarrior = agent->GetDeliveryTarget();
+
+    if (targetWarrior == nullptr || !targetWarrior->IsAlive())
+    {
+        std::cout << "SupplyAgent: Target is invalid or dead. Returning to Idle.\n";
+        agent->SetState(new SupplyIdleState());
+        return;
+    }
+   
     Point agentLoc = agent->GetLocation();
-    Point warriorLoc = agent->GetTargetLocation(); //
+    Point warriorLoc = targetWarrior->GetLocation();
 
     double dist = Distance(agentLoc, warriorLoc);
+    const double DELIVERY_RANGE = 2.0;
 
-    if (dist < 2.0)
+    if (dist < DELIVERY_RANGE)
     {
-        std::cout << "SupplyAgent is delivering ammo.\n";
-        agent->DeliverAmmo();
-        agent->SetState(new SupplyIdleState());
+        std::cout << "SupplyAgent is delivering ammo.\n"; 
+        agent->DeliverAmmo(); 
+        agent->SetState(new SupplyIdleState()); 
     }
     else
     {
-        std::cout << "Warrior moved. SupplyAgent going back to GoToWarrior.\n";
-        agent->SetState(new SupplyGoToWarriorState());
+        std::cout << "Warrior moved. SupplyAgent going back to GoToWarrior.\n"; 
+        agent->SetState(new SupplyGoToWarriorState()); 
     }
 }
 

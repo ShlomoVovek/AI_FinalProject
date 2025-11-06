@@ -7,12 +7,7 @@ class Commander : public NPC
 {
 private:
 	double combinedViewMap[MSX][MSY];
-
-	std::vector<NPC*> teamMembers;	
-	std::vector<NPC*> injuredSoldiers;
-	std::vector<NPC*> resupplySoldiers;
-	std::vector<Sighting> allSpottedEnemies;
-
+		
 	// fsm managment
 	CommanderState* currentState;
 	int plannedCommand;      // Command decided by PlanningState
@@ -36,6 +31,11 @@ public:
 	Commander(int x, int y, TeamColor t);
 	~Commander();
 
+	std::vector<NPC*> teamMembers;
+	std::vector<NPC*> injuredSoldiers;
+	std::vector<NPC*> resupplySoldiers;
+	std::vector<Sighting> allSpottedEnemies;
+
 	void DoSomeWork(const double* pMap) override;
 
 	// info from soldeiers
@@ -57,17 +57,23 @@ public:
 	bool HasInjuredSoldiers() const { return !injuredSoldiers.empty(); }
 	bool HasLowAmmoSoldiers() const { return !resupplySoldiers.empty(); }
 
-	NPC* GetNextInjuredSoldier();
-	NPC* GetNextLowAmmoSoldier();
-
-	int GetTeamMemberCount() const { return teamMembers.size(); }
-	int GetWoundedCount() const;
-
 	void SetPlannedCommand(int cmd, Point target)
 	{
 		plannedCommand = cmd;
 		plannedTarget = target;
 	}
+
+	// getters
+	NPC* GetNextInjuredSoldier();
+	NPC* GetNextLowAmmoSoldier();
+	std::vector<NPC*>& GetTeamMembers() { return teamMembers; }
+
+	std::vector<NPC*>& GetInjuredSoldiers() { return injuredSoldiers; }
+	std::vector<NPC*>& GetResupplySoldiers() { return resupplySoldiers; }
+
+	int GetTeamMemberCount() const { return teamMembers.size(); }
+	int GetWoundedCount() const;
+	
 	int GetPlannedCommand() const { return plannedCommand; }
 	Point GetPlannedTarget() const { return plannedTarget; }
 

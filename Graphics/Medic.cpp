@@ -161,6 +161,31 @@ void Medic::ExecuteCommand(int CommandCode, Point target)
 	}
 }
 
+bool Medic::IsIdle() const
+{
+	return dynamic_cast<MedicIdleState*>(currentState) != nullptr;
+}
+
+void Medic::AssignHealMission(NPC* injuredSoldier)
+{
+	if (IsIdle() && injuredSoldier && injuredSoldier->IsAlive())
+	{
+		patientTarget = injuredSoldier;
+		finalTargetLocation = injuredSoldier->GetLocation();
+
+		std::cout << "Medic (Team " << (team == TEAM_RED ? "RED" : "BLUE")
+			<< ") assigned HEAL mission. Moving to base first.\n";
+
+		// Start the FSM by transitioning to the "GoToBase" state
+		SetState(new MedicGoToBaseState());
+	}
+	else
+	{
+		// Log if assignment failed
+		std::cout << "Medic: Cannot be assigned mission. (Not idle or target is invalid)\n";
+	}
+}
+
 // TODO: heal itself method
 // TODO: implement actual methods
 void Medic::ReportSighting(NpcType enemyType, Point enemyLoc)

@@ -5,7 +5,7 @@
 class WarriorState;
 
 // ammo
-const int MAX_AMMO = 1;
+const int MAX_AMMO = 10;
 const int CRITICAL_AMMO = (int) MAX_AMMO * 0.25;
 const int MAX_GRENADE = 3;
 const int CRITICAL_GRENADE = 1;
@@ -96,7 +96,7 @@ public:
 	bool HasRequestedMedic() const { return requestedMedic; }
 	bool HasRequestedSupply() const { return requestedSupply; }
 
-	void Resupply(int amount);
+	void Resupply(int ammoAmount, int grenadeAmount);
 
 	// getters
 	int GetAmmo() const { return ammo; }

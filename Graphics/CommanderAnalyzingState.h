@@ -1,5 +1,9 @@
 #pragma once
 #include "CommanderState.h"
+#include "SupplyAgent.h"
+#include "Medic.h"
+#include "Warrior.h"
+#include "NPC.h"
 
 class Commander;
 
@@ -11,6 +15,9 @@ public:
     void Execute(Commander* commander) override;
     void OnExit(Commander* commander) override;
     const char* GetStateName() const override { return "ANALYZING"; }
+
+    void HandleMedicRequests(Commander* commander);
+    void HandleSupplyRequests(Commander* commander);
 };
 
 

@@ -11,8 +11,8 @@
 #include <algorithm>
 
 Warrior::Warrior(int x, int y, TeamColor t) :
-	NPC(x, y, t, WARRIOR), ammo(MAX_AMMO), isAttacking(false),
-	requestedMedic(false), requestedSupply(false)
+	NPC(x, y, t, WARRIOR), ammo(MAX_AMMO), grenades(MAX_GRENADE),
+	isAttacking(false), requestedMedic(false), requestedSupply(false)
 {
 	currentState = new WarriorIdleState();
 	currentState->OnEnter(this);
@@ -355,7 +355,7 @@ void Warrior::ExecuteCommand(int commandCode, Point target)
 		// Warrior received ammo - reset supply request
 		std::cout << "Warrior received ammo resupply\n";
 		requestedSupply = false;
-		Resupply(MAX_AMMO - ammo);
+		Resupply(MAX_AMMO - ammo, MAX_GRENADE - grenades);
 		break;
 
 	default:
@@ -408,10 +408,16 @@ void Warrior::RequestSupply()
 	}
 }
 
-void Warrior::Resupply(int amount)
+void Warrior::Resupply(int ammoAmount, int grenadeAmount)
 {
-	ammo = std::min(ammo + amount, MAX_AMMO);
-	std::cout << "Warrior resupplied. Ammo now: " << ammo << "\n";
+	ammo = std::min(ammo + ammoAmount, MAX_AMMO);
+	grenades = std::min(grenades + grenadeAmount, MAX_GRENADE);
+
+	std::cout << "Warrior resupplied. Ammo: " << ammo
+		<< ", Grenades: " << grenades << "\n";
+
+	if (ammo > CRITICAL_AMMO)
+		requestedSupply = false;
 }
 
 NPC* Warrior::ScanForEnemies() const

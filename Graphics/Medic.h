@@ -41,12 +41,17 @@ public:
 	NPC* GetPatientTarget() const { return patientTarget; }
 	void SetPatientTarget(NPC* patient) { patientTarget = patient; }
 	bool IsMoving() const { return isMoving; } // for pathfinding
+	bool IsIdle() const;
+	void AssignHealMission(NPC* injuredSoldier);
 
 	// NPC functions
 	void ReportSighting(NpcType enemyType, Point enemyLoc) override;
 	void ReportLowAmmo(NPC* warrior) override;
 	void ReportInjury(NPC* injuredSoldier) override;
 	void ExecuteCommand(int commandCode, Point target) override;
+
+	// healing methods
+
 
 };
 

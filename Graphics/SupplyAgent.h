@@ -2,6 +2,7 @@
 #include "NPC.h"
 #include "Commander.h"
 #include "IPathfinding.h"
+#include "Warrior.h"
 
 class SupplyAgentState;
 
@@ -13,6 +14,9 @@ private:
 	Point targetWarehouse[2];
 	bool hasAmmo;          // Whether agent is carrying ammo
 	NPC* deliveryTarget;
+
+	int cargoAmmo = 0;
+	int cargoGrenades = 0;
 
 protected: 
 	void CalculatePathAndMove() override;
@@ -39,8 +43,11 @@ public:
 	Point FindNearestWarehouse() const;
 	void PickupAmmo();
 	void DeliverAmmo();
+	bool IsIdle() const;
+	void AssignSupplyMission(NPC* warrior);
 
 	// Getters
+	NPC* GetDeliveryTarget() const { return deliveryTarget; }
 	Point GetTargetLocation() const { return targetLocation; }
 	bool HasAmmo() const { return hasAmmo; }
 	bool IsMoving() const { return isMoving; } // for pathfinding

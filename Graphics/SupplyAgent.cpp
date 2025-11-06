@@ -56,19 +56,43 @@ Point SupplyAgent::FindNearestWarehouse() const
 
 void SupplyAgent::PickupAmmo()
 {
-    hasAmmo = true;
-    std::cout << "SupplyAgent picked up ammo from warehouse\n";
+    std::cout << "Supply Agent: Loading supplies at warehouse.\n";
+    cargoAmmo = MAX_AMMO;
+    cargoGrenades = MAX_GRENADE; 
 }
 
 void SupplyAgent::DeliverAmmo()
 {
-    if (hasAmmo)
+    if ((cargoAmmo > 0 || cargoGrenades > 0) && deliveryTarget != nullptr && deliveryTarget->IsAlive())
     {
-        hasAmmo = false;
-        std::cout << "SupplyAgent delivered ammo to warrior\n";
+        Warrior* targetWarrior = dynamic_cast<Warrior*>(deliveryTarget);
 
-        // TODO: Actually give ammo to the warrior
-        // Need to find the warrior NPC and call warrior->Resupply()
+        if (targetWarrior)
+        {
+            std::cout << "SupplyAgent delivering supplies to warrior\n";
+
+            targetWarrior->Resupply(cargoAmmo, cargoGrenades);
+
+            cargoAmmo = 0;
+            cargoGrenades = 0;
+        }
+        deliveryTarget = nullptr;
+    }
+}
+
+bool SupplyAgent::IsIdle() const
+{
+    return (dynamic_cast<SupplyIdleState*>(currentState) != nullptr);
+}
+
+void SupplyAgent::AssignSupplyMission(NPC* warrior)
+{
+    if (IsIdle() && warrior != nullptr && warrior->IsAlive())
+    {
+        deliveryTarget = warrior; 
+        std::cout << "Supply Agent: Mission accepted. Going to warehouse.\n";
+
+        SetState(new SupplyGoToWarehouseState());
     }
 }
 
