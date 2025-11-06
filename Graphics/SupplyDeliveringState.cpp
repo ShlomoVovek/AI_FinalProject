@@ -1,28 +1,34 @@
 #include "SupplyDeliveringState.h"
 #include "SupplyIdleState.h"
 #include "SupplyAgent.h"
+#include "Definition.h"
+#include "SupplyGoToWarriorState.h"
 #include <iostream>
 
 void SupplyDeliveringState::OnEnter(SupplyAgent* agent)
 {
-    std::cout << "SupplyAgent (Team " << (agent->GetTeam() == TEAM_RED ? "RED" : "BLUE")
-        << ") entering DELIVERING state - giving ammo to warrior\n";
-
-    // Give ammo to warrior
-    agent->DeliverAmmo();
+    std::cout << "SupplyAgent entering Delivering state.\n";
+    agent->isMoving = false;
+    agent->currentPath.clear();
 }
 
 void SupplyDeliveringState::Execute(SupplyAgent* agent)
 {
-    // Wait for delivery animation/timer
-    deliveryTimer--;
+    Point agentLoc = agent->GetLocation();
+    Point warriorLoc = agent->GetTargetLocation(); //
 
-    if (deliveryTimer <= 0)
+    double dist = Distance(agentLoc, warriorLoc);
+
+    if (dist < 2.0)
     {
-        std::cout << "SupplyAgent finished delivering ammo\n";
-
-        // Return to idle state
+        std::cout << "SupplyAgent is delivering ammo.\n";
+        agent->DeliverAmmo();
         agent->SetState(new SupplyIdleState());
+    }
+    else
+    {
+        std::cout << "Warrior moved. SupplyAgent going back to GoToWarrior.\n";
+        agent->SetState(new SupplyGoToWarriorState());
     }
 }
 

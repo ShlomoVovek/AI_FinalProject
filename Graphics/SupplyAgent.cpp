@@ -115,10 +115,14 @@ void SupplyAgent::CalculatePathAndMove()
 // NPC methods
 void SupplyAgent::ReportSighting(NpcType enemyType, Point enemyLoc)
 {
+    if (myCommander)
+    {
+        myCommander->ReportSighting(enemyType, enemyLoc);
+    }
 }
 void SupplyAgent::ReportLowAmmo(NPC* warrior)
 {
-
+    return;
 }
 void SupplyAgent::ReportInjury(NPC* injuredSoldier)
 {

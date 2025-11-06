@@ -5,15 +5,15 @@
 class WarriorState;
 
 // ammo
-const int MAX_AMMO = 15;
+const int MAX_AMMO = 1;
 const int CRITICAL_AMMO = (int) MAX_AMMO * 0.25;
 const int MAX_GRENADE = 3;
 const int CRITICAL_GRENADE = 1;
-const double GUN_HIT_DAMAGE = 7.5;
+const double GUN_HIT_DAMAGE = 7.0;
 const double GRENADE_HIT_DAMAGE = 30.0;
 
 // range
-const double RIFLE_RANGE = 40.0;
+const double RIFLE_RANGE = 50.0;
 const double GRENADE_RANGE = 15.0;
 const double ATTACK_THRESHOLD = 5.0;
 
@@ -35,6 +35,7 @@ private:
 	int ammo;
 	int grenades;
 	bool isAttacking;
+	bool hasReportedInjury = false;
 	Point currentAttackTarget;
 	
 	// fsm management

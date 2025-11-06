@@ -11,6 +11,7 @@ private:
 
 public:
     MedicHealingState() : healingTimer(60) {} // ~2 seconds at 30 FPS
+    const double HEAL_AMOUNT_PER_TICK = 25.0;
 
     void OnEnter(Medic* agent) override;
     void Execute(Medic* agent) override;

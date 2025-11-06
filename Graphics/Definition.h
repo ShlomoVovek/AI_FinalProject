@@ -4,8 +4,8 @@
 
 const double PI = 3.14;
 const double SIGHT_RANGE = 25.0;
-const int MSX = 60;
-const int MSY = 36;
+const int MSX = 80;
+const int MSY = 48;
 
 const double COST_UNKNOWN = 10.0;
 const double COST_SAFE = 1.0;

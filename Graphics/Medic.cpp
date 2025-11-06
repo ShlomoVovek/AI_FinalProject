@@ -122,41 +122,62 @@ void Medic::ExecuteCommand(int CommandCode, Point target)
 		// Only start healing if currently idle
 		if (dynamic_cast<MedicIdleState*>(currentState))
 		{
-			finalTargetLocation = target; // This is the patient's location
+			finalTargetLocation = target; // injured npc's location
 
-			// TODO: Ideally, search npcList to find the actual NPC* patient
-			// and store it in patientTarget.
-			// For now, we only use the location (finalTargetLocation).
+			// Find the injured soldier at this location
+			if (npcList != nullptr)
+			{
+				for (NPC* npc : *npcList)
+				{
+					if (npc->IsAlive() &&
+						npc->GetTeam() == this->GetTeam() &&
+						npc->GetLocation().x == target.x &&
+						npc->GetLocation().y == target.y)
+					{
+						patientTarget = npc;
+						break;
+					}
+				}
+			}
 
-			std::cout << "Medic (Team " << (team == TEAM_RED ? "RED" : "BLUE")
-				<< ") received HEAL command. Moving to base first.\n";
+			if (patientTarget != nullptr)
+			{
+				std::cout << "Medic (Team " << (team == TEAM_RED ? "RED" : "BLUE")
+					<< ") received HEAL command. Moving to base first.\n";
 
-			// Transition to going to base
-			SetState(new MedicGoToBaseState());
+				SetState(new MedicGoToBaseState());
+			}
+			else
+			{
+				std::cout << "Medic: Could not find injured soldier at target location!\n";
+				SetState(new MedicIdleState());
+			}
 		}
 		break;
 	}
 	default:
-		// By default, go to idle
 		SetState(new MedicIdleState());
 		break;
 	}
 }
 
+// TODO: heal itself method
+// TODO: implement actual methods
 void Medic::ReportSighting(NpcType enemyType, Point enemyLoc)
 {
-	int x = 1;
+	if (myCommander)
+	{
+		myCommander->ReportSighting(enemyType, enemyLoc);
+	}
 }
 void Medic::ReportLowAmmo(NPC* warrior)
 {
-	int x = 1;
+	return;
 }
 void Medic::ReportInjury(NPC* injuredSoldier)
 {
 	if (injuredSoldier->GetTeam() == this->GetTeam())
 		return;
-
-
 }
 
 

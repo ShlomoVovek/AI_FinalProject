@@ -143,6 +143,11 @@ void Warrior::ThrowGrenade(Point enemyLocation)
 		std::cout << "Warrior (Team " << (team == TEAM_RED ? "RED" : "BLUE")
 			<< ") throwing grenade! Grenades left: " << grenades << "\n";
 	}
+	else
+	{
+		std::cout << "Warrior out of grenades!\n";
+		RequestSupply();
+	}
 }
 // TODO: each shot increase danger in map where it crosses, color in red
 void Warrior::DrawShots() const
@@ -208,7 +213,20 @@ void Warrior::DoSomeWork(const double* pMap)
 
 	UpdateShots();
 
-	// Execute current state - FSM handles all logic!
+	if (!CanFight() && myCommander != nullptr && !hasReportedInjury)
+	{
+		myCommander->ReportInjury(this);
+		hasReportedInjury = true;
+
+		std::cout << "Warrior (Team " << (team == TEAM_RED ? "RED" : "BLUE")
+			<< ") reported injury! Health: " << health << "/" << MAX_HP << "\n";
+	}
+
+	if (CanFight() && hasReportedInjury)
+	{
+		hasReportedInjury = false;
+	}
+
 	if (currentState)
 	{
 		currentState->Execute(this);

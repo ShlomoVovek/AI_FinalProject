@@ -1,5 +1,6 @@
 #pragma once
 #include "NPC.h"
+#include "Commander.h"
 #include "IPathfinding.h"
 
 class SupplyAgentState;
