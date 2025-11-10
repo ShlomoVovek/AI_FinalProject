@@ -54,6 +54,7 @@ public:
 	virtual bool FindAStarPath(Point goal, const double* safetyMap);
 	// must use BFS
 	virtual Point FindClosestSafePosition(double searchRange, const double* safetyMap) const;
+	// virtual Point FindClosestRockPosition(const double* safetyMap) const;
 
 	// getters
 	const std::list<Point>& GetCurrentPath() const { return currentPath; }

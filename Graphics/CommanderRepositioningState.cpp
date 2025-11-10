@@ -5,8 +5,7 @@
 
 void CommanderRepositioningState::OnEnter(Commander* commander)
 {
-    std::cout << "Commander (Team " << (commander->GetTeam() == TEAM_RED ? "RED" : "BLUE")
-        << ") entering REPOSITIONING state\n";
+    commander->MoveToTarget();
 
     // If enemies are nearby, move to safe position
     if (commander->HasSpottedEnemies())
@@ -30,6 +29,10 @@ void CommanderRepositioningState::Execute(Commander* commander)
     // After waiting period, return to analyzing state
     if (framesToWait <= 0)
     {
+        commander->allSpottedEnemies.clear();
+        commander->SetPlannedCommand(CMD_NONE, commander->GetLocation());
+
+        std::cout << "Commander cleared enemy sightings and planned command, returning to analyze fresh data\n";
         commander->SetState(new CommanderAnalyzingState());
     }
 }

@@ -29,7 +29,7 @@ void WarriorAdvancingState::Execute(Warrior* warrior)
     }
 
     // 4. Check health/ammo status
-    if (warrior->GetHealth() < CRITICAL_HP)
+    if (warrior->GetHealth() < 0.5 * MAX_HP)
     {
         warrior->RequestMedic();
     }

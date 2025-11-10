@@ -70,6 +70,12 @@ void WarriorAttackingState::Execute(Warrior* warrior)
             warrior->SetState(new WarriorIdleState());
             return; // Exit after changing state
         }
+        else if (warrior->GetAmmo() == 0)
+        {
+            std::cout << "Warrior reached attack position, out of ammo. Returning to IDLE.\n";
+            warrior->SetState(new WarriorIdleState());
+            return;
+        }
         else
         {
             // We've arrived AND we DO see an enemy.

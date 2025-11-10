@@ -13,22 +13,34 @@ void CommanderAnalyzingState::Execute(Commander* commander)
 {
     // 1. Update combined visibility map from all team members
     commander->UpdateCombinedViewMap();
+    bool enemiesSpotted = false;
+    // Get team members to check their recent sightings
+    for (NPC* member : commander->GetTeamMembers())
+    {
+        if (member->IsAlive() && member->GetType() == WARRIOR)
+        {
+            Warrior* warrior = static_cast<Warrior*>(member);
 
+            // Check if warrior sees enemies (this should be done via view map)
+            // For now, we'll rely on the HasSpottedEnemies flag being set by warriors
+        }
+    }
+
+    // Handle support missions
     HandleMedicRequests(commander);
     HandleSupplyRequests(commander);
 
-    // 3. בדוק תנאים אסטרטגיים למעבר למצב תכנון
-    bool enemySpotted = commander->HasSpottedEnemies(); 
-
-    if (enemySpotted) {
+    // Decide next action based on situation
+    if (commander->HasSpottedEnemies())
+    {
         std::cout << "Commander (Analyzing): Enemy spotted! Moving to PLANNING.\n";
+        commander->SetState(new CommanderPlanningState());
     }
-    else {
+    else
+    {
         std::cout << "Commander (Analyzing): No immediate threats. Moving to PLANNING for next move.\n";
+        commander->SetState(new CommanderPlanningState());
     }
-
-    // Always transition to Planning state
-    commander->SetState(new CommanderPlanningState());
 }
 
 void CommanderAnalyzingState::OnExit(Commander* commander)
@@ -38,73 +50,43 @@ void CommanderAnalyzingState::OnExit(Commander* commander)
 
 void CommanderAnalyzingState::HandleSupplyRequests(Commander* commander)
 {
-    // קח את רשימת הבקשות מהמפקד
-    std::vector<NPC*>& requests = commander->GetResupplySoldiers();
-    if (requests.empty()) {
-        return; // אין בקשות, צא
-    }
-
-    NPC* needyWarriorNPC = requests.front();
-
-    // 1. ודא שהלוחם עדיין זקוק לאספקה
-    Warrior* needyWarrior = static_cast<Warrior*>(needyWarriorNPC);
-    if (needyWarrior == nullptr || !needyWarrior->IsAlive() || !needyWarrior->HasRequestedSupply())
+    if (commander->HasLowAmmoSoldiers())
     {
-        requests.erase(requests.begin());
-        return;
-    }
+        std::cout << "Commander (Analyzing): Assigning supply mission to agent.\n";
 
-    // 2. חפש סוכן אספקה פנוי
-    for (NPC* agent : commander->GetTeamMembers())
-    {
-        if (agent->GetTeam() == commander->GetTeam() && agent->GetType() == SUPPLIER)
+        for (NPC* member : commander->GetTeamMembers())
         {
-            SupplyAgent* supplyAgent = static_cast<SupplyAgent*>(agent);
-
-            // 3. אם מצאת סוכן פנוי, הקצה לו את המשימה
-            if (supplyAgent && supplyAgent->IsIdle())
+            if (member->GetType() == SUPPLIER && member->IsAlive())
             {
-                std::cout << "Commander (Analyzing): Assigning supply mission to agent.\n";
-                supplyAgent->AssignSupplyMission(needyWarrior);
+                SupplyAgent* agent = static_cast<SupplyAgent*>(member);
+                NPC* lowAmmo = commander->GetNextLowAmmoSoldier();
 
-                requests.erase(requests.begin());
-                return; 
+                if (lowAmmo != nullptr)
+                {
+                    agent->AssignSupplyMission(lowAmmo);
+                }
             }
         }
     }
-    // אם לא נמצא סוכן פנוי, הבקשה תישאר בתור לפריים הבא
 }
 
 void CommanderAnalyzingState::HandleMedicRequests(Commander* commander)
 {
-    std::vector<NPC*>& requests = commander->GetInjuredSoldiers();
-    if (requests.empty()) {
-        return;
-    }
-
-    NPC* injuredSoldier = requests.front();
-
-    // 1. ודא שהחייל עדיין פצוע וחי
-    if (injuredSoldier == nullptr || !injuredSoldier->IsAlive() || injuredSoldier->GetHealth() > CRITICAL_HP)
+    if (commander->HasInjuredSoldiers())
     {
-        requests.erase(requests.begin());
-        return;
-    }
+        std::cout << "Commander (Analyzing): Assigning heal mission to medic.\n";
 
-    // 2. חפש מדיק פנוי
-    for (NPC* agent : commander->GetTeamMembers())
-    {
-        if (agent->GetTeam() == commander->GetTeam() && agent->GetType() == MEDIC)
+        for (NPC* member : commander->GetTeamMembers())
         {
-            Medic* medic = static_cast<Medic*>(agent);
-
-            if (medic && medic->IsIdle())
+            if (member->GetType() == MEDIC && member->IsAlive())
             {
-                std::cout << "Commander (Analyzing): Assigning heal mission to medic.\n";
-                medic->AssignHealMission(injuredSoldier);
+                Medic* medic = static_cast<Medic*>(member);
+                NPC* injured = commander->GetNextInjuredSoldier();
 
-                requests.erase(requests.begin());
-                return;
+                if (injured != nullptr)
+                {
+                    medic->AssignHealMission(injured);
+                }
             }
         }
     }

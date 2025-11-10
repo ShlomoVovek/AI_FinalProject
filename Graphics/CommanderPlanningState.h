@@ -1,5 +1,7 @@
 #pragma once
 #include "CommanderState.h"
+#include "Definition.h"
+
 
 class Commander;
 
@@ -11,4 +13,5 @@ public:
     void Execute(Commander* commander) override;
     void OnExit(Commander* commander) override;
     const char* GetStateName() const override { return "PLANNING"; }
+    bool AreTeamMembersAtTarget(Commander* commander, Point target);
 };

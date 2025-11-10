@@ -40,16 +40,43 @@ void SupplyAgent::SetState(SupplyAgentState* newState)
     }
 }
 
-Point SupplyAgent::GetBaseLocation() const // TODO: change to random location search by BFS
+// TODO: change to random location search by BFS
+Point SupplyAgent::GetBaseLocation() const 
 {
-	if (this->team == TEAM_RED)
-		return { 5, 5 };
-	else
-		return { MSX - 5, MSY - 5 };
+    Point p = { -1,-1 };
+    if (GetTeam() == TEAM_BLUE) // right side of the map
+    {
+        for (int i = (int)0.75 * MSX; i < MSX - 3; i++)
+            for (int j = 3; j < MSY - 3; j++)
+            {
+                if (viewMap[i][j] == BASE)
+                {
+                    p.x = i;
+                    p.y = j;
+                    return p;
+                }
+            }
+    }
+    else // is TEAM_RED, left side of the map
+    {
+        for (int i = 3; i < (int)(0.25 * MSX); i++)
+            for (int j = 3; j < MSY - 3; j++)
+            {
+                if (viewMap[i][j] == BASE)
+                {
+                    p.x = i;
+                    p.y = j;
+                    return p;
+                }
+            }
+    }
+    // default: never executed
+    return p;
 }
 
 Point SupplyAgent::FindNearestWarehouse() const
 {
+    // TODO: use more sofisticated algorithm
     // Use GetBaseLocation for now
     return GetBaseLocation();
 }

@@ -32,7 +32,8 @@ enum CommandType
 	CMD_ATTACK,    
 	CMD_DEFEND,    
 	CMD_RESUPPLY,  
-	CMD_HEAL	   
+	CMD_HEAL,
+	CMD_RETREAT
 };
 
 struct Sighting // report seeing enemey
@@ -68,10 +69,8 @@ protected:
 	void DrawLetter() const;
 	void DrawHealthBar() const;
 
-	// double Distance(double x1, double y1, double x2, double y2);
 	void SetDirection(Point  target);
 	void MoveToTarget();
-	// bool IsWalkable(Point p) const; implemented in IPathFinding
 
 	// build NPC's own view map by obstacles from the main map of the game.
 	// each NPC has limited SIGHT_RANGE, and other obstacles so it might not see
