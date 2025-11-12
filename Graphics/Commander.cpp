@@ -224,3 +224,95 @@ Point Commander::FindSafePosition() const
 		return { MSX / 4, MSY / 2 };  // Left-center area
 	}
 }
+
+bool Commander::IsPatientBeingTreated(NPC* patient) const
+{
+	// Check all team members to see if any medic is treating this patient
+	for (NPC* member : teamMembers)
+	{
+		if (member->GetType() == MEDIC && member->IsAlive())
+		{
+			Medic* medic = dynamic_cast<Medic*>(member);
+			if (medic && !medic->IsIdle())
+			{
+				// Check if this medic is treating our patient
+				if (medic->GetPatientTarget() == patient)
+				{
+					return true; // Patient is being treated
+				}
+			}
+		}
+	}
+	return false; // No medic is treating this patient
+}
+
+bool Commander::HasCriticalInjuredSoldiers() const
+{
+	for (NPC* soldier : injuredSoldiers)
+	{
+		if (soldier->IsAlive() && soldier->GetHealth() < CRITICAL_HP)
+		{
+			if (soldier->GetType() != COMMANDER)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+void Commander::AssignHealingMissions()
+{
+	if (injuredSoldiers.empty())
+		return;
+
+	// Find an idle medic
+	Medic* availableMedic = nullptr;
+	for (NPC* member : teamMembers)
+	{
+		if (member->GetType() == MEDIC && member->IsAlive())
+		{
+			Medic* medic = dynamic_cast<Medic*>(member);
+			if (medic && medic->IsIdle())
+			{
+				availableMedic = medic;
+				break;
+			}
+		}
+	}
+
+	if (!availableMedic)
+	{
+		std::cout << "Commander: No available medics.\n";
+		return;
+	}
+
+	// Find an injured soldier who isn't being treated
+	NPC* patientToAssign = nullptr;
+	for (auto it = injuredSoldiers.begin(); it != injuredSoldiers.end(); )
+	{
+		NPC* injured = *it;
+
+		// Remove if dead or fully healed
+		if (!injured->IsAlive() || injured->GetHealth() >= MAX_HP)
+		{
+			it = injuredSoldiers.erase(it);
+			continue;
+		}
+
+		// Check if already being treated
+		if (!IsPatientBeingTreated(injured))
+		{
+			patientToAssign = injured;
+			break;
+		}
+
+		++it;
+	}
+
+	if (patientToAssign)
+	{
+		std::cout << "Commander: Assigning heal mission to medic.\n";
+		availableMedic->AssignHealMission(patientToAssign);
+	}
+}

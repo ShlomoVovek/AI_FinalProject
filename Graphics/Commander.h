@@ -60,12 +60,16 @@ public:
 	bool HasSpottedEnemies() const { return !allSpottedEnemies.empty(); }
 	bool HasInjuredSoldiers() const { return !injuredSoldiers.empty(); }
 	bool HasLowAmmoSoldiers() const { return !resupplySoldiers.empty(); }
+	bool HasCriticalInjuredSoldiers() const;
 
 	void SetPlannedCommand(int cmd, Point target)
 	{
 		plannedCommand = cmd;
 		plannedTarget = target;
 	}
+
+	bool IsPatientBeingTreated(NPC* patient) const;
+	void AssignHealingMissions();
 
 	// getters
 	NPC* GetNextInjuredSoldier();

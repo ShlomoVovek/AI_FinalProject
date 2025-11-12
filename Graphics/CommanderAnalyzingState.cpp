@@ -1,6 +1,7 @@
 #include "CommanderAnalyzingState.h"
 #include "CommanderPlanningState.h"
 #include "CommanderRepositioningState.h"
+#include "CommanderIssuingOrdersState.h"
 #include "Commander.h"
 #include <iostream>
 
@@ -19,6 +20,17 @@ void CommanderAnalyzingState::Execute(Commander* commander)
             << " - EMERGENCY RETREAT!\n";
         commander->ReportInjury(commander);  // Request medic
         commander->SetState(new CommanderRepositioningState(true));
+        return;
+    }
+
+    if (commander->HasCriticalInjuredSoldiers())
+    {
+        std::cout << "Commander (Analyzing): Critical injury reported! Issuing RETREAT command to all units.\n";
+
+        commander->SetPlannedCommand(CMD_RETREAT, commander->GetLocation());
+
+        // מעבר מיידי למצב IssuingOrders כדי לשלוח את הפקודה
+        commander->SetState(new CommanderIssuingOrdersState());
         return;
     }
 

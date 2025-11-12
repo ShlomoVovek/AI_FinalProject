@@ -12,6 +12,13 @@ void MedicGoToBaseState::OnEnter(Medic* agent)
 
 void MedicGoToBaseState::Execute(Medic* agent)
 {
+    if (agent->NeedsSelfHeal())
+    {
+        std::cout << "Medic interrupted GO_TO_BASE mission for self-heal!\n";
+        agent->SetPatientTarget(agent);
+        agent->SetState(new MedicHealingState());
+        return;
+    }
     if (!pathCalculated)
     {
         Point baseLoc = agent->GetBaseLocation();

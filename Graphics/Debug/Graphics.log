@@ -1,5 +1,4 @@
-﻿D:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(534,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (Graphics.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  Commander.cpp
+﻿  Commander.cpp
 D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
   (compiling source file 'Commander.cpp')
   
@@ -7,67 +6,5 @@ D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProj
 D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
   (compiling source file 'CommanderAnalyzingState.cpp')
   
-  CommanderIssuingOrdersState.cpp
-  CommanderPlanningState.cpp
-  CommanderRepositioningState.cpp
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-  (compiling source file 'CommanderRepositioningState.cpp')
-  
-  Medic.cpp
-  MedicGoToBaseState.cpp
-  MedicGoToTargetState.cpp
-  MedicHealingState.cpp
-  MedicIdleState.cpp
-  NPC.cpp
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\NPC.cpp(96,17): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\NPC.cpp(97,17): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-  SupplyAgent.cpp
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-  (compiling source file 'SupplyAgent.cpp')
-  
-  SupplyDeliveringState.cpp
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-  (compiling source file 'SupplyDeliveringState.cpp')
-  
-  SupplyGoToWarehouseState.cpp
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-  (compiling source file 'SupplyGoToWarehouseState.cpp')
-  
-  SupplyGoToWarriorState.cpp
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-  (compiling source file 'SupplyGoToWarriorState.cpp')
-  
-  SupplyIdleState.cpp
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-  (compiling source file 'SupplyIdleState.cpp')
-  
-  Warrior.cpp
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-  (compiling source file 'Warrior.cpp')
-  
-  WarriorAdvancingState.cpp
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-  (compiling source file 'WarriorAdvancingState.cpp')
-  
-  WarriorAttackingState.cpp
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-  (compiling source file 'WarriorAttackingState.cpp')
-  
-  WarriorIdleState.cpp
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-  (compiling source file 'WarriorIdleState.cpp')
-  
-  Generating Code...
-  Compiling...
-  WarriorRetreatingState.cpp
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-  (compiling source file 'WarriorRetreatingState.cpp')
-  
-  main.cpp
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-  (compiling source file 'main.cpp')
-  
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\main.cpp(187,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\main.cpp(188,20): warning C4305: 'argument': truncation from 'double' to 'GLclampf'
   Generating Code...
   Graphics.vcxproj -> D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Debug\AI_FinalProject.exe

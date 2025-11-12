@@ -31,6 +31,8 @@ public:
 	Medic(int x, int y, TeamColor t);
 	~Medic();
 
+	const double SELF_HEAL_THRESHOLD = 0.7 * MAX_HP;
+
 	// fsm Management
 	void SetState(MedicState* newState);
 	MedicState* GetState() const { return currentState; }
@@ -51,7 +53,7 @@ public:
 	void ExecuteCommand(int commandCode, Point target) override;
 
 	// healing methods
-
+	bool NeedsSelfHeal() const;
 
 };
 

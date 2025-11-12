@@ -17,7 +17,6 @@ struct CompareCells {
 
 // costs
 const double SAFETY_WEIGHT = 10.0;
-// const double DIAGONAL_COST = 1.414; // squre root of 2 
 const double STRAIGHT_COST = 1.0;
 
 const double SAFETY_THRESHOLD = 0.5;
@@ -54,7 +53,6 @@ public:
 	virtual bool FindAStarPath(Point goal, const double* safetyMap);
 	// must use BFS
 	virtual Point FindClosestSafePosition(double searchRange, const double* safetyMap) const;
-	// virtual Point FindClosestRockPosition(const double* safetyMap) const;
 
 	// getters
 	const std::list<Point>& GetCurrentPath() const { return currentPath; }

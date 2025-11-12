@@ -157,26 +157,6 @@ bool Medic::IsIdle() const
 	return dynamic_cast<MedicIdleState*>(currentState) != nullptr;
 }
 
-void Medic::AssignHealMission(NPC* injuredSoldier)
-{
-	if (IsIdle() && injuredSoldier && injuredSoldier->IsAlive())
-	{
-		patientTarget = injuredSoldier;
-		finalTargetLocation = injuredSoldier->GetLocation();
-
-		std::cout << "Medic (Team " << (team == TEAM_RED ? "RED" : "BLUE")
-			<< ") assigned HEAL mission. Moving to base first.\n";
-
-		// Start the FSM by transitioning to the "GoToBase" state
-		SetState(new MedicGoToBaseState());
-	}
-	else
-	{
-		// Log if assignment failed
-		std::cout << "Medic: Cannot be assigned mission. (Not idle or target is invalid)\n";
-	}
-}
-
 // TODO: heal itself method
 // TODO: implement actual methods
 void Medic::ReportSighting(NpcType enemyType, Point enemyLoc)
@@ -196,7 +176,55 @@ void Medic::ReportInjury(NPC* injuredSoldier)
 		return;
 }
 
+void Medic::AssignHealMission(NPC* injuredSoldier)
+{
+	// Validation checks BEFORE assigning
+	if (!injuredSoldier)
+	{
+		std::cout << "Medic: Cannot assign mission - invalid soldier pointer.\n";
+		return;
+	}
 
+	if (!injuredSoldier->IsAlive())
+	{
+		std::cout << "Medic: Cannot assign mission - soldier is dead.\n";
+		return;
+	}
+
+	if (injuredSoldier->GetHealth() >= MAX_HP)
+	{
+		std::cout << "Medic: Cannot assign mission - soldier is fully healed.\n";
+		return;
+	}
+
+	if (!IsIdle())
+	{
+		std::cout << "Medic: Cannot assign mission - already on a mission.\n";
+		return;
+	}
+
+	// Check if we're already assigned to this patient
+	if (patientTarget == injuredSoldier)
+	{
+		std::cout << "Medic: Already assigned to this patient.\n";
+		return;
+	}
+
+	// All checks passed - assign the mission
+	patientTarget = injuredSoldier;
+	finalTargetLocation = injuredSoldier->GetLocation();
+
+	std::cout << "Medic (Team " << (team == TEAM_RED ? "RED" : "BLUE")
+		<< ") assigned HEAL mission. Moving to base first.\n";
+
+	// Start the FSM by transitioning to the "GoToBase" state
+	SetState(new MedicGoToBaseState());
+}
+
+bool Medic::NeedsSelfHeal() const
+{
+	return GetHealth() < SELF_HEAL_THRESHOLD;
+}
 
 
 

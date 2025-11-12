@@ -132,7 +132,7 @@ void Map::GenerateRandomElements()
             p.y = minY + (rand() % rangeY);
         } while (IsOccupied((int)p.x, (int)p.y));
         warehouses.push_back(p);
-        gameMapData[(int)p.x][(int)p.y] = BLUE_BASE;
+        gameMapData[(int)p.x][(int)p.y] = RED_BASE;
     }
 
     for (int i = 0; i < 2; ++i)
@@ -142,7 +142,7 @@ void Map::GenerateRandomElements()
             p.y = minY + (rand() % rangeY);
         } while (IsOccupied((int)p.x, (int)p.y));
         warehouses.push_back(p);
-        gameMapData[(int)p.x][(int)p.y] = RED_BASE;
+        gameMapData[(int)p.x][(int)p.y] = BLUE_BASE;
     }
 }
 
