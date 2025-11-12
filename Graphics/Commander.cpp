@@ -151,46 +151,6 @@ int Commander::GetWoundedCount() const
 	return count;
 }
 
-Point Commander::FindSafePosition() const
-{
-	if (allSpottedEnemies.empty())
-		return location;
-
-	Point closeEnemy = allSpottedEnemies.front().point;
-
-	double manhattanDist = ManhattanDistance(
-		(int)location.x, (int)location.y,
-		closeEnemy.x, closeEnemy.y
-	);
-
-	double dx = location.x - closeEnemy.x;
-	double dy = location.y - closeEnemy.y;
-
-	double euclideanDist = EuclideanDist(dx, dy);
-	const double RETREAT_DISTANCE = 10.0;
-
-	// go back
-	Point safePos = { location.x + dx * 2, location.y + dy * 2 };
-
-	if (euclideanDist > 0)
-	{
-		// נירמול וקטור ההתרחקות, והכפלה במרחק הנסיגה
-		safePos.x = (int)(location.x + (dx / euclideanDist) * RETREAT_DISTANCE);
-		safePos.y = (int)(location.y + (dy / euclideanDist) * RETREAT_DISTANCE);
-	}
-	else
-	{
-		safePos = location;
-	}
-
-	if (safePos.x < 1) safePos.x = 1;
-	if (safePos.x >= MSX - 1) safePos.x = MSX - 2;
-	if (safePos.y < 1) safePos.y = 1;
-	if (safePos.y >= MSY - 1) safePos.y = MSY - 2;
-
-	return safePos;
-}
-
 Point Commander::FindAttackPosition() const
 {
 	if (allSpottedEnemies.empty())
@@ -235,5 +195,32 @@ void Commander::DoSomeWork(const double* pMap)
 	if (currentState)
 	{
 		currentState->Execute(this);
+	}
+}
+
+Point Commander::FindSafePosition() const
+{
+	Point current = GetLocation();
+	int currentIndex = current.x * MSY + current.y;
+	double currentSafety = combinedViewMap[current.x][current.y];
+
+	// Use BFS
+	Point safeSpot = FindClosestSafePosition(20.0, (const double*)combinedViewMap);
+
+	// If we found a safer position, use it
+	if (safeSpot != current)
+	{
+		return safeSpot;
+	}
+
+	// Otherwise, move toward the center of our territory
+	TeamColor team = GetTeam();
+	if (team == TEAM_RED)
+	{
+		return { MSX * 3 / 4, MSY / 2 };  // Right-center area
+	}
+	else
+	{
+		return { MSX / 4, MSY / 2 };  // Left-center area
 	}
 }

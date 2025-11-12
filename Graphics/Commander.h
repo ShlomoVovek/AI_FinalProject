@@ -1,9 +1,10 @@
 #pragma once
 #include "NPC.h"
+#include "IPathfinding.h"
 
 class CommanderState;
 
-class Commander : public NPC
+class Commander : public NPC, public IPathfinding
 {
 private:
 	double combinedViewMap[MSX][MSY];
@@ -13,6 +14,7 @@ private:
 	int plannedCommand;      // Command decided by PlanningState
 	Point plannedTarget;     // Target decided by PlanningState
 
+	void ClearPath() { currentPath.clear(); }
 
 protected:
 	void CalculatePathAndMove() override;
@@ -20,6 +22,8 @@ protected:
 	
 	Point FindSafePosition() const;
 	Point FindAttackPosition() const;
+
+	Point GetLocation() const override { return location; }
 
 public:
 	friend class CommanderAnalyzingState;
@@ -71,6 +75,7 @@ public:
 	std::vector<NPC*>& GetInjuredSoldiers() { return injuredSoldiers; }
 	std::vector<NPC*>& GetResupplySoldiers() { return resupplySoldiers; }
 
+	const double* GetComabinedViewMap() const { return (const double*)combinedViewMap; }
 	int GetTeamMemberCount() const { return teamMembers.size(); }
 	int GetWoundedCount() const;
 	

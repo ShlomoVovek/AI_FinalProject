@@ -1,5 +1,6 @@
 #include "CommanderAnalyzingState.h"
 #include "CommanderPlanningState.h"
+#include "CommanderRepositioningState.h"
 #include "Commander.h"
 #include <iostream>
 
@@ -11,30 +12,45 @@ void CommanderAnalyzingState::OnEnter(Commander* commander)
 
 void CommanderAnalyzingState::Execute(Commander* commander)
 {
-    // 1. Update combined visibility map from all team members
-    commander->UpdateCombinedViewMap();
-    bool enemiesSpotted = false;
-    // Get team members to check their recent sightings
-    for (NPC* member : commander->GetTeamMembers())
+    // 1. CRITICAL HEALTH: Stop everything and retreat
+    if (commander->GetHealth() < 30)
     {
-        if (member->IsAlive() && member->GetType() == WARRIOR)
-        {
-            Warrior* warrior = static_cast<Warrior*>(member);
-
-            // Check if warrior sees enemies (this should be done via view map)
-            // For now, we'll rely on the HasSpottedEnemies flag being set by warriors
-        }
+        std::cout << "Commander CRITICAL HEALTH: " << commander->GetHealth()
+            << " - EMERGENCY RETREAT!\n";
+        commander->ReportInjury(commander);  // Request medic
+        commander->SetState(new CommanderRepositioningState(true));
+        return;
     }
 
-    // Handle support missions
+    // 2. Low health: Request medic and consider retreating
+    if (commander->GetHealth() < 60)
+    {
+        std::cout << "Commander requesting medic! Health: "
+            << commander->GetHealth() << "\n";
+        commander->ReportInjury(commander);
+    }
+
+    // 3. Update combined visibility map
+    commander->UpdateCombinedViewMap();
+
+    // 4. Handle support missions
     HandleMedicRequests(commander);
     HandleSupplyRequests(commander);
 
-    // Decide next action based on situation
+    // 5. Decide next action
     if (commander->HasSpottedEnemies())
     {
-        std::cout << "Commander (Analyzing): Enemy spotted! Moving to PLANNING.\n";
-        commander->SetState(new CommanderPlanningState());
+        if (commander->GetHealth() < 50)
+        {
+            std::cout << "Commander: Enemies spotted but health low ("
+                << commander->GetHealth() << "). Retreating!\n";
+            commander->SetState(new CommanderRepositioningState(true));
+        }
+        else
+        {
+            std::cout << "Commander (Analyzing): Enemy spotted! Moving to PLANNING.\n";
+            commander->SetState(new CommanderPlanningState());
+        }
     }
     else
     {

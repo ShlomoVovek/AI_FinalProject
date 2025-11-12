@@ -5,7 +5,7 @@
 class WarriorState;
 
 // ammo
-const int MAX_AMMO = 3;
+const int MAX_AMMO = 30000;
 const int CRITICAL_AMMO = (int) MAX_AMMO * 0.25;
 const int MAX_GRENADE = 3;
 const int CRITICAL_GRENADE = 1;

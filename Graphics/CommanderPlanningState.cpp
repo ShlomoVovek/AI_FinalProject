@@ -1,5 +1,6 @@
 #include "CommanderPlanningState.h"
 #include "CommanderIssuingOrdersState.h"
+#include "CommanderRepositioningState.h"
 #include "Commander.h"
 #include <iostream>
 
@@ -11,6 +12,13 @@ void CommanderPlanningState::OnEnter(Commander* commander)
 
 void CommanderPlanningState::Execute(Commander* commander)
 {
+    if (commander->GetHealth() < 40)
+    {
+        std::cout << "Commander (Planning): Critical health! Aborting plan and retreating!\n";
+        commander->SetState(new CommanderRepositioningState());
+        return;
+    }
+
     // 1. Check if enemies are spotted
     if (commander->HasSpottedEnemies())
     {

@@ -8,9 +8,14 @@ class CommanderRepositioningState : public CommanderState
 {
 private:
     int framesToWait; // Wait a few frames before returning to analyzing
+    bool isEmergencyRetreat;
 
 public:
-    CommanderRepositioningState() : framesToWait(30) {} // ~1 second at 30 FPS
+    CommanderRepositioningState(bool emergency = false)
+        : framesToWait(emergency ? 60 : 10),  // Wait longer if emergency
+        isEmergencyRetreat(emergency)
+    {
+    }
 
     void OnEnter(Commander* commander) override;
     void Execute(Commander* commander) override;
