@@ -58,3 +58,5 @@ Debug/AI_FinalProject.pdb
 *.tlog
 *.log
 *.idb
+*.log
+/Graphics/Debug
