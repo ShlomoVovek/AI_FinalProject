@@ -1,5 +1,6 @@
 #include "SupplyDeliveringState.h"
 #include "SupplyIdleState.h"
+#include "SupplyWaitState.h"
 #include "SupplyAgent.h"
 #include "Definition.h"
 #include "SupplyGoToWarriorState.h"
@@ -17,7 +18,7 @@ void SupplyDeliveringState::Execute(SupplyAgent* agent)
     if (targetWarrior == nullptr || !targetWarrior->IsAlive())
     {
         std::cout << "SupplyAgent: Target is invalid or dead. Returning to Idle.\n";
-        agent->SetState(new SupplyIdleState());
+        agent->SetState(new SupplyWaitState());
         return;
     }
    
@@ -31,7 +32,7 @@ void SupplyDeliveringState::Execute(SupplyAgent* agent)
     {
         std::cout << "SupplyAgent is delivering ammo.\n"; 
         agent->DeliverAmmo(); 
-        agent->SetState(new SupplyIdleState()); 
+        agent->SetState(new SupplyIdleState());
     }
     else
     {

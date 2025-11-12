@@ -61,3 +61,10 @@ Debug/AI_FinalProject.pdb
 *.log
 /Graphics/Debug
 /Graphics/Debug
+*.pdb
+*.idb
+*.idb
+*.log
+*.tlog
+*.ilk
+/Graphics/Debug

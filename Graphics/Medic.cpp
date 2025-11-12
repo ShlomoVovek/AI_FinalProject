@@ -75,7 +75,7 @@ void Medic::CalculatePathAndMove()
 
 Point Medic::GetBaseLocation() const // TODO: change to random location search by BFS
 {									 // TODO: return both bases
-	int BASE = this->GetTeam() == TEAM_BLUE ? -5 : -6;
+	int BASE = this->GetTeam() == TEAM_BLUE ? RED_BASE : BLUE_BASE;
 	Point p = {-1,-1};
 	for (int i = 3; i < MSX - 3; i++)
 		for (int j = 3; j < MSY - 3; j++)

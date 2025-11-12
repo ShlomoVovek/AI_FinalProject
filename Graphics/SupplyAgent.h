@@ -57,24 +57,7 @@ public:
 	friend class SupplyGoToWarehouseState;
 	friend class SupplyGoToWarriorState;
 	friend class SupplyDeliveringState;
+	friend class SupplyWaitState;
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

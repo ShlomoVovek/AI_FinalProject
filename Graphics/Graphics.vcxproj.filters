@@ -114,6 +114,9 @@
     <ClCompile Include="MedicHealingState.cpp">
       <Filter>Source Files\MedicStates</Filter>
     </ClCompile>
+    <ClCompile Include="SupplyWaitState.cpp">
+      <Filter>Source Files\SupplyAgentStates</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NPC.h">
@@ -202,6 +205,9 @@
     </ClInclude>
     <ClInclude Include="MedicHealingState.h">
       <Filter>Header Files\MedicStates</Filter>
+    </ClInclude>
+    <ClInclude Include="SupplyWaitState.h">
+      <Filter>Header Files\SupplyAgentState</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -139,6 +139,7 @@
     <ClCompile Include="SupplyGoToWarehouseState.cpp" />
     <ClCompile Include="SupplyGoToWarriorState.cpp" />
     <ClCompile Include="SupplyIdleState.cpp" />
+    <ClCompile Include="SupplyWaitState.cpp" />
     <ClCompile Include="Warrior.cpp" />
     <ClCompile Include="WarriorAdvancingState.cpp" />
     <ClCompile Include="WarriorAttackingState.cpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="SupplyGoToWarehouseState.h" />
     <ClInclude Include="SupplyGoToWarriorState.h" />
     <ClInclude Include="SupplyIdleState.h" />
+    <ClInclude Include="SupplyWaitState.h" />
     <ClInclude Include="Warrior.h" />
     <ClInclude Include="WarriorAdvancingState.h" />
     <ClInclude Include="WarriorAttackingState.h" />
