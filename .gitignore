@@ -44,3 +44,17 @@ Win32/
 *.exe
 *.out
 *.app
+Graphics/Debug/vc143.pdb
+Graphics/Debug/vc143.idb
+Graphics/Debug/Graphics.log
+Graphics/Debug/AI_FinalProject.tlog/link.read.1.tlog
+Graphics/Debug/AI_FinalProject.tlog/CL.write.1.tlog
+Graphics/Debug/AI_FinalProject.tlog/CL.read.1.tlog
+Graphics/Debug/AI_FinalProject.tlog/CL.command.1.tlog
+Graphics/Debug/AI_FinalProject.ilk
+Debug/AI_FinalProject.pdb
+*.pdb
+*.ilk
+*.tlog
+*.log
+*.idb
