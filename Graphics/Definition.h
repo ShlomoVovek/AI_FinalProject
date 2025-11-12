@@ -18,7 +18,8 @@ enum CellType
 	ROCK = -2, // SAFE: cannot shoot, see, cross 
 	WATER = -3,// NOT SAFE: can shoot or see, cannot corss
 	TREE = -4, // NOT SAFE: can shoot and see, cannot cross
-	BASE = -5 // ammo and medicine
+	BLUE_BASE = -5, // ammo and medicine
+	RED_BASE = -6 // ammo and medicine
 };
 
 struct Point

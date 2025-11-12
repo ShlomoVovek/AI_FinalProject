@@ -166,10 +166,22 @@ Point Commander::FindSafePosition() const
 	double dx = location.x - closeEnemy.x;
 	double dy = location.y - closeEnemy.y;
 
+	double euclideanDist = EuclideanDist(dx, dy);
+	const double RETREAT_DISTANCE = 10.0;
+
 	// go back
 	Point safePos = { location.x + dx * 2, location.y + dy * 2 };
-	safePos.x = std::max(1.0, std::min(static_cast<double>(MSX - 1), static_cast<double>(safePos.x)));
-	safePos.y = std::max(1.0, std::min(static_cast<double>(MSY - 1), static_cast<double>(safePos.y)));
+
+	if (euclideanDist > 0)
+	{
+		// נירמול וקטור ההתרחקות, והכפלה במרחק הנסיגה
+		safePos.x = (int)(location.x + (dx / euclideanDist) * RETREAT_DISTANCE);
+		safePos.y = (int)(location.y + (dy / euclideanDist) * RETREAT_DISTANCE);
+	}
+	else
+	{
+		safePos = location;
+	}
 
 	if (safePos.x < 1) safePos.x = 1;
 	if (safePos.x >= MSX - 1) safePos.x = MSX - 2;

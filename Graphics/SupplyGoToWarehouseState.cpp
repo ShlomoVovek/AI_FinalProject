@@ -1,6 +1,7 @@
 #include "SupplyGoToWarehouseState.h"
 #include "SupplyGoToWarriorState.h"
 #include "SupplyAgent.h"
+#include "SupplyIdleState.h"
 #include <iostream>
 
 void SupplyGoToWarehouseState::OnEnter(SupplyAgent* agent)
@@ -47,11 +48,19 @@ void SupplyGoToWarehouseState::Execute(SupplyAgent* agent)
 
         if (dist <= 1.5) // Close enough to warehouse
         {
-            std::cout << "SupplyAgent reached warehouse, picking up ammo\n";
+            std::cout << "SupplyAgent reached warehouse, picking up ammo\\n";
             agent->PickupAmmo();
 
-            // Transition to next state
-            agent->SetState(new SupplyGoToWarriorState());
+            if (agent->GetDeliveryTarget() != nullptr)
+            {
+                // אם יש יעד, לך למסור (GoToWarriorState)
+                agent->SetState(new SupplyGoToWarriorState());
+            }
+            else
+            {
+                // אם אין יעד, חזור ל-IDLE והמתן לפקודת המפקד
+                agent->SetState(new SupplyIdleState());
+            }
         }
     }
 }

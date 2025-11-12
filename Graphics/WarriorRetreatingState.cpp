@@ -1,68 +1,35 @@
 #include "WarriorRetreatingState.h"
-#include "WarriorIdleState.h"
 #include "Warrior.h"
+#include "WarriorIdleState.h"
 #include <iostream>
 
 void WarriorRetreatingState::OnEnter(Warrior* warrior)
 {
-    std::cout << "Warrior entering RETREATING state\n";
-    safePositionFound = false;
+    // הנתיב כבר נמצא והוגדר ב-Warrior::ExecuteCommand
+    std::cout << "Warrior (Team " << (warrior->GetTeam() == TEAM_RED ? "RED" : "BLUE")
+        << ") entered RETREATING state.\n";
 }
 
 void WarriorRetreatingState::Execute(Warrior* warrior)
 {
-    // 1. If haven't found safe position yet, find it
-    if (!safePositionFound)
+    // אם הנסיגה הסתיימה (הגיע ליעד הבטוח)
+    if (!warrior->IsMoving() && warrior->GetCurrentPath().empty())
     {
-        Point safePos = warrior->FindClosestSafePosition(50.0, warrior->GetViewMap());
-
-        if (safePos.x != warrior->GetLocation().x ||
-            safePos.y != warrior->GetLocation().y)
-        {
-            std::cout << "Warrior found safe position at ("
-                << safePos.x << ", " << safePos.y << ")\n";
-
-            if (warrior->FindAStarPath(safePos, warrior->GetViewMap()))
-            {
-                safePositionFound = true;
-            }
-        }
-        else
-        {
-            std::cout << "Warrior already at safe position\n";
-            warrior->SetState(new WarriorIdleState());
-            return;
-        }
-    }
-
-    // 2. Move towards safe position
-    warrior->CalculatePathAndMove();
-
-    // 3. Defensive shooting - shoot if enemy is close
-    NPC* pEnemy = warrior->ScanForEnemies();
-    if (pEnemy != nullptr)
-    {
-        Point enemyPos = pEnemy->GetLocation();
-        double distance = Distance(warrior->GetLocation(), enemyPos);
-
-        // Only shoot if enemy is dangerously close
-        if (distance <= RIFLE_RANGE * 0.7 && warrior->GetAmmo() > 5)
-        {
-            if (warrior->CanShootAt(enemyPos))
-            {
-                warrior->Shoot(pEnemy);
-                std::cout << "Warrior defensive shot while retreating\n";
-            }
-        }
-
-        warrior->ReportSighting(WARRIOR, enemyPos);
-    }
-
-    // 4. Check if reached safe position
-    if (warrior->GetCurrentPath().empty() && !warrior->IsMoving())
-    {
-        std::cout << "Warrior reached safe position\n";
+        std::cout << "Warrior reached safe position, setting state to IDLE.\n";
         warrior->SetState(new WarriorIdleState());
+        return;
+    }
+
+    // בצע תנועה
+    warrior->MoveToTarget();
+
+    // ירי הגנתי (Defensive Shooting) - ירי רק אם יש אויב בטווח ראייה/ירי.
+    // הפקודה מאפשרת ירי, אך לא כמו במצב התקפה (כלומר, לא דורש מעבר למצב Attack).
+    NPC* pEnemy = warrior->ScanForEnemies();
+    if (pEnemy && warrior->CanShootAt(pEnemy->GetLocation()))
+    {
+        // אם נמצא אויב בטווח בזמן נסיגה, בצע ירי
+        warrior->Shoot(pEnemy);
     }
 }
 
@@ -70,3 +37,4 @@ void WarriorRetreatingState::OnExit(Warrior* warrior)
 {
     std::cout << "Warrior exiting RETREATING state\n";
 }
+

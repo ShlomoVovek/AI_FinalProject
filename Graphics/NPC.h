@@ -9,6 +9,7 @@
 
 const double SPEED = 2; //1.40 ;
 const double MAX_HP = 100.0;
+const double INJURED_THRESHOLD = MAX_HP * 0.5;
 const double CRITICAL_HP = MAX_HP * 0.25;
 
 enum TeamColor

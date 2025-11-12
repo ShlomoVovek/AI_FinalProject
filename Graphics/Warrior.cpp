@@ -71,6 +71,20 @@ Point Warrior::DetermineBestAttackPosition(Point enemyLoc)
 	if (attackPos.y < 1) attackPos.y = 1;
 	if (attackPos.y >= MSY - 1) attackPos.y = MSY - 2;
 
+	double calculated_dist = Distance(location, attackPos);
+	const double MAX_STRATEGIC_MOVE = 20.0; // מגביל את התנועה המיידית ל-20 יחידות
+
+	if (calculated_dist > MAX_STRATEGIC_MOVE)
+	{
+		// וקטור מהמיקום הנוכחי לנקודת ההתקפה המקורית
+		double dx_cap = attackPos.x - location.x;
+		double dy_cap = attackPos.y - location.y;
+
+		// חישוב מיקום חדש במרחק MAX_STRATEGIC_MOVE בכיוון המקורי
+		attackPos.x = (int)(location.x + (dx_cap / calculated_dist) * MAX_STRATEGIC_MOVE);
+		attackPos.y = (int)(location.y + (dy_cap / calculated_dist) * MAX_STRATEGIC_MOVE);
+	}
+
 	std::cout << "Warrior determining attack position: ("
 		<< attackPos.x << ", " << attackPos.y << ") towards enemy at ("
 		<< enemyLoc.x << ", " << enemyLoc.y << ")\n";
@@ -243,6 +257,16 @@ void Warrior::ExecuteCommand(int commandCode, Point target)
 		return;
 	}
 
+	if (commandCode == CMD_MOVE && !currentPath.empty())
+	{
+		Point finalTarget = currentPath.back();
+		if (finalTarget.x == target.x && finalTarget.y == target.y)
+		{
+			std::cout << "Warrior already moving to target (" << target.x << ", " << target.y << "), ignoring redundant MOVE command.\n";
+			return;
+		}
+	}
+
 	// Clamp target to map boundaries
 	if (target.x < 1) target.x = 1;
 	if (target.x >= MSX - 1) target.x = MSX - 2;
@@ -312,16 +336,19 @@ void Warrior::ExecuteCommand(int commandCode, Point target)
 	}
 
 	case CMD_DEFEND:
+	case CMD_RETREAT:
 	{
-		std::cout << "Warrior RETREATING from (" << location.x << ", " << location.y << ")\n";
+		std::cout << "Warrior RETREATING from (" << location.x << ", " << location.y << ") due to command: " << commandCode << "\n";
 
-		double searchRange = 50.0;
+		double searchRange = 50.0; // טווח חיפוש הנקודה הבטוחה
+		// 1. חיפוש נקודה בטוחה קרובה (ממומש ב-IPathfinding באמצעות BFS)
 		Point safePos = FindClosestSafePosition(searchRange, &viewMap[0][0]);
 
 		if (safePos.x != location.x || safePos.y != location.y)
 		{
 			std::cout << "Safe position found at (" << safePos.x << ", " << safePos.y << ")\n";
 
+			// 2. מציאת מסלול בטוח ביותר לנקודה שנמצאה (A*)
 			if (FindAStarPath(safePos, &viewMap[0][0]))
 			{
 				if (!currentPath.empty())
@@ -333,12 +360,13 @@ void Warrior::ExecuteCommand(int commandCode, Point target)
 			}
 			else
 			{
-				std::cout << "ERROR: No retreat path found!\n";
+				std::cout << "ERROR: No retreat path found, remaining IDLE!\n";
+				SetState(new WarriorIdleState());
 			}
 		}
 		else
 		{
-			std::cout << "Already at safe position\n";
+			std::cout << "Already at safe position, remaining IDLE\n";
 			SetState(new WarriorIdleState());
 		}
 		break;

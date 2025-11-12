@@ -75,33 +75,18 @@ void Medic::CalculatePathAndMove()
 
 Point Medic::GetBaseLocation() const // TODO: change to random location search by BFS
 {									 // TODO: return both bases
+	int BASE = this->GetTeam() == TEAM_BLUE ? -5 : -6;
 	Point p = {-1,-1};
-	if (GetTeam() == TEAM_BLUE) // right side of the map
-	{
-		for (int i = (int)0.75*MSX; i < MSX - 3; i++)
-			for (int j = 3; j < MSY - 3; j++)
+	for (int i = 3; i < MSX - 3; i++)
+		for (int j = 3; j < MSY - 3; j++)
+		{
+			if (viewMap[i][j] == BASE)
 			{
-				if (viewMap[i][j] == BASE)
-				{
-					p.x = i;
-					p.y = j;
-					return p;
-				}
+				p.x = i;
+				p.y = j;
+				return p;
 			}
-	}
-	else // is TEAM_RED, left side of the map
-	{
-		for (int i = 3; i < (int)(0.25 * MSX); i++)
-			for (int j = 3; j < MSY - 3; j++)
-			{
-				if (viewMap[i][j] == BASE)
-				{
-					p.x = i;
-					p.y = j;
-					return p;
-				}
-			}
-	}
+		}
 	// default: never executed
 	return p;
 }
@@ -109,9 +94,15 @@ Point Medic::GetBaseLocation() const // TODO: change to random location search b
 void Medic::ExecuteCommand(int CommandCode, Point target)
 {
 	if (!IsAlive()) return;
+	
+	isMoving = false;
 
 	switch (CommandCode)
 	{
+	case CMD_RETREAT:
+		SetState(new MedicGoToBaseState());
+		break;
+
 	case CMD_MOVE:
 		// TODO: Implement a dedicated "Move" state if needed
 		// For now, just go to idle
@@ -156,7 +147,7 @@ void Medic::ExecuteCommand(int CommandCode, Point target)
 		break;
 	}
 	default:
-		SetState(new MedicIdleState());
+		SetState(new MedicGoToBaseState());
 		break;
 	}
 }

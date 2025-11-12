@@ -172,7 +172,8 @@ void NPC::BuildViewMap(const double* pMap)
 					viewMap[mapX][mapY] = COST_SAFE;
 					continue; // rays continue
 
-				case BASE:
+				case BLUE_BASE:
+				case RED_BASE:
 					viewMap[mapX][mapY] = COST_SAFE;
 					continue; // rays continue
 				}

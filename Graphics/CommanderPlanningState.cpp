@@ -49,32 +49,18 @@ void CommanderPlanningState::Execute(Commander* commander)
         Point currentPos = commander->GetLocation();
         Point strategicPoint;
 
-        // Determine which side of the map we're on
-        bool isLeftSide = (commander->GetTeam() == TEAM_RED);
+        // 1. קביעת אזור המרכז לחקירה (25% עד 75% מהמפה)
+        int minX = (int)(MSX * 0.25); // 20
+        int maxX = (int)(MSX * 0.75); // 60
+        int minY = (int)(MSY * 0.25); // 12
+        int maxY = (int)(MSY * 0.75); // 36
 
-        // If on left side, move toward right (enemy territory)
-        // If on right side, move toward left (enemy territory)
-        if (isLeftSide)
-        {
-            // Red team moves from left toward center-right
-            strategicPoint.x = MSX * 0.6 + (rand() % 10) - 5; // 60% across + random
-        }
-        else
-        {
-            // Blue team moves from right toward center-left
-            strategicPoint.x = MSX * 0.4 + (rand() % 10) - 5; // 40% across + random
-        }
+        // 2. המטרה: נקודה אקראית בטווח המרכזי
+        // זה מבטיח שהמפקד יעזוב את הפינות ויתכנס למרכז המפה.
+        strategicPoint.x = minX + (rand() % (maxX - minX));
+        strategicPoint.y = minY + (rand() % (maxY - minY));
 
-        // Keep similar Y coordinate but add some variation
-        strategicPoint.y = currentPos.y + (rand() % 10) - 5;
-
-        // Clamp to map boundaries
-        if (strategicPoint.x < 5) strategicPoint.x = 5;
-        if (strategicPoint.x >= MSX - 5) strategicPoint.x = MSX - 6;
-        if (strategicPoint.y < 5) strategicPoint.y = 5;
-        if (strategicPoint.y >= MSY - 5) strategicPoint.y = MSY - 6;
-
-        std::cout << "Commander moving forward to patrol point: ("
+        std::cout << "Commander moving to strategic patrol point: ("
             << strategicPoint.x << ", " << strategicPoint.y << ")\n";
 
         commander->SetPlannedCommand(CMD_MOVE, strategicPoint);

@@ -15,8 +15,8 @@ SupplyAgent::SupplyAgent(int x, int y, TeamColor t) :
 	NPC(x, y, t, SUPPLIER), currentState(nullptr), hasAmmo(false)
 {
 	// Start in Idle state
-	currentState = new SupplyIdleState();
-	currentState->OnEnter(this);
+    currentState = new SupplyGoToWarehouseState();
+    currentState->OnEnter(this); 
 }
 
 SupplyAgent::~SupplyAgent()
@@ -44,32 +44,18 @@ void SupplyAgent::SetState(SupplyAgentState* newState)
 Point SupplyAgent::GetBaseLocation() const 
 {
     Point p = { -1,-1 };
-    if (GetTeam() == TEAM_BLUE) // right side of the map
-    {
-        for (int i = (int)0.75 * MSX; i < MSX - 3; i++)
-            for (int j = 3; j < MSY - 3; j++)
+    int BASE = this->GetTeam() == TEAM_BLUE ? -5 : -6;
+
+    for (int i = 3; i < MSX - 3; i++)
+        for (int j = 3; j < MSY - 3; j++)
+        {
+            if (viewMap[i][j] == BASE)
             {
-                if (viewMap[i][j] == BASE)
-                {
-                    p.x = i;
-                    p.y = j;
-                    return p;
-                }
+                p.x = i;
+                p.y = j;
+                return p;
             }
-    }
-    else // is TEAM_RED, left side of the map
-    {
-        for (int i = 3; i < (int)(0.25 * MSX); i++)
-            for (int j = 3; j < MSY - 3; j++)
-            {
-                if (viewMap[i][j] == BASE)
-                {
-                    p.x = i;
-                    p.y = j;
-                    return p;
-                }
-            }
-    }
+        }
     // default: never executed
     return p;
 }
@@ -183,17 +169,20 @@ void SupplyAgent::ExecuteCommand(int commandCode, Point target)
 {
     if (!IsAlive()) return;
 
-    std::cout << "SupplyAgent (Team " << (team == TEAM_RED ? "RED" : "BLUE")
-        << ") received command: " << commandCode
-        << " target: (" << target.x << ", " << target.y << ")\n";
-
-    if (commandCode == CMD_RESUPPLY)
+    switch (commandCode)
     {
-        // Store target location (warrior who needs ammo)
-        targetLocation = target;
+        // ... מקרים קיימים (CMD_NONE, CMD_MOVE, CMD_RESUPPLY)
 
-        // Transition to going to warehouse
+    case CMD_RETREAT: // הפיכת CMD_RETREAT לפעולת ברירת המחדל של סוכן האספקה לנסיגה
+        // נסיגה למחסן הקרוב היא הפעולה הבטוחה ביותר עבור סוכן אספקה
+        targetLocation = FindNearestWarehouse(); // מציאת המחסן הקרוב כנקודת יעד בטוחה
         SetState(new SupplyGoToWarehouseState());
+        break;
+
+    default:
+        // ברירת מחדל לאידל או לוגיקת טיפול בשגיאות
+        SetState(new SupplyIdleState());
+        break;
     }
 }
 
