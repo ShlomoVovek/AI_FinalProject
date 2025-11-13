@@ -7,6 +7,7 @@
 #include "MedicGoToBaseState.h"
 #include "MedicGoToTargetState.h"
 #include "MedicHealingState.h"
+#include <list>
 
 class Medic : public NPC, public IPathfinding
 {
@@ -14,7 +15,7 @@ private:
 	// medic status
 	
 	MedicState* currentState;
-	NPC* patientTarget; // will use FindAStarPath() for path from base to patient
+	std::list<NPC*> patientsQueue; // will use FindAStarPath() for path from base to patient
 	Point finalTargetLocation; // patientTarget->GetLocation()
 
 protected:
@@ -40,11 +41,13 @@ public:
 	void DoSomeWork(const double* pMap) override;
 
 	Point GetFinalTargetLocation() const { return finalTargetLocation; }
-	NPC* GetPatientTarget() const { return patientTarget; }
-	void SetPatientTarget(NPC* patient) { patientTarget = patient; }
+	NPC* GetPatientTarget() const { return patientsQueue.empty() ? nullptr : patientsQueue.front(); }
 	bool IsMoving() const { return isMoving; } // for pathfinding
 	bool IsIdle() const;
 	void AssignHealMission(NPC* injuredSoldier);
+
+	NPC* GetNextPatient();
+	void RemoveCurrentPatient();
 
 	// NPC functions
 	void ReportSighting(NpcType enemyType, Point enemyLoc) override;
@@ -54,7 +57,6 @@ public:
 
 	// healing methods
 	bool NeedsSelfHeal() const;
-
 };
 
 

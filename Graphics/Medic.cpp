@@ -9,8 +9,7 @@
 extern const int MSX;
 extern const int MSY;
 
-Medic::Medic(int x, int y, TeamColor t) :
-	NPC(x, y, t, MEDIC), patientTarget(nullptr)
+Medic::Medic(int x, int y, TeamColor t) : NPC(x, y, t, MEDIC)
 {
 	currentState = new MedicIdleState();
 	currentState->OnEnter(this);
@@ -91,63 +90,73 @@ Point Medic::GetBaseLocation() const // TODO: change to random location search b
 	return p;
 }
 
+NPC* Medic::GetNextPatient()
+{
+	if (patientsQueue.empty()) return nullptr;
+	return patientsQueue.front();
+}
+
+void Medic::RemoveCurrentPatient()
+{
+	if (!patientsQueue.empty())
+	{
+		patientsQueue.pop_front();
+	}
+}
+
 void Medic::ExecuteCommand(int CommandCode, Point target)
 {
 	if (!IsAlive()) return;
-	
+
 	isMoving = false;
 
 	switch (CommandCode)
 	{
-	case CMD_RETREAT:
-		SetState(new MedicGoToBaseState());
-		break;
+		// ... (CMD_RETREAT / CMD_MOVE)
 
-	case CMD_MOVE:
-		// TODO: Implement a dedicated "Move" state if needed
-		// For now, just go to idle
-		SetState(new MedicIdleState());
-		break;
 	case CMD_HEAL:
 	{
-		// Only start healing if currently idle
-		if (dynamic_cast<MedicIdleState*>(currentState))
-		{
-			finalTargetLocation = target; // injured npc's location
-
+		// ** שינוי לוגיקת CMD_HEAL **
 			// Find the injured soldier at this location
-			if (npcList != nullptr)
+		NPC* injuredSoldier = nullptr;
+		if (npcList != nullptr)
+		{
+			for (NPC* npc : *npcList)
 			{
-				for (NPC* npc : *npcList)
+				if (npc->IsAlive() &&
+					npc->GetTeam() == this->GetTeam() &&
+					npc->GetLocation().x == target.x &&
+					npc->GetLocation().y == target.y)
 				{
-					if (npc->IsAlive() &&
-						npc->GetTeam() == this->GetTeam() &&
-						npc->GetLocation().x == target.x &&
-						npc->GetLocation().y == target.y)
-					{
-						patientTarget = npc;
-						break;
-					}
+					injuredSoldier = npc;
+					break;
 				}
 			}
+		}
 
-			if (patientTarget != nullptr)
+		if (injuredSoldier != nullptr)
+		{
+			// הוספה לתור
+			if (std::find(patientsQueue.begin(), patientsQueue.end(), injuredSoldier) == patientsQueue.end())
+			{
+				patientsQueue.push_back(injuredSoldier);
+			}
+
+			if (IsIdle()) // רק אם במצב סרק מתחילים את המשימה
 			{
 				std::cout << "Medic (Team " << (team == TEAM_RED ? "RED" : "BLUE")
 					<< ") received HEAL command. Moving to base first.\n";
-
 				SetState(new MedicGoToBaseState());
 			}
-			else
-			{
-				std::cout << "Medic: Could not find injured soldier at target location!\n";
-				SetState(new MedicIdleState());
-			}
+		}
+		else
+		{
+			std::cout << "Medic: Could not find injured soldier at target location!\n";
+			// אין צורך לחזור ל-Idle אם כבר לא שם
 		}
 		break;
 	}
 	default:
-		SetState(new MedicGoToBaseState());
 		break;
 	}
 }
@@ -204,21 +213,23 @@ void Medic::AssignHealMission(NPC* injuredSoldier)
 	}
 
 	// Check if we're already assigned to this patient
-	if (patientTarget == injuredSoldier)
+	if (std::find(patientsQueue.begin(), patientsQueue.end(), injuredSoldier) != patientsQueue.end())
 	{
 		std::cout << "Medic: Already assigned to this patient.\n";
 		return;
 	}
 
 	// All checks passed - assign the mission
-	patientTarget = injuredSoldier;
-	finalTargetLocation = injuredSoldier->GetLocation();
+	patientsQueue.push_back(injuredSoldier);
 
-	std::cout << "Medic (Team " << (team == TEAM_RED ? "RED" : "BLUE")
-		<< ") assigned HEAL mission. Moving to base first.\n";
+	if (IsIdle())
+	{
+		std::cout << "Medic (Team " << (team == TEAM_RED ? "RED" : "BLUE")
+			<< ") assigned HEAL mission. Moving to base first.\n";
 
-	// Start the FSM by transitioning to the "GoToBase" state
-	SetState(new MedicGoToBaseState());
+		// Start the FSM by transitioning to the "GoToBase" state
+		SetState(new MedicGoToBaseState());
+	}
 }
 
 bool Medic::NeedsSelfHeal() const

@@ -26,8 +26,8 @@ void SupplyDeliveringState::Execute(SupplyAgent* agent)
     Point warriorLoc = targetWarrior->GetLocation();
 
     double dist = Distance(agentLoc, warriorLoc);
-    const double DELIVERY_RANGE = 2.0;
-
+    const double DELIVERY_RANGE = 2.5;
+    
     if (dist <= DELIVERY_RANGE)
     {
         std::cout << "SupplyAgent is delivering ammo.\n"; 

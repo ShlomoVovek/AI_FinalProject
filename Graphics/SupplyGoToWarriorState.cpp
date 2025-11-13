@@ -25,11 +25,10 @@ void SupplyGoToWarriorState::Execute(SupplyAgent* agent)
 
     // ** הוספת שורה זו: שומר את המיקום הנוכחי של הלוחם **
     Point newTargetPos = targetWarrior->GetLocation();
+    const double RECALCULATE_THRESHOLD = 4.0;
+    double distanceMoved = ManhattanDistance(newTargetPos, agent->GetTargetLocation());
 
-    // 1. חישוב נתיב מחדש אם:
-    //    א. pathCalculated = false (נכנסנו למצב זה כרגע)
-    //    ב. יעד הנסיעה הנוכחי שונה ממיקום הלוחם (הלוחם זז מאז הפעם האחרונה)
-    if (!pathCalculated || newTargetPos != agent->GetTargetLocation()) // **שינוי כאן**
+    if (!pathCalculated || distanceMoved > RECALCULATE_THRESHOLD)
     {
         // ** עדכון מיקום היעד של הסוכן למיקום הנוכחי של הלוחם **
         agent->SetTargetLocation(newTargetPos);

@@ -12,13 +12,18 @@ void MedicGoToBaseState::OnEnter(Medic* agent)
 
 void MedicGoToBaseState::Execute(Medic* agent)
 {
+    // לוגיקת ריפוי עצמי (נשארת ללא שינוי מהותי)
     if (agent->NeedsSelfHeal())
     {
-        std::cout << "Medic interrupted GO_TO_BASE mission for self-heal!\n";
-        agent->SetPatientTarget(agent);
+        std::cout << "Medic interrupted GO_TO_BASE mission for self-heal!\\n";
+        // אם החלטתם שריפוי עצמי משתמש ב-SetPatientTarget:
+        // agent->SetPatientTarget(agent); 
+        // אחרת, פשוט עוברים למצב ריפוי:
         agent->SetState(new MedicHealingState());
         return;
     }
+
+    // לוגיקת חישוב נתיב ותנועה לבסיס (משתמשת ב-A* באופן מובנה דרך IPathfinding)
     if (!pathCalculated)
     {
         Point baseLoc = agent->GetBaseLocation();
@@ -32,26 +37,35 @@ void MedicGoToBaseState::Execute(Medic* agent)
             }
             else
             {
-                // Can't find path to base, go back to idle
-                std::cerr << "Medic: Path to base not found!\n";
+                std::cerr << "Medic: Path to base not found! Returning to idle.\\n";
                 agent->SetState(new MedicIdleState());
                 return;
             }
         }
     }
 
-    // Continue moving
+    // המשך תנועה
     if (agent->IsMoving())
     {
         agent->CalculatePathAndMove();
     }
-    else // Arrived at destination (Base)
+    // ** שינוי: הגיע ליעד (בסיס) **
+    else
     {
-        std::cout << "Medic arrived at base. Now moving to target.\n";
-        // TODO: Simulate picking up medicine
+        std::cout << "Medic arrived at base. Now checking for patients.\\n";
 
-        // Now transition to GoToTarget state
-        agent->SetState(new MedicGoToTargetState());
+        // ** בודקים אם יש משימה בתור **
+        if (agent->GetNextPatient() != nullptr)
+        {
+            // יש פצועים בתור - ממשיכים למצב תנועה אל המטרה
+            agent->SetState(new MedicGoToTargetState());
+        }
+        else
+        {
+            // אין פצועים - חוזרים למצב סרק
+            std::cout << "Medic: Queue is empty, returning to Idle.\\n";
+            agent->SetState(new MedicIdleState());
+        }
     }
 }
 
