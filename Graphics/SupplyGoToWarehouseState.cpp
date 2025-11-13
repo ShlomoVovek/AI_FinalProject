@@ -8,6 +8,9 @@
 
 void SupplyGoToWarehouseState::OnEnter(SupplyAgent* agent)
 {
+    Point warehouse = agent->FindNearestWarehouse();
+    std::cout << "DEBUG: Nearest warehouse at (" << warehouse.x << ", " << warehouse.y << ")\n";
+    
     std::cout << "SupplyAgent (Team " << (agent->GetTeam() == TEAM_RED ? "RED" : "BLUE")
         << ") entering GO_TO_WAREHOUSE state\n";
     pathCalculated = false;
@@ -59,11 +62,6 @@ void SupplyGoToWarehouseState::Execute(SupplyAgent* agent)
         }
     }
 
-    // 3. הגענו לכאן רק אם:
-    //    א. pathCalculated = true
-    //    ב. agent->IsMoving() = false
-    //    ג. agent->HasPath() = false (הנתיב הסתיים ב-CalculatePathAndMove)
-
     // 4. בדיקת הגעה למחסן
     Point currentLoc = agent->GetLocation();
     Point warehousePos = agent->FindNearestWarehouse();
@@ -76,6 +74,7 @@ void SupplyGoToWarehouseState::Execute(SupplyAgent* agent)
 
         if (agent->GetDeliveryTarget() != nullptr)
         {
+            agent->SetTargetLocation(agent->GetDeliveryTarget()->GetLocation());
             agent->SetState(new SupplyGoToWarriorState());
         }
         else
@@ -85,14 +84,10 @@ void SupplyGoToWarehouseState::Execute(SupplyAgent* agent)
     }
     else
     {
-        // תיקון: אם הנתיב נגמר לפני ההגעה, נסה לחשב נתיב מחדש
         std::cout << "SupplyAgent: Movement finished but did not reach warehouse (Dist: "
             << dist << "). Recalculating path.\n";
 
-        // איפוס pathCalculated כדי שיחשב מחדש בפריים הבא
         pathCalculated = false;
-
-        // אין צורך לשנות מצב, המצב הנוכחי יטפל בחישוב מחדש בפריים הבא
     }
 }
 

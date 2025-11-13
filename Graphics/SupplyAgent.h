@@ -13,7 +13,7 @@ private:
 	Point targetLocation;  // Location of warrior who needs ammo
 	Point targetWarehouse[2];
 	bool hasAmmo;          // Whether agent is carrying ammo
-	NPC* deliveryTarget;
+	std::deque<NPC*> deliveryQueue;
 
 	int cargoAmmo = 0;
 	int cargoGrenades = 0;
@@ -28,6 +28,7 @@ public:
 	~SupplyAgent();
 
 	void DoSomeWork(const double* pMap) override;
+	void SetTargetLocation(Point p) { targetLocation = p; }
 
 	// FSM Management
 	void SetState(SupplyAgentState* newState);
@@ -47,7 +48,7 @@ public:
 	void AssignSupplyMission(NPC* warrior);
 
 	// Getters
-	NPC* GetDeliveryTarget() const { return deliveryTarget; }
+	NPC* GetDeliveryTarget() const { return deliveryQueue.empty() ? nullptr : deliveryQueue.front(); }
 	Point GetTargetLocation() const { return targetLocation; }
 	bool HasAmmo() const { return hasAmmo; }
 	bool IsMoving() const { return isMoving; } // for pathfinding

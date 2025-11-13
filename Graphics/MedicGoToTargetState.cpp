@@ -8,6 +8,16 @@ void MedicGoToTargetState::OnEnter(Medic* agent)
 {
     std::cout << "Medic entering GO_TO_TARGET state.\n";
     pathCalculated = false;
+
+    NPC* patient = agent->GetPatientTarget();
+
+    if (!patient || !patient->IsAlive() || patient->GetHealth() >= MAX_HP)
+    {
+        std::cout << "Medic: Patient is dead or invalid on GO_TO_TARGET entry. Returning to idle.\n";
+        agent->SetPatientTarget(nullptr);
+        agent->SetState(new MedicIdleState());
+        return;
+    }
 }
 
 void MedicGoToTargetState::Execute(Medic* agent)
@@ -19,8 +29,10 @@ void MedicGoToTargetState::Execute(Medic* agent)
         agent->SetState(new MedicHealingState());
         return;
     }
+
     NPC* patient = agent->GetPatientTarget();
 
+    // Double-check patient validity
     if (!patient || !patient->IsAlive())
     {
         std::cout << "Medic: Patient is dead or invalid. Returning to idle.\n";
@@ -38,22 +50,20 @@ void MedicGoToTargetState::Execute(Medic* agent)
         return;
     }
 
-    // UPDATE: Use patient's CURRENT location, not the cached one
+    // Use patient's CURRENT location
     Point targetLoc = patient->GetLocation();
-
-    // Check if we're already close enough to heal
     Point medicLoc = agent->GetLocation();
     double dist = Distance(medicLoc, targetLoc);
 
+    // Close enough to heal
     if (dist < 2.0)
     {
-        // We're close enough - start healing
         std::cout << "Medic arrived at target. Starting to heal.\n";
         agent->SetState(new MedicHealingState());
         return;
     }
 
-    // Need to recalculate path if patient moved significantly
+    // Calculate or recalculate path if needed
     if (!pathCalculated || agent->currentPath.empty())
     {
         if (agent->FindAStarPath(targetLoc, (const double*)agent->GetViewMap()))
@@ -86,29 +96,28 @@ void MedicGoToTargetState::Execute(Medic* agent)
     {
         agent->CalculatePathAndMove();
 
-        // Periodically check if patient moved too far
+        // Check if we reached the end of path
         if (agent->currentPath.empty())
         {
-            // Reached the target location but patient might have moved
             Point currentPatientLoc = patient->GetLocation();
             double distanceToPatient = Distance(medicLoc, currentPatientLoc);
 
             if (distanceToPatient >= 2.0)
             {
-                // Patient moved, recalculate path
+                // Patient moved, recalculate path next frame
                 std::cout << "Medic: Patient moved. Recalculating path.\n";
                 pathCalculated = false;
             }
             else
             {
-                // We're at the destination and patient is nearby
+                // We're close enough
                 agent->isMoving = false;
             }
         }
     }
     else
     {
-        // Not moving but patient is nearby - start healing
+        // Not moving - check distance again
         if (dist < 2.0)
         {
             std::cout << "Medic arrived at target. Starting to heal.\n";
@@ -121,6 +130,7 @@ void MedicGoToTargetState::Execute(Medic* agent)
         }
     }
 }
+
 
 void MedicGoToTargetState::OnExit(Medic* agent)
 {

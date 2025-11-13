@@ -78,22 +78,41 @@ void CommanderAnalyzingState::OnExit(Commander* commander)
 
 void CommanderAnalyzingState::HandleSupplyRequests(Commander* commander)
 {
+    // 1. נבדוק אם יש לוחמים שמחכים לאספקה
     if (commander->HasLowAmmoSoldiers())
     {
-        std::cout << "Commander (Analyzing): Assigning supply mission to agent.\n";
-
+        // 2. נמצא את ה-SupplyAgent
+        SupplyAgent* agent = nullptr;
         for (NPC* member : commander->GetTeamMembers())
         {
             if (member->GetType() == SUPPLIER && member->IsAlive())
             {
-                SupplyAgent* agent = static_cast<SupplyAgent*>(member);
-                NPC* lowAmmo = commander->GetNextLowAmmoSoldier();
+                agent = static_cast<SupplyAgent*>(member);
+                break; // מצאנו סוכן אספקה אחד
+            }
+        }
 
-                if (lowAmmo != nullptr)
+        if (agent != nullptr)
+        {
+            std::cout << "Commander (Analyzing): Assigning supply mission(s) to agent.\n";
+
+            // 3. **שינוי עיקרי:** נעביר את כל הלוחמים הממתינים לתור של ה-SupplyAgent
+            // נשתמש בלולאה כדי להוציא את כל הלוחמים מהתור של המפקד
+            while (commander->HasLowAmmoSoldiers())
+            {
+                // שימוש בפונקציה קיימת שמחזירה את הראשון ומסירה אותו
+                NPC* lowAmmoWarrior = commander->GetNextLowAmmoSoldier();
+
+                if (lowAmmoWarrior != nullptr)
                 {
-                    agent->AssignSupplyMission(lowAmmo);
+                    // נשלח את הלוחם ל-SupplyAgent, שינהל אותו בתור הפנימי שלו
+                    agent->AssignSupplyMission(lowAmmoWarrior);
                 }
             }
+        }
+        else
+        {
+            std::cout << "Commander (Analyzing): Supply Agent not found or is dead.\n";
         }
     }
 }

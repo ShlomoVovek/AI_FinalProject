@@ -15,6 +15,9 @@ extern const int MSY;
 SupplyAgent::SupplyAgent(int x, int y, TeamColor t) :
 	NPC(x, y, t, SUPPLIER), currentState(nullptr), hasAmmo(false)
 {
+    targetWarehouse[0] = { -1, -1 };
+    targetWarehouse[1] = { -1, -1 };
+
 	// Start in Idle state
     currentState = new SupplyIdleState();
     currentState->OnEnter(this); 
@@ -42,46 +45,64 @@ void SupplyAgent::SetState(SupplyAgentState* newState)
 }
 
 // TODO: change to random location search by BFS
-Point SupplyAgent::GetBaseLocation() const 
+Point SupplyAgent::GetBaseLocation() const
 {
-    int BASE = this->GetTeam() == TEAM_BLUE ? RED_BASE : BLUE_BASE;
-    Point p = { -1,-1 };
+    int BASE = this->GetTeam() == TEAM_RED ? RED_BASE : BLUE_BASE;
 
-    if (this->GetTeam() == TEAM_RED)
+    // Search entire visible map
+    for (int i = 0; i < MSX; i++)
     {
-        for (int i = 3; i < MSX - 3; i++)
-            for (int j = 3; j < MSY - 3; j++)
+        for (int j = 0; j < MSY; j++)
+        {
+            if (viewMap[i][j] == BASE)
             {
-                if (viewMap[i][j] == BASE)
-                {
-                    p.x = i;
-                    p.y = j;
-                    return p;
-                }
+                return { i, j };
             }
+        }
     }
-    else // is blue
-    {
-        for (int i = MSX - 3; i > 0.5 * MSX; i--)
-            for (int j = 3; j < MSY - 3 ; j++)
-            {
-                if (viewMap[i][j] == BASE)
-                {
-                    p.x = i;
-                    p.y = j;
-                    return p;
-                }
-            }
-    }
-    // default: never executed
-    return p;
+
+    // Not found in current view
+    return { -1, -1 };
 }
 
 Point SupplyAgent::FindNearestWarehouse() const
 {
-    // TODO: use more sofisticated algorithm
-    // Use GetBaseLocation for now
-    return GetBaseLocation();
+    // First, check if we already have a cached warehouse location
+    if (targetWarehouse[0].x >= 0 && targetWarehouse[0].x < MSX &&
+        targetWarehouse[0].y >= 0 && targetWarehouse[0].y < MSY)
+    {
+        std::cout << "Using cached warehouse at (" << targetWarehouse[0].x
+            << ", " << targetWarehouse[0].y << ")\n";
+        return targetWarehouse[0];
+    }
+
+    // Try to find warehouse in current view
+    Point warehouse = GetBaseLocation();
+
+    if (warehouse.x >= 0 && warehouse.x < MSX &&
+        warehouse.y >= 0 && warehouse.y < MSY)
+    {
+        // Cache it for future use
+        const_cast<SupplyAgent*>(this)->targetWarehouse[0] = warehouse;
+        std::cout << "Found and cached warehouse at (" << warehouse.x
+            << ", " << warehouse.y << ")\n";
+        return warehouse;
+    }
+
+    // Fallback: use team's starting area as warehouse location
+    std::cout << "WARNING: Warehouse not found, using fallback location\n";
+    if (this->GetTeam() == TEAM_RED)
+    {
+        warehouse = { 8, MSY / 2 };  // Left side base area
+    }
+    else
+    {
+        warehouse = { MSX - 8, MSY / 2 };  // Right side base area
+    }
+
+    // Cache fallback location
+    const_cast<SupplyAgent*>(this)->targetWarehouse[0] = warehouse;
+    return warehouse;
 }
 
 void SupplyAgent::PickupAmmo()
@@ -89,24 +110,40 @@ void SupplyAgent::PickupAmmo()
     std::cout << "Supply Agent: Loading supplies at warehouse.\n";
     cargoAmmo = MAX_AMMO;
     cargoGrenades = MAX_GRENADE; 
+    hasAmmo = true;
 }
 
 void SupplyAgent::DeliverAmmo()
 {
-    if ((cargoAmmo > 0 || cargoGrenades > 0) && deliveryTarget != nullptr && deliveryTarget->IsAlive())
-    {
-        Warrior* targetWarrior = dynamic_cast<Warrior*>(deliveryTarget);
+    // נשתמש ב-GetDeliveryTarget() כדי לקבל את הלוחם הנוכחי (הראשון בתור)
+    NPC* targetWarrior = GetDeliveryTarget();
 
-        if (targetWarrior)
+    // 1. בדיקה האם יש משימה נוכחית והאם הסוכן נושא תחמושת
+    if ((cargoAmmo > 0 || cargoGrenades > 0) && targetWarrior != nullptr && targetWarrior->IsAlive())
+    {
+        Warrior* warriorToResupply = dynamic_cast<Warrior*>(targetWarrior);
+
+        if (warriorToResupply)
         {
             std::cout << "SupplyAgent delivering supplies to warrior\n";
 
-            targetWarrior->Resupply(cargoAmmo, cargoGrenades);
+            // 2. אספקה
+            warriorToResupply->Resupply(cargoAmmo, cargoGrenades);
 
+            // 3. איפוס מטען הסוכן
             cargoAmmo = 0;
             cargoGrenades = 0;
+            hasAmmo = false;
         }
-        deliveryTarget = nullptr;
+
+        // 4. *** הסרת הלוחם מהתור ***
+        deliveryQueue.pop_front();
+    }
+    // אם אין מטען או שהלוחם לא קיים/מת, נסיר רק את הלוחם מהתור (אם יש)
+    else if (targetWarrior != nullptr)
+    {
+        // אם הסוכן הגיע אבל הלוחם מת או משהו השתבש, פשוט ננקה אותו מהתור
+        deliveryQueue.pop_front();
     }
 }
 
@@ -117,12 +154,20 @@ bool SupplyAgent::IsIdle() const
 
 void SupplyAgent::AssignSupplyMission(NPC* warrior)
 {
-    if (IsIdle() && warrior != nullptr && warrior->IsAlive())
+    if (warrior != nullptr && warrior->IsAlive())
     {
-        deliveryTarget = warrior; 
-        std::cout << "Supply Agent: Mission accepted. Going to warehouse.\n";
+        // 1. הוסף לתור
+        deliveryQueue.push_back(warrior);
 
-        SetState(new SupplyGoToWarehouseState());
+        // 2. אם הסוכן במצב סרק, התחל את המשימה
+        if (dynamic_cast<SupplyIdleState*>(currentState) != nullptr ||
+            dynamic_cast<SupplyWaitState*>(currentState) != nullptr)
+        {
+            std::cout << "Supply Agent: Mission accepted. Going to warehouse.\n";
+            // קבע את targetLocation למיקום הנוכחי של הלוחם הראשון בתור
+            targetLocation = deliveryQueue.front()->GetLocation();
+            SetState(new SupplyGoToWarehouseState());
+        }
     }
 }
 
@@ -186,34 +231,41 @@ void SupplyAgent::ExecuteCommand(int commandCode, Point target)
 {
     if (!IsAlive()) return;
 
+    if (!IsIdle() && dynamic_cast<SupplyWaitState*>(currentState) == nullptr)
+    {
+        if (commandCode == CMD_MOVE || commandCode == CMD_ATTACK)
+        {
+            std::cout << "SupplyAgent: Busy on supply mission, ignoring command "
+                << commandCode << "\n";
+            return;
+        }
+    }
+
+
     switch (commandCode)
     {
     case CMD_RETREAT:
-        // ... (נסיגה למחסן הקרוב היא הפעולה הבטוחה ביותר עבור סוכן אספקה)
         targetLocation = FindNearestWarehouse();
-        SetState(new SupplyGoToWarehouseState()); // המחסן הוא יעד בטוח
+        SetState(new SupplyGoToWarehouseState());
         break;
 
-    case CMD_RESUPPLY: // כאשר המפקד שולח פקודת אספקה
-    {
-        // אם הסוכן כבר נושא תחמושת, הוא צריך ללכת ישירות ללוחם (אם מוגדר)
-        if (cargoAmmo > 0)
+    case CMD_RESUPPLY:
+        SetState(new SupplyGoToWarehouseState());
+        break;
+
+    case CMD_MOVE:
+        // Only respond if idle or waiting
+        if (IsIdle() || dynamic_cast<SupplyWaitState*>(currentState) != nullptr)
         {
-            // המפקד אמור לשלוח את המטרה דרך AssignSupplyMission, לא דרך ExecuteCommand
-            // כאן אנחנו פשוט נכנסים למצב GoToWarehouse כדי לאסוף.
-            SetState(new SupplyGoToWarehouseState());
+            targetLocation = target;
+            if (FindAStarPath(target, GetViewMap()))
+            {
+                isMoving = true;
+            }
         }
-        else
-        {
-            // אם הסוכן ריק, הוא צריך ללכת לבסיס כדי לאסוף.
-            SetState(new SupplyGoToWarehouseState());
-        }
-    }
-    break;
+        break;
 
     default:
-        // ברירת מחדל לאידל או לוגיקת טיפול בשגיאות
-        SetState(new SupplyIdleState());
         break;
     }
 }

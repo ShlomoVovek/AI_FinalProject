@@ -1,5 +1,6 @@
 #include "SupplyGoToWarriorState.h"
 #include "SupplyDeliveringState.h"
+#include "SupplyWaitState.h"
 #include "SupplyAgent.h"
 #include <iostream>
 
@@ -12,16 +13,32 @@ void SupplyGoToWarriorState::OnEnter(SupplyAgent* agent)
 
 void SupplyGoToWarriorState::Execute(SupplyAgent* agent)
 {
-    // 1. Get target warrior location
-    Point targetPos = agent->GetTargetLocation();
+    NPC* targetWarrior = agent->GetDeliveryTarget();
 
-    // 2. Calculate path on first frame
-    if (!pathCalculated)
+    // בדיקה בסיסית, כפי שקיים גם במצב Delivering (רצוי להוסיף כאן בדיקה זו אם היא חסרה)
+    if (targetWarrior == nullptr || !targetWarrior->IsAlive())
     {
-        std::cout << "SupplyAgent calculating path to warrior at ("
-            << targetPos.x << ", " << targetPos.y << ")\n";
+        std::cout << "SupplyAgent: Target is invalid or dead on GoToWarrior. Returning to Wait.\n";
+        agent->SetState(new SupplyWaitState());
+        return;
+    }
 
-        if (agent->FindAStarPath(targetPos, agent->GetViewMap()))
+    // ** הוספת שורה זו: שומר את המיקום הנוכחי של הלוחם **
+    Point newTargetPos = targetWarrior->GetLocation();
+
+    // 1. חישוב נתיב מחדש אם:
+    //    א. pathCalculated = false (נכנסנו למצב זה כרגע)
+    //    ב. יעד הנסיעה הנוכחי שונה ממיקום הלוחם (הלוחם זז מאז הפעם האחרונה)
+    if (!pathCalculated || newTargetPos != agent->GetTargetLocation()) // **שינוי כאן**
+    {
+        // ** עדכון מיקום היעד של הסוכן למיקום הנוכחי של הלוחם **
+        agent->SetTargetLocation(newTargetPos);
+
+        std::cout << "SupplyAgent calculating path to warrior at ("
+            << newTargetPos.x << ", " << newTargetPos.y << ")\n";
+
+        // **שימוש ב-A* עם המיקום המעודכן**
+        if (agent->FindAStarPath(newTargetPos, agent->GetViewMap()))
         {
             std::cout << "Path to warrior found! Steps: "
                 << agent->GetCurrentPath().size() << "\n";
@@ -29,25 +46,27 @@ void SupplyGoToWarriorState::Execute(SupplyAgent* agent)
         }
         else
         {
-            std::cout << "ERROR: No path to warrior found!\n";
+            std::cout << "ERROR: No path to warrior found! Returning to Wait.\n";
+            agent->SetState(new SupplyWaitState());
             return;
         }
     }
 
-    // 3. Move along path
+    // 3. תנועה אם יש נתיב
     agent->CalculatePathAndMove();
 
-    // 4. Check if reached warrior (within 2 cells)
+    // 4. בדיקת הגעה למיקום הלוחם הנוכחי
     Point currentPos = agent->GetLocation();
-    double dist = ManhattanDistance(currentPos, targetPos);
+    // **בדיקת הגעה מול המיקום הנוכחי של הלוחם**
+    double dist = ManhattanDistance(currentPos, newTargetPos);
 
     if (dist <= 2.0)
     {
-        std::cout << "SupplyAgent reached warrior!\n";
-
-        // Transition to delivering
+        // ... (מעבר ל-DeliveringState)
         agent->SetState(new SupplyDeliveringState());
     }
+    // הערה: אם הלוחם זז והסוכן עדיין בתנועה, נמשיך ב-Execute בפריים הבא.
+    // אם הלוחם זז משמעותית, הוא יתגלה בבדיקת התנאי הראשונה בפריים הבא.
 }
 
 void SupplyGoToWarriorState::OnExit(SupplyAgent* agent)

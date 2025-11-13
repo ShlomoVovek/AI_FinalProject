@@ -9,7 +9,7 @@ const int MAX_AMMO = 3;
 const int CRITICAL_AMMO = (int) MAX_AMMO * 0.3;
 const int MAX_GRENADE = 3;
 const int CRITICAL_GRENADE = 1;
-const double GUN_HIT_DAMAGE = 7.0;
+const double GUN_HIT_DAMAGE = 15.0;
 const double GRENADE_HIT_DAMAGE = 30.0;
 
 // range

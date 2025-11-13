@@ -64,16 +64,15 @@ void WarriorAttackingState::Execute(Warrior* warrior)
     {
         if (pEnemy == nullptr)
         {
-            // We've arrived AND we don't see an enemy.
-            // The enemy is dead or fled. Go back to IDLE.
             std::cout << "Warrior reached attack position, no enemy in sight. Returning to IDLE.\n";
             warrior->SetState(new WarriorIdleState());
             return; // Exit after changing state
         }
         else if (warrior->GetAmmo() == 0)
         {
-            std::cout << "Warrior reached attack position, out of ammo. Returning to IDLE.\n";
-            warrior->SetState(new WarriorIdleState());
+            std::cout << "Warrior reached attack position, out of ammo. Retreating to safe spot.\n";
+         
+            warrior->ExecuteCommand(CMD_RETREAT, warrior->GetLocation());
             return;
         }
         else
@@ -87,10 +86,12 @@ void WarriorAttackingState::Execute(Warrior* warrior)
     }
 
     // 4. Check critical health - might need to retreat
-    if (warrior->GetHealth() < CRITICAL_HP * 0.5) // Very low health
+    if (warrior->GetHealth() < CRITICAL_HP) // Very low health
     {
         std::cout << "Warrior critically injured, requesting medic\n";
+        warrior->ExecuteCommand(CMD_RETREAT, warrior->GetLocation());
         warrior->RequestMedic();
+        return;
     }
 }
 
