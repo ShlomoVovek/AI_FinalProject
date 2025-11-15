@@ -74,11 +74,13 @@ void SupplyGoToWarehouseState::Execute(SupplyAgent* agent)
 
         if (agent->GetDeliveryTarget() != nullptr)
         {
+            std::cout << "SupplyAgent: Restocked and moving to warrior.\\n";
             agent->SetTargetLocation(agent->GetDeliveryTarget()->GetLocation());
             agent->SetState(new SupplyGoToWarriorState());
         }
         else
         {
+            std::cout << "SupplyAgent: Restocked, queue is empty. Returning to safe Idle.\\n";
             agent->SetState(new SupplyWaitState());
         }
     }

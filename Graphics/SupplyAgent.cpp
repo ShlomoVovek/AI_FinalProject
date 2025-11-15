@@ -196,15 +196,21 @@ void SupplyAgent::CalculatePathAndMove()
     if (!isMoving)
     {
         SetDirection(currentPath.front());
+        isMoving = true;
     }
 
     MoveToTarget();
 
-    if (!isMoving)
+    Point nextPoint = currentPath.front();
+    if (Distance(location.x, location.y, nextPoint.x, nextPoint.y) < SPEED)
     {
         currentPath.pop_front();
 
-        if (!currentPath.empty())
+        if (currentPath.empty())
+        {
+            isMoving = false;
+        }
+        else
         {
             SetDirection(currentPath.front());
         }

@@ -1,5 +1,14 @@
-﻿  MedicGoToBaseState.cpp
-  MedicGoToTargetState.cpp
-  MedicHealingState.cpp
+﻿  SupplyAgent.cpp
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  (compiling source file 'SupplyAgent.cpp')
+  
+  SupplyDeliveringState.cpp
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  (compiling source file 'SupplyDeliveringState.cpp')
+  
+  SupplyGoToWarehouseState.cpp
+D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  (compiling source file 'SupplyGoToWarehouseState.cpp')
+  
   Generating Code...
   Graphics.vcxproj -> D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Debug\AI_FinalProject.exe
