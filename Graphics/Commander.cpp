@@ -324,7 +324,7 @@ void Commander::AssignHealingMissions()
 		if (!IsPatientBeingTreated(injured))
 		{
 			patientToAssign = injured;
-			it = injuredSoldiers.erase(it);  // ? REMOVE FROM QUEUE IMMEDIATELY
+			// it = injuredSoldiers.erase(it);  // ? REMOVE FROM QUEUE IMMEDIATELY
 			break;
 		}
 

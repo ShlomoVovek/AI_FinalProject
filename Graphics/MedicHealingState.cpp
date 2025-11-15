@@ -12,7 +12,6 @@ void MedicHealingState::OnEnter(Medic* medic)
 
 void MedicHealingState::Execute(Medic* medic)
 {
-    // 1. בדיקת ריפוי עצמי (אם בחרתם להפריד את הלוגיקה מהתור)
     if (medic->NeedsSelfHeal())
     {
         medic->heal(HEAL_AMOUNT_PER_TICK);
@@ -58,22 +57,20 @@ void MedicHealingState::Execute(Medic* medic)
 
     if (dist <= 2.0)
     {
-        // מרפא. הפונקציה patient->heal(amount) מבטיחה שלא נעבור את MAX_HP.
         patient->heal(HEAL_AMOUNT_PER_TICK);
 
         if (patient->GetHealth() >= MAX_HP)
         {
             std::cout << "Patient fully healed. Checking next patient.\\n";
-            medic->RemoveCurrentPatient(); // ** הסר פצוע שהגיע ל-MAX_HP **
+            medic->RemoveCurrentPatient();
 
             if (medic->GetNextPatient() == nullptr)
             {
-                std::cout << "No more patients. Medic going idle.\\n";
-                medic->SetState(new MedicIdleState());
+                std::cout << "No more patients. Medic going to base (RETREAT).\\n";
+                medic->SetState(new MedicGoToBaseState());
             }
             else
             {
-                // פונה לפצוע הבא
                 std::cout << "Moving to next patient in queue.\\n";
                 medic->SetState(new MedicGoToTargetState());
             }
@@ -81,7 +78,6 @@ void MedicHealingState::Execute(Medic* medic)
     }
     else
     {
-        // הפצוע התרחק תוך כדי ריפוי
         std::cout << "Patient moved away while healing. Returning to GO_TO_TARGET.\\n";
         medic->SetState(new MedicGoToTargetState());
     }

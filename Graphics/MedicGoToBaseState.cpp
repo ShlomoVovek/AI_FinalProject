@@ -12,7 +12,7 @@ void MedicGoToBaseState::OnEnter(Medic* agent)
 
 void MedicGoToBaseState::Execute(Medic* agent)
 {
-    // לוגיקת ריפוי עצמי (נשארת ללא שינוי מהותי)
+   
     if (agent->NeedsSelfHeal())
     {
         std::cout << "Medic interrupted GO_TO_BASE mission for self-heal!\\n";
@@ -49,20 +49,16 @@ void MedicGoToBaseState::Execute(Medic* agent)
     {
         agent->CalculatePathAndMove();
     }
-    // ** שינוי: הגיע ליעד (בסיס) **
     else
     {
         std::cout << "Medic arrived at base. Now checking for patients.\\n";
 
-        // ** בודקים אם יש משימה בתור **
         if (agent->GetNextPatient() != nullptr)
         {
-            // יש פצועים בתור - ממשיכים למצב תנועה אל המטרה
             agent->SetState(new MedicGoToTargetState());
         }
         else
         {
-            // אין פצועים - חוזרים למצב סרק
             std::cout << "Medic: Queue is empty, returning to Idle.\\n";
             agent->SetState(new MedicIdleState());
         }

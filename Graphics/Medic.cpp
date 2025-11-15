@@ -53,18 +53,23 @@ void Medic::CalculatePathAndMove()
 	if (this->isMoving && !currentPath.empty())
 	{
 		Point nextPoint = currentPath.front();
-		SetDirection(nextPoint);
+
+		MoveToTarget();
 
 		if (Distance(location.x, location.y, nextPoint.x, nextPoint.y) < SPEED)
 		{
 			currentPath.pop_front();
+
 			if (currentPath.empty())
 			{
 				this->isMoving = false;
 			}
+			else
+			{
+				SetDirection(currentPath.front());
+			}
 		}
 
-		MoveToTarget();
 	}
 	else
 	{

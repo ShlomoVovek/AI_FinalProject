@@ -1,2 +1,5 @@
-﻿  MedicIdleState.cpp
+﻿  MedicGoToBaseState.cpp
+  MedicGoToTargetState.cpp
+  MedicHealingState.cpp
+  Generating Code...
   Graphics.vcxproj -> D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Debug\AI_FinalProject.exe

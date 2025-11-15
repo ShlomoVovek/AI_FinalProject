@@ -9,7 +9,6 @@ void MedicGoToTargetState::OnEnter(Medic* agent)
     std::cout << "Medic entering GO_TO_TARGET state.\\n";
     pathCalculated = false;
 
-    // ** שינוי: בודקים את הפצוע הראשון בתור **
     NPC* patient = agent->GetNextPatient();
 
     // בדיקת תקינות: האם פצוע קיים, חי, ופצוע
@@ -37,11 +36,9 @@ void MedicGoToTargetState::OnEnter(Medic* agent)
 
 void MedicGoToTargetState::Execute(Medic* agent)
 {
-    // 1. בדיקת ריפוי עצמי (מעבר מיידי למצב Healing)
     if (agent->NeedsSelfHeal())
     {
         std::cout << "Medic interrupted GO_TO_TARGET mission for self-heal!\\n";
-        // אם יש לוגיקת ריפוי עצמי מיוחדת, יש להתאים אותה
         agent->SetState(new MedicHealingState());
         return;
     }
@@ -84,7 +81,6 @@ void MedicGoToTargetState::Execute(Medic* agent)
         return;
     }
 
-    // 4. חישוב נתיב A* (אם לא חושב או אם הנתיב נגמר)
     if (!pathCalculated || agent->currentPath.empty())
     {
         if (agent->FindAStarPath(targetLoc, (const double*)agent->GetViewMap())) // ** שימוש ב-A* **
@@ -95,7 +91,6 @@ void MedicGoToTargetState::Execute(Medic* agent)
                 agent->isMoving = true;
                 pathCalculated = true;
             }
-            // אם FindAStarPath() החזיר true אבל currentPath ריק, זו שגיאה או שהגענו.
         }
         else // A* לא הצליח למצוא נתיב
         {
@@ -104,7 +99,7 @@ void MedicGoToTargetState::Execute(Medic* agent)
             if (agent->GetNextPatient() == nullptr)
                 agent->SetState(new MedicIdleState());
             else
-                pathCalculated = false; // מנסה שוב עבור הפצוע הבא
+                pathCalculated = false;
             return;
         }
     }
