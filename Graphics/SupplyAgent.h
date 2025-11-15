@@ -46,6 +46,7 @@ public:
 	void DeliverAmmo();
 	bool IsIdle() const;
 	void AssignSupplyMission(NPC* warrior);
+	void CleanDeliveryQueue();
 
 	// Getters
 	NPC* GetDeliveryTarget() const { return deliveryQueue.empty() ? nullptr : deliveryQueue.front(); }

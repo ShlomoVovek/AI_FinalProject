@@ -13,24 +13,13 @@ void CommanderAnalyzingState::OnEnter(Commander* commander)
 
 void CommanderAnalyzingState::Execute(Commander* commander)
 {
-    // 1. CRITICAL HEALTH: Stop everything and retreat
+    // 1. Commander critical health - stop everything and retreat
     if (commander->GetHealth() < 30)
     {
         std::cout << "Commander CRITICAL HEALTH: " << commander->GetHealth()
             << " - EMERGENCY RETREAT!\n";
         commander->ReportInjury(commander);  // Request medic
         commander->SetState(new CommanderRepositioningState(true));
-        return;
-    }
-
-    if (commander->HasCriticalInjuredSoldiers())
-    {
-        std::cout << "Commander (Analyzing): Critical injury reported! Issuing RETREAT command to all units.\n";
-
-        commander->SetPlannedCommand(CMD_RETREAT, commander->GetLocation());
-
-        // מעבר מיידי למצב IssuingOrders כדי לשלוח את הפקודה
-        commander->SetState(new CommanderIssuingOrdersState());
         return;
     }
 
@@ -45,11 +34,26 @@ void CommanderAnalyzingState::Execute(Commander* commander)
     // 3. Update combined visibility map
     commander->UpdateCombinedViewMap();
 
-    // 4. Handle support missions
-    HandleMedicRequests(commander);
+    // 4. Handle support missions FIRST (before retreat decision)
+    if (!commander->injuredSoldiers.empty())
+    {
+        std::cout << "Commander (Analyzing): Assigning heal mission(s) to medic.\n";
+        commander->AssignHealingMissions();
+    }
     HandleSupplyRequests(commander);
 
-    // 5. Decide next action
+    // 5. Check for critical injuries AFTER assigning medics
+    if (commander->HasCriticalInjuredSoldiers())
+    {
+        std::cout << "Commander (Analyzing): Critical injury reported! Issuing RETREAT command to all units.\n";
+        commander->SetPlannedCommand(CMD_RETREAT, commander->GetLocation());
+
+        // Transition to IssuingOrders to send the retreat command
+        commander->SetState(new CommanderIssuingOrdersState());
+        return;
+    }
+
+    // 6. Decide next action based on enemy presence
     if (commander->HasSpottedEnemies())
     {
         if (commander->GetHealth() < 50)
@@ -116,28 +120,5 @@ void CommanderAnalyzingState::HandleSupplyRequests(Commander* commander)
         }
     }
 }
-
-void CommanderAnalyzingState::HandleMedicRequests(Commander* commander)
-{
-    if (commander->HasInjuredSoldiers())
-    {
-        std::cout << "Commander (Analyzing): Assigning heal mission to medic.\n";
-
-        for (NPC* member : commander->GetTeamMembers())
-        {
-            if (member->GetType() == MEDIC && member->IsAlive())
-            {
-                Medic* medic = static_cast<Medic*>(member);
-                NPC* injured = commander->GetNextInjuredSoldier();
-
-                if (injured != nullptr)
-                {
-                    medic->AssignHealMission(injured);
-                }
-            }
-        }
-    }
-}
-
 
 

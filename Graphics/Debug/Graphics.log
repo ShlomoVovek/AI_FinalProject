@@ -1,10 +1,2 @@
-﻿  Commander.cpp
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-  (compiling source file 'Commander.cpp')
-  
-  CommanderAnalyzingState.cpp
-D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Graphics\Warrior.h(9,42): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-  (compiling source file 'CommanderAnalyzingState.cpp')
-  
-  Generating Code...
+﻿  MedicIdleState.cpp
   Graphics.vcxproj -> D:\בינה מלאכותית 10207\מטלות\פרויקט סיום\AI_FinalProject\Debug\AI_FinalProject.exe

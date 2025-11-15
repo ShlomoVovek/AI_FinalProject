@@ -18,9 +18,24 @@ void SupplyGoToWarriorState::Execute(SupplyAgent* agent)
     // בדיקה בסיסית, כפי שקיים גם במצב Delivering (רצוי להוסיף כאן בדיקה זו אם היא חסרה)
     if (targetWarrior == nullptr || !targetWarrior->IsAlive())
     {
-        std::cout << "SupplyAgent: Target is invalid or dead on GoToWarrior. Returning to Wait.\n";
-        agent->SetState(new SupplyWaitState());
-        return;
+        if (!agent->deliveryQueue.empty())
+        {
+            agent->deliveryQueue.pop_front();
+        }
+
+        // Check if there are more targets
+        if (agent->GetDeliveryTarget() != nullptr)
+        {
+            std::cout << "SupplyAgent: Next target in queue. Recalculating path.\n";
+            pathCalculated = false; // Recalculate for new target
+            return;
+        }
+        else
+        {
+            std::cout << "SupplyAgent: No more targets. Returning to Wait.\n";
+            agent->SetState(new SupplyWaitState());
+            return;
+        }
     }
 
     // ** הוספת שורה זו: שומר את המיקום הנוכחי של הלוחם **

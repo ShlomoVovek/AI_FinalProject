@@ -77,7 +77,7 @@ void MedicGoToTargetState::Execute(Medic* agent)
     double dist = Distance(medicLoc.x, medicLoc.y, targetLoc.x, targetLoc.y);
 
     // 3. הגעה ליעד - קרוב מספיק כדי לרפא
-    if (dist < 2.0) // 2.0 הוא סף הקרבה לריפוי
+    if (dist <= 2.0) // 2.0 הוא סף הקרבה לריפוי
     {
         std::cout << "Medic arrived at target. Starting to heal.\\n";
         agent->SetState(new MedicHealingState());

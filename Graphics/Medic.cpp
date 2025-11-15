@@ -222,14 +222,11 @@ void Medic::AssignHealMission(NPC* injuredSoldier)
 	// All checks passed - assign the mission
 	patientsQueue.push_back(injuredSoldier);
 
-	if (IsIdle())
-	{
-		std::cout << "Medic (Team " << (team == TEAM_RED ? "RED" : "BLUE")
-			<< ") assigned HEAL mission. Moving to base first.\n";
+	std::cout << "Medic (Team " << (team == TEAM_RED ? "RED" : "BLUE")
+		<< ") assigned HEAL mission. Moving to base first.\n";
 
-		// Start the FSM by transitioning to the "GoToBase" state
-		SetState(new MedicGoToBaseState());
-	}
+	// Start the FSM by transitioning to the "GoToBase" state
+	SetState(new MedicGoToBaseState());
 }
 
 bool Medic::NeedsSelfHeal() const

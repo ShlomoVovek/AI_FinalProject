@@ -16,6 +16,15 @@ void MedicIdleState::Execute(Medic* agent)
         agent->SetState(new MedicHealingState());
         return;
     }
+    
+    //if (agent->GetPatientTarget() != nullptr)
+
+    if (!agent->patientsQueue.empty())
+    {
+        std::cout << "Medic has patient assignment. Moving to heal.\n";
+        agent->SetState(new MedicGoToTargetState());
+        return;
+    }
 }
 
 void MedicIdleState::OnExit(Medic* agent)

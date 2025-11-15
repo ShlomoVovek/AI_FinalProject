@@ -245,6 +245,12 @@ void SupplyAgent::ExecuteCommand(int commandCode, Point target)
     switch (commandCode)
     {
     case CMD_RETREAT:
+        if (!deliveryQueue.empty())
+        {
+            std::cout << "SupplyAgent: RETREAT issued! Clearing delivery queue.\n";
+            deliveryQueue.clear();
+        }
+
         targetLocation = FindNearestWarehouse();
         SetState(new SupplyGoToWarehouseState());
         break;
@@ -270,6 +276,21 @@ void SupplyAgent::ExecuteCommand(int commandCode, Point target)
     }
 }
 
+void SupplyAgent::CleanDeliveryQueue()
+{
+    while (!deliveryQueue.empty())
+    {
+        NPC* front = deliveryQueue.front();
+        if (front == nullptr || !front->IsAlive())
+        {
+            deliveryQueue.pop_front();
+        }
+        else
+        {
+            break; // First valid warrior found
+        }
+    }
+}
 
 
 

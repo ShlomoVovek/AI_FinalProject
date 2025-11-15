@@ -80,8 +80,28 @@ void Commander::IssueCommand(int commandCode, Point target)
 	for (NPC* member : teamMembers)
 	{
 		if (member->IsAlive())
+		{
+			// Don't interrupt medics actively healing critical patients
+			if (commandCode == CMD_RETREAT && member->GetType() == MEDIC)
+			{
+				Medic* medic = dynamic_cast<Medic*>(member);
+				if (medic && !medic->IsIdle())
+				{
+					NPC* patient = medic->GetPatientTarget();
+					if (patient && patient->IsAlive() && patient->GetHealth() < CRITICAL_HP)
+					{
+						std::cout << "Medic treating critical patient, ignoring retreat.\n";
+						continue; // Skip retreat for this medic
+					}
+				}
+			}
+
 			member->ExecuteCommand(commandCode, target);
+		}
 	}
+
+	std::cout << "Commander issued command: " << commandCode
+		<< " to target (" << target.x << ", " << target.y << ")\n";
 }
 
 void Commander::ReportInjury(NPC* injuredSoldier)
@@ -304,6 +324,7 @@ void Commander::AssignHealingMissions()
 		if (!IsPatientBeingTreated(injured))
 		{
 			patientToAssign = injured;
+			it = injuredSoldiers.erase(it);  // ? REMOVE FROM QUEUE IMMEDIATELY
 			break;
 		}
 
