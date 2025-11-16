@@ -71,15 +71,9 @@ void WarriorAttackingState::Execute(Warrior* warrior)
         else if (warrior->GetAmmo() == 0)
         {
             std::cout << "Warrior reached attack position, out of ammo. Retreating to safe spot.\n";
-         
+            warrior->RequestSupply();
             warrior->ExecuteCommand(CMD_RETREAT, warrior->GetLocation());
             return;
-        }
-        else
-        {
-            // We've arrived AND we DO see an enemy.
-            // Stay here and keep scanning/shooting.
-            std::cout << "Warrior reached attack position, scanning for enemies\n";
         }
         std::cout << "Warrior reached attack position, scanning for enemies\n";
         // Stay in attack mode, continue scanning

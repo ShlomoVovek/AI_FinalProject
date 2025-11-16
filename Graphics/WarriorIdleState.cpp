@@ -27,7 +27,16 @@ void WarriorIdleState::Execute(Warrior* warrior)
     if (pEnemy != nullptr)
     {
         enemyPos = pEnemy->GetLocation();
-        warrior->ReportSighting(WARRIOR, enemyPos); // Assume WARRIOR, actual type may vary
+        
+        if (!warrior->IsSurviveMode())
+        {
+            warrior->ReportSighting(pEnemy->GetType(), enemyPos);
+        }
+        else
+        {
+            std::cout << "Warrior spotted enemy in IDLE (Survive Mode) - Attacking!\n";
+            warrior->ExecuteCommand(CMD_ATTACK, enemyPos);
+        }
     }
 }
 

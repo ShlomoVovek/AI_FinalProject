@@ -8,7 +8,12 @@ class Commander : public NPC, public IPathfinding
 {
 private:
 	double combinedViewMap[MSX][MSY];
-		
+	
+	// cooldown
+	int framesSinceLastMajorCommand = 0;
+	int lastMajorCommand = CMD_NONE;
+	const int COMMAND_COOLDOWN = 30;
+
 	// fsm managment
 	CommanderState* currentState;
 	int plannedCommand;      // Command decided by PlanningState
@@ -68,10 +73,15 @@ public:
 		plannedTarget = target;
 	}
 
+	void SetLastMajorCommand(int plannedCommand) { lastMajorCommand = plannedCommand; };
+	void ResetFramesSinceLastMajorCommand() { framesSinceLastMajorCommand = 0; }
+
 	bool IsPatientBeingTreated(NPC* patient) const;
 	void AssignHealingMissions();
 
 	// getters
+	int GetLastMajorCommand(){ return lastMajorCommand; }
+	int GetFramesSinceLastMajorCommand(){ return framesSinceLastMajorCommand; }
 	NPC* GetNextInjuredSoldier();
 	NPC* GetNextLowAmmoSoldier();
 	std::vector<NPC*>& GetTeamMembers() { return teamMembers; }

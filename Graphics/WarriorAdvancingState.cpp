@@ -18,7 +18,19 @@ void WarriorAdvancingState::Execute(Warrior* warrior)
     if (pEnemy != nullptr)
     {
         Point enemyPos = pEnemy->GetLocation();
-        warrior->ReportSighting(WARRIOR, enemyPos);
+        if (!warrior->IsSurviveMode())
+        {
+            warrior->ReportSighting(pEnemy->GetType(), enemyPos);
+        }
+        else
+        {
+            if (warrior->CanShootAt(enemyPos))
+            {
+                std::cout << "Warrior spotted enemy while advancing in Survive Mode - Attacking!\n";
+                warrior->ExecuteCommand(CMD_ATTACK, enemyPos);
+                return;
+            }
+        }
     }
 
     // 3. Check if reached destination

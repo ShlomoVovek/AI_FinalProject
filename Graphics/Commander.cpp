@@ -7,7 +7,9 @@
 Commander::Commander(int x, int y, TeamColor t) :
 	NPC(x, y, t, COMMANDER),
 	currentState(nullptr),
-	plannedCommand(CMD_NONE)
+	plannedCommand(CMD_NONE),
+	framesSinceLastMajorCommand(0),
+	lastMajorCommand(CMD_NONE)
 
 {
 	for (int i = 0; i < MSX; ++i)
@@ -208,7 +210,21 @@ Point Commander::FindAttackPosition() const
 void Commander::DoSomeWork(const double* pMap)
 {
 	if (!IsAlive())
+	{
+		for (NPC* member : teamMembers)
+		{
+			if (member->IsAlive())
+			{
+				member->SetSurviveMode(true);
+			}
+		}
 		return;
+	}
+		
+	if (IsAlive())
+	{
+		framesSinceLastMajorCommand++;
+	}
 
 	BuildViewMap(pMap);
 
@@ -272,10 +288,7 @@ bool Commander::HasCriticalInjuredSoldiers() const
 	{
 		if (soldier->IsAlive() && soldier->GetHealth() < CRITICAL_HP)
 		{
-			if (soldier->GetType() != COMMANDER)
-			{
-				return true;
-			}
+			return true;
 		}
 	}
 	return false;

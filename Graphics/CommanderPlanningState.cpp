@@ -1,6 +1,7 @@
 #include "CommanderPlanningState.h"
 #include "CommanderIssuingOrdersState.h"
 #include "CommanderRepositioningState.h"
+#include "CommanderAnalyzingState.h"
 #include "Commander.h"
 #include <iostream>
 
@@ -16,6 +17,15 @@ void CommanderPlanningState::Execute(Commander* commander)
     {
         std::cout << "Commander (Planning): Critical health! Aborting plan and retreating!\n";
         commander->SetState(new CommanderRepositioningState());
+        return;
+    }
+
+    // COOLDOWN
+    if ((commander->GetLastMajorCommand() == CMD_ATTACK || commander->GetLastMajorCommand() == CMD_DEFEND) &&
+        commander->GetFramesSinceLastMajorCommand() < commander->COMMAND_COOLDOWN)
+    {
+        std::cout << "Commander planning: STICKING to last major command (ATTACK/DEFEND) until cooldown expires.\n";
+        commander->SetState(new CommanderAnalyzingState());
         return;
     }
 
@@ -46,25 +56,24 @@ void CommanderPlanningState::Execute(Commander* commander)
             commander->SetPlannedCommand(CMD_ATTACK, attackPos);
         }
 
+        commander->SetLastMajorCommand(commander->GetPlannedCommand());
+        commander->ResetFramesSinceLastMajorCommand();
+
         // 4. Transition to issuing orders
         commander->SetState(new CommanderIssuingOrdersState());
     }
     else
     {
-        // No enemies spotted - advance strategically
         std::cout << "Commander planning: MOVE (no enemies spotted)\n";
 
         Point currentPos = commander->GetLocation();
         Point strategicPoint;
 
-        // 1. קביעת אזור המרכז לחקירה (25% עד 75% מהמפה)
-        int minX = (int)(MSX * 0.25); // 20
-        int maxX = (int)(MSX * 0.75); // 60
-        int minY = (int)(MSY * 0.25); // 12
-        int maxY = (int)(MSY * 0.75); // 36
+        int minX = (int)(MSX * 0.25);
+        int maxX = (int)(MSX * 0.75);
+        int minY = (int)(MSY * 0.25);
+        int maxY = (int)(MSY * 0.75);
 
-        // 2. המטרה: נקודה אקראית בטווח המרכזי
-        // זה מבטיח שהמפקד יעזוב את הפינות ויתכנס למרכז המפה.
         strategicPoint.x = minX + (rand() % (maxX - minX));
         strategicPoint.y = minY + (rand() % (maxY - minY));
 
@@ -72,9 +81,14 @@ void CommanderPlanningState::Execute(Commander* commander)
             << strategicPoint.x << ", " << strategicPoint.y << ")\n";
 
         commander->SetPlannedCommand(CMD_MOVE, strategicPoint);
+
+        commander->SetLastMajorCommand(CMD_MOVE);
+        commander->ResetFramesSinceLastMajorCommand();
+
         commander->SetState(new CommanderIssuingOrdersState());
     }
 }
+
 void CommanderPlanningState::OnExit(Commander* commander)
 {
     std::cout << "Commander exiting PLANNING state\n";

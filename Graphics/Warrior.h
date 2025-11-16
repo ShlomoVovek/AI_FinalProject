@@ -5,11 +5,11 @@
 class WarriorState;
 
 // ammo
-const int MAX_AMMO = 3;
+const int MAX_AMMO = 15;
 const int CRITICAL_AMMO = (int) MAX_AMMO * 0.3;
 const int MAX_GRENADE = 3;
 const int CRITICAL_GRENADE = 1;
-const double GUN_HIT_DAMAGE = 15.0;
+const double GUN_HIT_DAMAGE = 7.0;
 const double GRENADE_HIT_DAMAGE = 30.0;
 
 // range
@@ -47,6 +47,9 @@ private:
 	std::vector<ShotInfo> activeShots;
 
 	Point DetermineBestAttackPosition(Point enemyLoc);
+
+	// survival mode methods
+	void HandleSurviveModeLogic();
 
 protected:
 	void CalculatePathAndMove() override;
@@ -97,6 +100,8 @@ public:
 	bool HasRequestedSupply() const { return requestedSupply; }
 
 	void Resupply(int ammoAmount, int grenadeAmount);
+
+	// Point GetRandomMapTarget();
 
 	// getters
 	int GetAmmo() const { return ammo; }

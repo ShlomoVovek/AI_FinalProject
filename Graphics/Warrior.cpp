@@ -241,6 +241,13 @@ void Warrior::DoSomeWork(const double* pMap)
 		hasReportedInjury = false;
 	}
 
+	if (isSurviveMode && !dynamic_cast<WarriorRetreatingState*>(currentState))
+	{
+		HandleSurviveModeLogic();
+		if (!dynamic_cast<WarriorIdleState*>(currentState))
+			return;
+	}
+
 	if (currentState)
 	{
 		currentState->Execute(this);
@@ -491,3 +498,70 @@ bool Warrior::CanShootAt(Point target) const
 
 	return false;
 }
+
+void Warrior::HandleSurviveModeLogic()
+{
+	if (health < INJURED_THRESHOLD || ammo == 0)
+	{
+		std::cout << "Warrior (" << (team == TEAM_RED ? "RED" : "BLUE")
+			<< ") is low on resources - seeking safety/resupply.\n";
+		ExecuteCommand(CMD_RETREAT, location); 
+		return;
+	}
+
+	NPC* pEnemy = ScanForEnemies();
+	if (pEnemy != nullptr)
+	{
+		std::cout << "Warrior (" << (team == TEAM_RED ? "RED" : "BLUE")
+			<< ") spotted enemy in Survive Mode - Initiating ATTACK.\n";
+
+		ExecuteCommand(CMD_ATTACK, pEnemy->GetLocation());
+		return;
+	}
+
+	if (dynamic_cast<WarriorIdleState*>(currentState))
+	{
+		// Point strategicTarget = GetRandomMapTarget();
+
+		std::cout << "Warrior (" << (team == TEAM_RED ? "RED" : "BLUE")
+			<< ") no current enemy - ADVANCING to strategic point.\n";
+		//ExecuteCommand(CMD_MOVE, strategicTarget);
+	}
+}
+
+// try find safe Point
+/*
+Point Warrior::GetRandomMapTarget()
+{
+
+	const double* safetyMap = GetViewMap();
+	const double DEFENSIVE_RANGE = 70.0;
+
+	Point safePos = FindClosestSafePosition(DEFENSIVE_RANGE, safetyMap);
+
+	if (safePos.x != location.x || safePos.y != location.y)
+	{
+		std::cout << "Warrior found a SAFE position for patrol: ("
+			<< safePos.x << ", " << safePos.y << ") using FindClosestSafePosition.\n";
+		return safePos;
+	}
+
+	Point randomTarget;
+	const int MAX_ATTEMPTS = 50;
+
+	for (int i = 0; i < MAX_ATTEMPTS; ++i)
+	{
+		randomTarget.x = (double)(rand() % MSX);
+		randomTarget.y = (double)(rand() % MSY);
+
+		if (IsWalkable(safetyMap, randomTarget) && (randomTarget.x != location.x || randomTarget.y != location.y))
+		{
+			std::cout << "Warrior found a RANDOM WALKABLE point for patrol: ("
+				<< randomTarget.x << ", " << randomTarget.y << ") using IsWalkable.\n";
+			return randomTarget;
+		}
+	}
+
+	return location;
+}
+*/

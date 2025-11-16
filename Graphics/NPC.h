@@ -60,6 +60,7 @@ protected:
 	Point targetLocation;
 	double directionX, directionY;
 	bool isMoving;
+	bool isSurviveMode;
 
 	double viewMap[MSX][MSY];
 	// pointer to all NPCs vector
@@ -116,14 +117,9 @@ public:
 	// commander methods
 	virtual void ReportSighting(NpcType enemyType, Point enemyLoc) = 0;
 	
-	// Event Handler method type:
-	/*
-		Called once when Commander send new COMMAND_CODE.
-		It stops current command and reset currentState value,
-		as well as call FindAStartPath().
-	
-	*/
 	virtual void ExecuteCommand(int commandCode, Point target) = 0; 
 
+	bool IsSurviveMode() const { return isSurviveMode; }
+	void SetSurviveMode(bool mode) { isSurviveMode = mode; }
 };
 
