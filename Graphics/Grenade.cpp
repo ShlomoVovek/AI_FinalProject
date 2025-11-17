@@ -1,18 +1,30 @@
 #include "Grenade.h"
+#include "NPC.h"
 
-Grenade::Grenade(double posX, double posY, TeamColor grenadeTeam) :
-	x(posX), y(posY), isExploding(false), team(grenadeTeam)
+Grenade::Grenade(double startX, double startY, double endX, double endY, TeamColor grenadeTeam) :
+	currentX(startX), currentY(startY),
+	targetX(endX), targetY(endY),
+	isExploding(false), team(grenadeTeam)
 {
-	int i;
-	double alpha, teta = 2 * PI / NUM_BULLETS;
+	double dx = targetX - currentX;
+	double dy = targetY - currentY;
+	double dist = sqrt(dx * dx + dy * dy);
 
-	// x = posX; // (כבר מבוצע ברשימת האתחול)
-	// y = posY; // (כבר מבוצע ברשימת האתחול)
-
-	for (i = 0, alpha = 0; i < NUM_BULLETS; i++, alpha += teta)
+	if (dist < 0.01)
 	{
-		// העבר את ה-team לבנאי של Bullet
-		bullets[i] = new Bullet(x, y, alpha, team);
+		dirX = 0;
+		dirY = 0;
+		isExploding = true;
+	}
+	else
+	{
+		dirX = dx / dist;
+		dirY = dy / dist;
+	}
+	double alpha = 0, teta = 2 * PI / NUM_BULLETS;
+	for (int i = 0; i < NUM_BULLETS; i++, alpha += teta)
+	{
+		bullets[i] = new Bullet(targetX, targetY, alpha, team);
 	}
 }
 
@@ -27,10 +39,59 @@ Grenade::~Grenade()
 
 void Grenade::Show()
 {
-	int i;
-	for (i = 0; i < NUM_BULLETS; i++)
-		bullets[i]->Show();
+	if (isExploding)
+	{
+		for (int i = 0; i < NUM_BULLETS; i++)
+			bullets[i]->Show();
+	}
+	else
+	{
+		if (team == TEAM_RED)
+			glColor3d(1, 0, 0);
+		else
+			glColor3d(0, 0, 1);
+
+		const double GRENADE_VISUAL_SIZE = 0.3;
+
+		glBegin(GL_POLYGON);
+		glVertex2d(currentX - GRENADE_VISUAL_SIZE, currentY);
+		glVertex2d(currentX, currentY + GRENADE_VISUAL_SIZE);
+		glVertex2d(currentX + GRENADE_VISUAL_SIZE, currentY);
+		glVertex2d(currentX, currentY - GRENADE_VISUAL_SIZE);
+		glEnd();
+	}
 }
+
+void Grenade::Update(const double* pMap, const std::vector<NPC*>& npcs)
+{
+	if (!isExploding)
+	{
+		currentX += dirX * GRENADE_SPEED;
+		currentY += dirY * GRENADE_SPEED;
+
+		double new_dx = targetX - currentX;
+		double new_dy = targetY - currentY;
+
+		if ((new_dx * dirX + new_dy * dirY) < 0)
+		{
+			currentX = targetX;
+			currentY = targetY;
+			SetIsExploding(true);
+		}
+
+		if (currentX <= 0 || currentX >= MSX || currentY <= 0 || currentY >= MSY ||
+			pMap[(int)currentX * MSY + (int)currentY] != (double)EMPTY)
+		{
+			SetIsExploding(true);
+		}
+	}
+
+	if (isExploding)
+	{
+		Explode(pMap, npcs);
+	}
+}
+
 
 void Grenade::Explode(const double* pMap, const std::vector<NPC*>& npcs)
 {
@@ -42,6 +103,10 @@ void Grenade::Explode(const double* pMap, const std::vector<NPC*>& npcs)
 
 bool Grenade::IsActive()
 {
+	if (!isExploding)
+	{
+		return true;
+	}
 	int i;
 	for (i = 0; i < NUM_BULLETS; i++)
 	{
@@ -50,22 +115,30 @@ bool Grenade::IsActive()
 			return true;
 		}
 	}
-	return false;
+	return false; 
 }
 
 void Grenade::SetIsExploding(bool value)
 {
-	isExploding = value;
-	int i;
-	for (i = 0; i < NUM_BULLETS; i++)
-		bullets[i]->SetIsMoving(value);
+	if (value && !isExploding)
+	{
+		isExploding = value;
+		int i;
+
+		for (i = 0; i < NUM_BULLETS; i++)
+			bullets[i]->SetIsMoving(value);
+	}
+	else if (!value)
+	{
+		isExploding = value;
+	}
 }
 
-// vvv שינוי במימוש הפונקציה vvv
+
 void Grenade::CreateSecurityMap(const double* pMap, double smap[MSX][MSY])
 {
 	int i;
 	for (i = 0; i < NUM_BULLETS; i++)
-		bullets[i]->CreateSecurityMap(pMap, smap); // קריאה לפונקציה המעודכנת
+		bullets[i]->CreateSecurityMap(pMap, smap); 
 
 }

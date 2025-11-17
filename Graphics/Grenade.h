@@ -3,19 +3,24 @@
 #include "NPC.h"
 
 const int NUM_BULLETS = 20;
+const double GRENADE_SPEED = 2;
 
 class Grenade
 {
 private:
-	double x, y;
+	double currentX, currentY;
+	double targetX, targetY;
+	double dirX, dirY;
+
 	bool isExploding;
 	Bullet* bullets[NUM_BULLETS];
 	TeamColor team;
 public:
-	Grenade(double posX, double posY, TeamColor grenadeTeam);
+	Grenade(double startX, double startY, double endX, double endY, TeamColor grenadeTeam);
 	~Grenade();
 	void Show();
 
+	void Update(const double* pMap, const std::vector<NPC*>& npcs);
 	void Explode(const double* pMap, const std::vector<NPC*>& npcs);
 	void SetIsExploding(bool value);
 

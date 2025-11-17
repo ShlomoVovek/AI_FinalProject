@@ -43,10 +43,29 @@ void MedicGoToTargetState::Execute(Medic* agent)
         return;
     }
 
+    if (agent->IsSurviveMode() && agent->HasMedicine())
+    {
+        NPC* nearbyPatient = agent->FindNearbyInjuredAlly(true);
+
+        if (nearbyPatient != nullptr)
+        {
+            std::cout << "Medic (Survival Mode): INTERRUPT TARGET! Found *closer* patient. Prioritizing.\n";
+
+            auto it = std::find(agent->patientsQueue.begin(), agent->patientsQueue.end(), nearbyPatient);
+            if (it != agent->patientsQueue.end())
+            {
+                agent->patientsQueue.remove(nearbyPatient);
+            }
+            agent->patientsQueue.push_front(nearbyPatient);
+
+            agent->SetState(new MedicGoToTargetState());
+            return;
+        }
+    }
+
     NPC* patient = agent->GetNextPatient();
     Point medicLoc = agent->GetLocation();
 
-    // 2. בדיקת תקינות פצוע (בדיקה מתמשכת)
     if (!patient || !patient->IsAlive() || patient->GetHealth() >= MAX_HP)
     {
         if (patient)

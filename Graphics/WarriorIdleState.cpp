@@ -6,10 +6,16 @@ void WarriorIdleState::OnEnter(Warrior* warrior)
 {
     std::cout << "Warrior entering IDLE state\n";
     warrior->ClearPath();
+    warrior->idlePatrolTimer = 70;
 }
 
 void WarriorIdleState::Execute(Warrior* warrior)
 {
+    if (warrior->idlePatrolTimer > 0)
+    {
+        warrior->idlePatrolTimer--;
+    }
+
     // Check health and ammo status
     if (warrior->GetHealth() < CRITICAL_HP && !warrior->HasRequestedMedic())
     {

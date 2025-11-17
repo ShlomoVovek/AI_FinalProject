@@ -164,8 +164,10 @@ void Warrior::ThrowGrenade(Point enemyLocation)
 		std::cout << "Warrior (Team " << (team == TEAM_RED ? "RED" : "BLUE")
 			<< ") throwing grenade! Grenades left: " << grenades << "\n";
 
-		Grenade* pGrenade = new Grenade(enemyLocation.x, enemyLocation.y, this->team);
-		pGrenade->SetIsExploding(true);
+		Point startPos = this->GetLocation();
+		Grenade* pGrenade = new Grenade(
+			startPos.x, startPos.y, enemyLocation.x, enemyLocation.y, this->team);
+
 		activeGrenades.push_back(pGrenade);
 	}
 	else
@@ -236,7 +238,7 @@ void Warrior::UpdateGrenades(const double* pMap, const std::vector<NPC*>& npcs)
 	for (auto it = activeGrenades.begin(); it != activeGrenades.end(); )
 	{
 		Grenade* pGrenade = *it;
-		pGrenade->Explode(pMap, npcs);
+		pGrenade->Update(pMap, npcs);
 
 		if (!pGrenade->IsActive())
 		{
@@ -260,15 +262,15 @@ void Warrior::Show() const
 
 void Warrior::DoSomeWork(const double* pMap)
 {
-	if (!IsAlive()) return;
-
-	BuildViewMap(pMap);
-
 	UpdateShots();
 	if (npcList != nullptr)
 	{
 		UpdateGrenades(pMap, *npcList);
 	}
+
+	if (!IsAlive()) return;
+
+	BuildViewMap(pMap);
 
 	if (isSurviveMode && !dynamic_cast<WarriorRetreatingState*>(currentState))
 	{
@@ -570,6 +572,10 @@ void Warrior::HandleSurviveModeLogic()
 	// 3. Priority: If idle, hunt for enemies (move to a random strategic point)
 	if (dynamic_cast<WarriorIdleState*>(currentState)) //
 	{
+		if (idlePatrolTimer > 0)
+		{
+			return;
+		}
 		// This uses the function you had commented out
 		Point strategicTarget = GetRandomMapTarget();
 
@@ -588,19 +594,9 @@ Point Warrior::GetRandomMapTarget()
 {
 
 	const double* safetyMap = GetViewMap();
-	const double DEFENSIVE_RANGE = 70.0;
-
-	Point safePos = FindClosestSafePosition(DEFENSIVE_RANGE, safetyMap);
-
-	if (safePos.x != location.x || safePos.y != location.y)
-	{
-		std::cout << "Warrior found a SAFE position for patrol: ("
-			<< safePos.x << ", " << safePos.y << ") using FindClosestSafePosition.\n";
-		return safePos;
-	}
 
 	Point randomTarget;
-	const int MAX_ATTEMPTS = 50;
+	const int MAX_ATTEMPTS = 20;
 
 	for (int i = 0; i < MAX_ATTEMPTS; ++i)
 	{

@@ -20,6 +20,26 @@ void MedicGoToBaseState::Execute(Medic* agent)
         return;
     }
 
+    if (agent->IsSurviveMode() && agent->HasMedicine())
+    {
+        NPC* nearbyPatient = agent->FindNearbyInjuredAlly();
+        if (nearbyPatient != nullptr)
+        {
+            std::cout << "Medic (Survival Mode): INTERRUPT BASE! Found nearby patient. Going to heal.\n";
+
+            // הוסף או העבר לראש התור
+            auto it = std::find(agent->patientsQueue.begin(), agent->patientsQueue.end(), nearbyPatient);
+            if (it != agent->patientsQueue.end())
+            {
+                agent->patientsQueue.remove(nearbyPatient);
+            }
+            agent->patientsQueue.push_front(nearbyPatient);
+
+            agent->SetState(new MedicGoToTargetState());
+            return;
+        }
+    }
+
     if (!pathCalculated)
     {
         Point baseLoc = agent->GetBaseLocation();

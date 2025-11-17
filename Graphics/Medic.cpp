@@ -95,7 +95,7 @@ Point Medic::GetBaseLocation() const // TODO: change to random location search b
 	return p;
 }
 
-NPC* Medic::GetNextPatient()
+NPC* Medic::GetNextPatient() const
 {
 	if (patientsQueue.empty()) return nullptr;
 	return patientsQueue.front();
@@ -240,7 +240,33 @@ bool Medic::NeedsSelfHeal() const
 }
 
 
+NPC* Medic::FindNearbyInjuredAlly(bool excludeCurrentTarget) const
+{
+	const double SURVIVAL_HEAL_RADIUS = 5.0;
 
+	if (npcList == nullptr) return nullptr;
+
+	Point myLoc = GetLocation();
+	NPC* currentTarget = excludeCurrentTarget ? GetNextPatient() : nullptr;
+
+	for (NPC* ally : *npcList)
+	{
+		if (ally != this &&
+			ally->GetTeam() == this->GetTeam() &&
+			ally->IsAlive() &&
+			ally->GetHealth() < MAX_HP &&
+			Distance(myLoc.x, myLoc.y, ally->GetLocation().x, ally->GetLocation().y) <= SURVIVAL_HEAL_RADIUS)
+		{
+			if (excludeCurrentTarget && ally == currentTarget)
+			{
+				continue;
+			}
+			return ally;
+		}
+	}
+
+	return nullptr;
+}
 
 
 

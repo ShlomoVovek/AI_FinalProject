@@ -54,7 +54,7 @@ public:
 	bool IsIdle() const;
 	void AssignHealMission(NPC* injuredSoldier);
 
-	NPC* GetNextPatient();
+	NPC* GetNextPatient() const;
 	void RemoveCurrentPatient();
 
 	// NPC functions
@@ -62,6 +62,9 @@ public:
 	void ReportLowAmmo(NPC* warrior) override;
 	void ReportInjury(NPC* injuredSoldier) override;
 	void ExecuteCommand(int commandCode, Point target) override;
+
+	// for survival mode
+	NPC* FindNearbyInjuredAlly(bool excludeCurrentTarget = false) const;
 
 	// healing methods
 	bool NeedsSelfHeal() const;

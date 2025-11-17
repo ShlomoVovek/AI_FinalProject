@@ -17,7 +17,21 @@ void MedicIdleState::Execute(Medic* agent)
         return;
     }
     
-    //if (agent->GetPatientTarget() != nullptr)
+    if (agent->IsSurviveMode())
+    {
+        NPC* nearbyPatient = agent->FindNearbyInjuredAlly();
+        if (nearbyPatient != nullptr)
+        {
+            // בדוק אם הוא כבר בתור
+            auto it = std::find(agent->patientsQueue.begin(), agent->patientsQueue.end(), nearbyPatient);
+            if (it == agent->patientsQueue.end())
+            {
+                std::cout << "Medic (Survival Mode): Found nearby patient. Adding to front of queue.\n";
+                agent->patientsQueue.push_front(nearbyPatient);
+            }
+           
+        }
+    }
 
     if (!agent->patientsQueue.empty())
     {

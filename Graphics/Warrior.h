@@ -7,11 +7,11 @@
 class WarriorState;
 
 // ammo
-const int MAX_AMMO = 10;
+const int MAX_AMMO = 15;
 const int CRITICAL_AMMO = (int) MAX_AMMO * 0.3;
-const int MAX_GRENADE = 4;
+const int MAX_GRENADE = 8;
 const int CRITICAL_GRENADE = 1;
-const double GUN_HIT_DAMAGE = 15.0;
+const double GUN_HIT_DAMAGE = 9.0;
 
 // range
 const double RIFLE_RANGE = 25.0;
@@ -41,6 +41,8 @@ private:
 	bool hasReportedInjury = false;
 	Point currentAttackTarget;
 	
+	int idlePatrolTimer = 0;
+
 	// Help timeout tracking
 	int framesWaitingForMedic;
 	int framesWaitingForSupply;
