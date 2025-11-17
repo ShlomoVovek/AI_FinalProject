@@ -69,7 +69,6 @@ void CommanderRepositioningState::Execute(Commander* commander)
     {
         if (commander->GetHealth() > 40)
         {
-            commander->allSpottedEnemies.clear();
             commander->SetPlannedCommand(CMD_NONE, commander->GetLocation());
             std::cout << "Commander reposition complete, returning to command\n";
             commander->SetState(new CommanderAnalyzingState());

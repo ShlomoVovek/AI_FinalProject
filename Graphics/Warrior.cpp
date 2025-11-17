@@ -25,6 +25,11 @@ Warrior::~Warrior()
 		delete currentState;
 		currentState = nullptr;
 	}
+	for (Grenade* g : activeGrenades)
+	{
+		delete g;
+	}
+	activeGrenades.clear();
 }
 
 void Warrior::SetState(WarriorState* newState)
@@ -43,7 +48,6 @@ void Warrior::SetState(WarriorState* newState)
 	}
 }
 
-// TODO: build this method
 Point Warrior::DetermineBestAttackPosition(Point enemyLoc)
 {
 	// Calculate a tactical position near the enemy
@@ -72,15 +76,14 @@ Point Warrior::DetermineBestAttackPosition(Point enemyLoc)
 	if (attackPos.y >= MSY - 1) attackPos.y = MSY - 2;
 
 	double calculated_dist = Distance(location, attackPos);
-	const double MAX_STRATEGIC_MOVE = 20.0; // מגביל את התנועה המיידית ל-20 יחידות
+	const double MAX_STRATEGIC_MOVE = 20.0; 
 
 	if (calculated_dist > MAX_STRATEGIC_MOVE)
 	{
-		// וקטור מהמיקום הנוכחי לנקודת ההתקפה המקורית
+
 		double dx_cap = attackPos.x - location.x;
 		double dy_cap = attackPos.y - location.y;
 
-		// חישוב מיקום חדש במרחק MAX_STRATEGIC_MOVE בכיוון המקורי
 		attackPos.x = (int)(location.x + (dx_cap / calculated_dist) * MAX_STRATEGIC_MOVE);
 		attackPos.y = (int)(location.y + (dy_cap / calculated_dist) * MAX_STRATEGIC_MOVE);
 	}
@@ -118,7 +121,6 @@ void Warrior::CalculatePathAndMove()
 	}
 }
 
-// TODO: delete shoots when is not alive
 void Warrior::Shoot(NPC* pEnemy)
 {
 	if (pEnemy == nullptr) return;
@@ -145,7 +147,6 @@ void Warrior::Shoot(NPC* pEnemy)
 	}
 	else
 	{
-		std::cout << "Warrior out of ammo!\n";
 		RequestSupply();
 	}
 }
@@ -156,10 +157,13 @@ void Warrior::ThrowGrenade(Point enemyLocation)
 		grenades--;
 		std::cout << "Warrior (Team " << (team == TEAM_RED ? "RED" : "BLUE")
 			<< ") throwing grenade! Grenades left: " << grenades << "\n";
+
+		Grenade* pGrenade = new Grenade(enemyLocation.x, enemyLocation.y, this->team);
+		pGrenade->SetIsExploding(true);
+		activeGrenades.push_back(pGrenade);
 	}
 	else
 	{
-		std::cout << "Warrior out of grenades!\n";
 		RequestSupply();
 	}
 }
@@ -195,6 +199,14 @@ void Warrior::DrawShots() const
 	glLineWidth(1.0); // Reset line width
 }
 
+void Warrior::DrawGrenades() const
+{
+	for (Grenade* pGrenade : activeGrenades)
+	{
+		pGrenade->Show();
+	}
+}
+
 void Warrior::UpdateShots()
 {
 	// Update all active shots and remove expired ones
@@ -212,11 +224,32 @@ void Warrior::UpdateShots()
 		}
 	}
 }
+
+void Warrior::UpdateGrenades(const double* pMap, const std::vector<NPC*>& npcs)
+{
+	for (auto it = activeGrenades.begin(); it != activeGrenades.end(); )
+	{
+		Grenade* pGrenade = *it;
+		pGrenade->Explode(pMap, npcs);
+
+		if (!pGrenade->IsActive())
+		{
+			delete pGrenade; 
+			it = activeGrenades.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
+}
+
 void Warrior::Show() const
 {
 	NPC::Show();
 	
 	DrawShots(); // Draw shooting lines on top
+	DrawGrenades();
 }
 
 void Warrior::DoSomeWork(const double* pMap)
@@ -226,6 +259,22 @@ void Warrior::DoSomeWork(const double* pMap)
 	BuildViewMap(pMap);
 
 	UpdateShots();
+	if (npcList != nullptr)
+	{
+		UpdateGrenades(pMap, *npcList);
+	}
+
+	if (isSurviveMode && !dynamic_cast<WarriorRetreatingState*>(currentState))
+	{
+		HandleSurviveModeLogic();
+		if (!dynamic_cast<WarriorIdleState*>(currentState))
+			return;
+	}
+
+	if (currentState)
+	{
+		currentState->Execute(this);
+	}
 
 	if (!CanFight() && myCommander != nullptr && !hasReportedInjury)
 	{
@@ -501,36 +550,43 @@ bool Warrior::CanShootAt(Point target) const
 
 void Warrior::HandleSurviveModeLogic()
 {
-	if (health < INJURED_THRESHOLD || ammo == 0)
+	// 1. Priority: Self-preservation (retreat if low health/ammo)
+	if (health < INJURED_THRESHOLD || ammo == 0) // (using health/ammo logic)
 	{
 		std::cout << "Warrior (" << (team == TEAM_RED ? "RED" : "BLUE")
 			<< ") is low on resources - seeking safety/resupply.\n";
-		ExecuteCommand(CMD_RETREAT, location); 
+		ExecuteCommand(CMD_RETREAT, location); //
 		return;
 	}
 
-	NPC* pEnemy = ScanForEnemies();
+	// 2. Priority: Engage any visible enemy
+	NPC* pEnemy = ScanForEnemies(); //
 	if (pEnemy != nullptr)
 	{
 		std::cout << "Warrior (" << (team == TEAM_RED ? "RED" : "BLUE")
 			<< ") spotted enemy in Survive Mode - Initiating ATTACK.\n";
 
-		ExecuteCommand(CMD_ATTACK, pEnemy->GetLocation());
+		ExecuteCommand(CMD_ATTACK, pEnemy->GetLocation()); //
 		return;
 	}
 
-	if (dynamic_cast<WarriorIdleState*>(currentState))
+	// 3. Priority: If idle, hunt for enemies (move to a random strategic point)
+	if (dynamic_cast<WarriorIdleState*>(currentState)) //
 	{
-		// Point strategicTarget = GetRandomMapTarget();
+		// This uses the function you had commented out
+		Point strategicTarget = GetRandomMapTarget();
 
-		std::cout << "Warrior (" << (team == TEAM_RED ? "RED" : "BLUE")
-			<< ") no current enemy - ADVANCING to strategic point.\n";
-		//ExecuteCommand(CMD_MOVE, strategicTarget);
+		// Only move if a valid new target was found
+		if (strategicTarget.x != location.x || strategicTarget.y != location.y)
+		{
+			std::cout << "Warrior (" << (team == TEAM_RED ? "RED" : "BLUE")
+				<< ") no current enemy - ADVANCING to strategic point ("
+				<< strategicTarget.x << ", " << strategicTarget.y << ").\n";
+			ExecuteCommand(CMD_MOVE, strategicTarget); //
+		}
 	}
 }
 
-// try find safe Point
-/*
 Point Warrior::GetRandomMapTarget()
 {
 
@@ -564,4 +620,3 @@ Point Warrior::GetRandomMapTarget()
 
 	return location;
 }
-*/

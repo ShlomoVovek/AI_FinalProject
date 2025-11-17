@@ -22,8 +22,12 @@ Map* gameMap = nullptr;
 std::vector<NPC*> allAgents;
 std::vector<Warrior*> allWarriors;
 
+bool isGameOver = false;
+
 void InitCharacters()
 {
+	isGameOver = false;
+
 	// reset characters
 	for (NPC* agent : allAgents)
 		delete agent;
@@ -259,6 +263,54 @@ void idle()
 {
 	if (gameMap == nullptr)
 		return;
+
+	if (isGameOver)
+	{
+		glutPostRedisplay();
+		Sleep(50);
+		return;
+	}
+
+	// check if game is over
+	int livingRedAgents = 0;
+	int livingBlueAgents = 0;
+
+	for (NPC* agent : allAgents)
+	{
+		if (agent->IsAlive())
+		{
+			if (agent->GetTeam() == TEAM_RED)
+				livingRedAgents++;
+			else if (agent->GetTeam() == TEAM_BLUE)
+				livingBlueAgents++;
+		}
+	}
+
+	if ((livingRedAgents == 0 || livingBlueAgents == 0) && !allAgents.empty())
+	{
+		isGameOver = true;
+
+		if (livingRedAgents == 0 && livingBlueAgents > 0)
+		{
+			printf("====================================\n");
+			printf("All RED agents are down. BLUE team wins!\n");
+			printf("====================================\n");
+		}
+		else if (livingBlueAgents == 0 && livingRedAgents > 0)
+		{
+			printf("=====================================\n");
+			printf("All BLUE agents are down. RED team wins!\n");
+			printf("=====================================\n");
+		}
+		else if (livingRedAgents == 0 && livingBlueAgents == 0)
+		{
+			printf("=================================\n");
+			printf("It's a draw! All agents are down.\n");
+			printf("=================================\n");
+		}
+
+		printf("Game Over. Press 'r' to restart.\n");
+	}
 	
 	const double* pMapData = (const double*)gameMap->gameMapData;
 
@@ -272,6 +324,25 @@ void idle()
 	Sleep(50);
 }
 
+void keyboard(unsigned char key, int x, int y)
+{
+	switch (key)
+	{
+	case 'r':
+	case 'R':
+		if (isGameOver)
+		{
+			printf("Restarting game...\n");
+			InitCharacters(); 
+			glutIdleFunc(idle);
+		}
+		break;
+	case 27: // ESC key
+		exit(0); // Exit game
+		break;
+	}
+}
+
 int main(int argc, char* argv[]) 
 {
 	glutInit(&argc, argv);
@@ -283,8 +354,7 @@ int main(int argc, char* argv[])
 	glutDisplayFunc(display);
 	//glutDisplayFunc(displayGameMap);
 	glutIdleFunc(idle);
-
-	//glutKeyboardFunc(keyboard);
+	glutKeyboardFunc(keyboard);
 
 	// TODO: glutReshapeFunc(reshape);
 

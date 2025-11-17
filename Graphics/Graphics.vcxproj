@@ -119,12 +119,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="Commander.cpp" />
     <ClCompile Include="CommanderAnalyzingState.cpp" />
     <ClCompile Include="CommanderIssuingOrdersState.cpp" />
     <ClCompile Include="CommanderPlanningState.cpp" />
     <ClCompile Include="CommanderRepositioningState.cpp" />
+    <ClCompile Include="Grenade.cpp" />
     <ClCompile Include="IPathfinding.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
@@ -147,6 +149,7 @@
     <ClCompile Include="WarriorRetreatingState.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bullet.h" />
     <ClInclude Include="Cell.h" />
     <ClInclude Include="Commander.h" />
     <ClInclude Include="CommanderAnalyzingState.h" />
@@ -155,6 +158,7 @@
     <ClInclude Include="CommanderRepositioningState.h" />
     <ClInclude Include="CommanderState.h" />
     <ClInclude Include="Definition.h" />
+    <ClInclude Include="Grenade.h" />
     <ClInclude Include="IPathfinding.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Medic.h" />

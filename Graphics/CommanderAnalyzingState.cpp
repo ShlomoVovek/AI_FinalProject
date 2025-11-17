@@ -7,6 +7,7 @@
 
 void CommanderAnalyzingState::OnEnter(Commander* commander)
 {
+    commander->allSpottedEnemies.clear();
     std::cout << "Commander (Team " << (commander->GetTeam() == TEAM_RED ? "RED" : "BLUE")
         << ") entering ANALYZING state\n";
 }

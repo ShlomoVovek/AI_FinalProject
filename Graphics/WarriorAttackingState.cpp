@@ -43,7 +43,6 @@ void WarriorAttackingState::Execute(Warrior* warrior)
                 }
                 else
                 {
-                    std::cout << "Warrior out of ammo!\n";
                     warrior->RequestSupply();
                 }
             }

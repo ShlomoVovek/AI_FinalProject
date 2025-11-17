@@ -1,20 +1,21 @@
 #pragma once
 #include "NPC.h"
 #include "IPathfinding.h"
+#include "Grenade.h"
+#include <list>
 
 class WarriorState;
 
 // ammo
-const int MAX_AMMO = 15;
+const int MAX_AMMO = 20;
 const int CRITICAL_AMMO = (int) MAX_AMMO * 0.3;
 const int MAX_GRENADE = 3;
 const int CRITICAL_GRENADE = 1;
-const double GUN_HIT_DAMAGE = 7.0;
-const double GRENADE_HIT_DAMAGE = 30.0;
+const double GUN_HIT_DAMAGE = 15.0;
 
 // range
-const double RIFLE_RANGE = 60.0;
-const double GRENADE_RANGE = 15.0;
+const double RIFLE_RANGE = 45.0;
+const double GRENADE_RANGE = 30.0;
 const double ATTACK_THRESHOLD = 5.0;
 
 // Shot visualization
@@ -45,6 +46,7 @@ private:
 
 	// Shot visualization
 	std::vector<ShotInfo> activeShots;
+	std::list<Grenade*> activeGrenades;
 
 	Point DetermineBestAttackPosition(Point enemyLoc);
 
@@ -82,7 +84,9 @@ public:
 
 	// visualization
 	void DrawShots() const;
+	void DrawGrenades() const;
 	void UpdateShots();
+	void UpdateGrenades(const double* pMap, const std::vector<NPC*>& npcs);
 
 	void Show() const override;
 
@@ -101,7 +105,7 @@ public:
 
 	void Resupply(int ammoAmount, int grenadeAmount);
 
-	// Point GetRandomMapTarget();
+	Point GetRandomMapTarget();
 
 	// getters
 	int GetAmmo() const { return ammo; }
