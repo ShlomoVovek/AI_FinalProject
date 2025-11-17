@@ -66,6 +66,12 @@ Point Warrior::DetermineBestAttackPosition(Point enemyLoc)
 
 	Point attackPos;
 	double targetDist = RIFLE_RANGE * 0.7;
+
+	if (grenades > 1)
+	{
+		targetDist = RIFLE_RANGE * 1.2;
+	}
+	
 	attackPos.x = (int)(enemyLoc.x - (dx / euclideanDist) * targetDist);
 	attackPos.y = (int)(enemyLoc.y - (dy / euclideanDist) * targetDist);
 
@@ -267,8 +273,6 @@ void Warrior::DoSomeWork(const double* pMap)
 	if (isSurviveMode && !dynamic_cast<WarriorRetreatingState*>(currentState))
 	{
 		HandleSurviveModeLogic();
-		if (!dynamic_cast<WarriorIdleState*>(currentState))
-			return;
 	}
 
 	if (currentState)
@@ -288,13 +292,6 @@ void Warrior::DoSomeWork(const double* pMap)
 	if (CanFight() && hasReportedInjury)
 	{
 		hasReportedInjury = false;
-	}
-
-	if (isSurviveMode && !dynamic_cast<WarriorRetreatingState*>(currentState))
-	{
-		HandleSurviveModeLogic();
-		if (!dynamic_cast<WarriorIdleState*>(currentState))
-			return;
 	}
 }
 void Warrior::ExecuteCommand(int commandCode, Point target)
@@ -377,6 +374,11 @@ void Warrior::ExecuteCommand(int commandCode, Point target)
 				SetDirection(currentPath.front());
 				SetState(new WarriorAttackingState());
 				std::cout << "Attack path found! Steps: " << currentPath.size() << "\n";
+			}
+			else
+			{
+				std::cout << "Already at attack position, engaging.\n";
+				SetState(new WarriorAttackingState());
 			}
 		}
 		else

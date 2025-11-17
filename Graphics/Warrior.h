@@ -9,19 +9,19 @@ class WarriorState;
 // ammo
 const int MAX_AMMO = 10;
 const int CRITICAL_AMMO = (int) MAX_AMMO * 0.3;
-const int MAX_GRENADE = 3;
+const int MAX_GRENADE = 4;
 const int CRITICAL_GRENADE = 1;
 const double GUN_HIT_DAMAGE = 15.0;
 
 // range
-const double RIFLE_RANGE = 30.0;
+const double RIFLE_RANGE = 25.0;
 const double GRENADE_RANGE = 65.0;
 const double ATTACK_THRESHOLD = 5.0;
 
 // Shot visualization
 const int SHOT_DISPLAY_FRAMES = 15;
 
-const int HELP_TIMEOUT_FRAMES = 300;
+const int HELP_TIMEOUT_FRAMES = 250;
 
 struct ShotInfo
 {

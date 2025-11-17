@@ -32,8 +32,9 @@ void WarriorAttackingState::Execute(Warrior* warrior)
         {
             warrior->ThrowGrenade(enemyPos);
             std::cout << "Warrior throwing grenade at long-range enemy\n";
+            framesSinceLastShot = 0;
         }
-        // 2. Check RIFLE range (this is the AI's preferred combat distance)
+        // 2. Check RIFLE range
         else if (distance <= RIFLE_RANGE && warrior->CanShootAt(enemyPos))
         {
             if (framesSinceLastShot >= SHOOT_COOLDOWN)
@@ -51,6 +52,7 @@ void WarriorAttackingState::Execute(Warrior* warrior)
                     // Fallback: Out of ammo, use grenade
                     warrior->ThrowGrenade(enemyPos);
                     std::cout << "Warrior out of ammo, throwing grenade\n";
+                    framesSinceLastShot = 0;
                 }
                 else
                 {
