@@ -36,6 +36,18 @@ void SupplyWaitState::Execute(SupplyAgent* agent)
     }
     else
     {
+        if (agent->IsSurviveMode() && agent->HasAmmo())
+        {
+            NPC* nearbyWarrior = agent->FindNearbyAllyNeedsResupply(false);
+            if (nearbyWarrior != nullptr)
+            {
+                std::cout << "SupplyAgent (Survival Mode): Found nearby warrior. Adding to queue.\n";
+                agent->deliveryQueue.push_back(nearbyWarrior);
+                agent->SetState(new SupplyGoToWarriorState());
+                return;
+            }
+        }
+
         // Stay in safe position
         agent->ClearPath();
         agent->isMoving = false;

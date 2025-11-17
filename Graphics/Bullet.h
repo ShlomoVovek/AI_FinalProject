@@ -2,7 +2,7 @@
 #include "Definition.h"
 #include "NPC.h"
 
-const double BULLET_SPEED = 0.35;
+const double BULLET_SPEED = 0.5;
 const double BULLET_LIFETIME = 0.5;
 const double BULLET_SIZE = 0.2;
 const double BULLET_DAMAGE = 2;

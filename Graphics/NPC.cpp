@@ -25,7 +25,6 @@ void NPC::SetCommander(Commander* pCommander)
 	myCommander = pCommander;
 }
 
-// TODO: check what it does and why important
 void NPC::SetDirection(Point target)
 {
 	// map boundaries
@@ -43,8 +42,6 @@ void NPC::SetDirection(Point target)
 		targetLocation.x, targetLocation.y);
 	if (manhattanDist > 0.1)
 	{
-		// For diagonal movement, normalize the vector
-		// TODO: DELETE diagonal movement
 		double euclideanLength = sqrt(dx * dx + dy * dy);
 		if (euclideanLength > 0.1)
 		{
@@ -63,7 +60,6 @@ void NPC::SetDirection(Point target)
 	}
 }
 
-// TODO: fix movement: obligate movement near frame
 void NPC::MoveToTarget()
 {
 	if (isMoving && gameMapPtr != nullptr)
@@ -110,14 +106,6 @@ void RestorePath(Cell* goalCell, std::list<Point>& path)
 
 void NPC::BuildViewMap(const double* pMap)
 {
-	// 1. reset NPC's view map
-	// TODO: check if really need to erase all every time or just once in a game or in couple frames.
-	// it is good that NPC will have memory about obstacles
-	/*
-	for (int i = 0; i < MSX; i++)
-		for (int j = 0; j < MSY; j++)
-			viewMap[i][j] = COST_UNKNOWN;
-	*/
 	for (int i = 0; i < MSX; i++)
 	{
 		for (int j = 0; j < MSY; j++)

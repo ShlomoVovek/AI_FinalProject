@@ -48,6 +48,8 @@ public:
 	void AssignSupplyMission(NPC* warrior);
 	void CleanDeliveryQueue();
 
+	NPC* FindNearbyAllyNeedsResupply(bool excludeCurrentTarget = false) const;
+
 	// Getters
 	NPC* GetDeliveryTarget() const { return deliveryQueue.empty() ? nullptr : deliveryQueue.front(); }
 	Point GetTargetLocation() const { return targetLocation; }

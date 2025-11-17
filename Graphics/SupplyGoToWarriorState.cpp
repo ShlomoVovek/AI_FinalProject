@@ -13,9 +13,27 @@ void SupplyGoToWarriorState::OnEnter(SupplyAgent* agent)
 
 void SupplyGoToWarriorState::Execute(SupplyAgent* agent)
 {
+    if (agent->IsSurviveMode() && agent->HasAmmo())
+    {
+        NPC* closerWarrior = agent->FindNearbyAllyNeedsResupply(true);
+        if (closerWarrior != nullptr)
+        {
+            std::cout << "SupplyAgent (Survival Mode): INTERRUPT! Found *closer* warrior. Prioritizing.\n";
+
+            auto it = std::find(agent->deliveryQueue.begin(), agent->deliveryQueue.end(), closerWarrior);
+            if (it != agent->deliveryQueue.end())
+            {
+                agent->deliveryQueue.erase(it);
+            }
+            agent->deliveryQueue.push_front(closerWarrior);
+
+            agent->SetState(new SupplyGoToWarriorState());
+            return;
+        }
+    }
+
     NPC* targetWarrior = agent->GetDeliveryTarget();
 
-    // בדיקה בסיסית, כפי שקיים גם במצב Delivering (רצוי להוסיף כאן בדיקה זו אם היא חסרה)
     if (targetWarrior == nullptr || !targetWarrior->IsAlive())
     {
         if (!agent->deliveryQueue.empty())

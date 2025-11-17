@@ -152,26 +152,26 @@ void Map::DrawForest()
 
     for (const auto& p : trees)
     {
-        // TODO: rearrange trees
+
         // --- Draw the bottom, wider triangle ---
         glBegin(GL_POLYGON);
         glColor3d(0, 0.5, 0);
         // Top-center point (slightly above center)
-        glVertex2d(p.x, p.y + (treeSize * 0.4)); // (p.x, p.y + 0.2)
+        glVertex2d(p.x, p.y + (treeSize * 0.4));
         // Bottom-left corner
-        glVertex2d(p.x - treeSize, p.y - treeSize); // (p.x - 0.5, p.y - 0.5)
+        glVertex2d(p.x - treeSize, p.y - treeSize);
         // Bottom-right corner
-        glVertex2d(p.x + treeSize, p.y - treeSize); // (p.x + 0.5, p.y - 0.5)
+        glVertex2d(p.x + treeSize, p.y - treeSize);
         glEnd();
 
-        // --- Draw the top, narrower triangle (overlapping) ---
+        // --- Draw the top ---
         glBegin(GL_POLYGON);
         // Top-most point
-        glVertex2d(p.x, p.y + treeSize); // (p.x, p.y + 0.5)
-        // Bottom-left point (narrower base, above the absolute bottom)
-        glVertex2d(p.x - (treeSize * 0.6), p.y - (treeSize * 0.2)); // (p.x - 0.3, p.y - 0.1)
+        glVertex2d(p.x, p.y + treeSize);
+
+        glVertex2d(p.x - (treeSize * 0.6), p.y - (treeSize * 0.2));
         // Bottom-right point (narrower base)
-        glVertex2d(p.x + (treeSize * 0.6), p.y - (treeSize * 0.2)); // (p.x + 0.3, p.y - 0.1)
+        glVertex2d(p.x + (treeSize * 0.6), p.y - (treeSize * 0.2));
         glEnd();
 
         glColor3d(0, 0, 0);

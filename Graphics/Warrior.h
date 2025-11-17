@@ -112,7 +112,7 @@ public:
 	bool HasRequestedSupply() const { return requestedSupply; }
 
 	void Resupply(int ammoAmount, int grenadeAmount);
-
+	bool IsNeedSupply() const { return (ammo < CRITICAL_AMMO) || (grenades <= CRITICAL_GRENADE); }
 	Point GetRandomMapTarget();
 
 	// getters

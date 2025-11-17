@@ -153,7 +153,7 @@ void InitCharacters()
 	Commander* redCommander = nullptr;
 	Commander* blueCommander = nullptr;
 
-	// TODO: call for another helper method, 
+	// TODO: call for another helper method, instead of this long one
 	
 	// find Commander
 	for (NPC* agent : allAgents)
@@ -204,7 +204,7 @@ void displayGameMap()
 {
 	glClear(GL_COLOR_BUFFER_BIT); // clean frame buffer
 
-	ShowMaze(); // This draws your regular maze
+	ShowMaze();
 
 	glutSwapBuffers(); // show all
 }
@@ -215,13 +215,7 @@ void displayCommanderMap()
 {
 	glClear(GL_COLOR_BUFFER_BIT); // clean frame buffer
 
-	// --- TODO: Add your logic here ---
-	// You probably want to draw the base map first
 	ShowMaze();
-
-	// Then, draw the visibility overlay on top of it
-	// For example:
-	// DrawCommanderVisibilityOverlay();
 
 	glutSwapBuffers(); // show all
 }
@@ -251,14 +245,12 @@ void display()
 	if (gameMap)
 		gameMap->DrawField();
 
-	// draw all characters (this will now include the shot lines for warriors)
 	for (NPC* agent : allAgents)
 		agent->Show();
 
 	glutSwapBuffers(); // show all
 }
 
-// TODO: check if group is winner
 void idle() 
 {
 	if (gameMap == nullptr)
@@ -330,12 +322,11 @@ void keyboard(unsigned char key, int x, int y)
 	{
 	case 'r':
 	case 'R':
-		if (isGameOver)
-		{
-			printf("Restarting game...\n");
-			InitCharacters(); 
-			glutIdleFunc(idle);
-		}
+	{
+		printf("Restarting game...\n");
+		InitCharacters();
+		glutIdleFunc(idle);
+	}
 		break;
 	case 27: // ESC key
 		exit(0); // Exit game

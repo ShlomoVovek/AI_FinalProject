@@ -298,7 +298,42 @@ void SupplyAgent::CleanDeliveryQueue()
     }
 }
 
+NPC* SupplyAgent::FindNearbyAllyNeedsResupply(bool excludeCurrentTarget) const
+{
+    const double SURVIVAL_RESUPPLY_RADIUS = 5.0;
 
+    if (npcList == nullptr) return nullptr;
+
+    Point myLoc = GetLocation();
+    NPC* currentTarget = excludeCurrentTarget ? GetDeliveryTarget() : nullptr;
+
+    for (NPC* ally : *npcList)
+    {
+        // 1. בדיקות בסיסיות (לא אני, מהקבוצה שלי, חי, בטווח)
+        if (ally == this ||
+            ally->GetTeam() != this->GetTeam() ||
+            !ally->IsAlive() ||
+            Distance(myLoc.x, myLoc.y, ally->GetLocation().x, ally->GetLocation().y) > SURVIVAL_RESUPPLY_RADIUS)
+        {
+            continue;
+        }
+
+        // 2. בדיקה אם זה היעד הנוכחי שאנחנו רוצים להתעלם ממנו
+        if (excludeCurrentTarget && ally == currentTarget)
+        {
+            continue;
+        }
+
+        // 3. בדיקה ספציפית: האם זה לוחם שצריך אספקה
+        Warrior* warrior = dynamic_cast<Warrior*>(ally);
+        if (warrior && warrior->IsNeedSupply())
+        {
+            return warrior; // מצאנו!
+        }
+    }
+
+    return nullptr; // לא נמצא אף אחד
+}
 
 
 

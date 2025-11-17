@@ -151,7 +151,6 @@ Point IPathfinding::FindClosestSafePosition(double searchRange, const double* sa
 				if (visited[neighborIndex]) continue;
 
 				// 3. Walkability
-				// TODO: implement Distance & cost method
 				if (IsWalkable(safetyMap, neighbor))
 				{
 					// Use Manhattan distance for search range
@@ -173,7 +172,6 @@ bool IPathfinding::FindAStarPath(Point goal, const double* safetyMap)
 	currentPath.clear();
 	CleanupCells(createdCells);
 
-	// TODO: check if bases are walkable
 	if (!IsWalkable(safetyMap, goal))
 	{
 		// if not walkable, try finding other
