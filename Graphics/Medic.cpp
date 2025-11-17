@@ -117,12 +117,8 @@ void Medic::ExecuteCommand(int CommandCode, Point target)
 
 	switch (CommandCode)
 	{
-		// ... (CMD_RETREAT / CMD_MOVE)
-
 	case CMD_HEAL:
 	{
-		// ** שינוי לוגיקת CMD_HEAL **
-			// Find the injured soldier at this location
 		NPC* injuredSoldier = nullptr;
 		if (npcList != nullptr)
 		{
@@ -141,13 +137,13 @@ void Medic::ExecuteCommand(int CommandCode, Point target)
 
 		if (injuredSoldier != nullptr)
 		{
-			// הוספה לתור
+
 			if (std::find(patientsQueue.begin(), patientsQueue.end(), injuredSoldier) == patientsQueue.end())
 			{
 				patientsQueue.push_back(injuredSoldier);
 			}
 
-			if (IsIdle()) // רק אם במצב סרק מתחילים את המשימה
+			if (IsIdle())
 			{
 				std::cout << "Medic (Team " << (team == TEAM_RED ? "RED" : "BLUE")
 					<< ") received HEAL command. Moving to base first.\n";
@@ -157,7 +153,6 @@ void Medic::ExecuteCommand(int CommandCode, Point target)
 		else
 		{
 			std::cout << "Medic: Could not find injured soldier at target location!\n";
-			// אין צורך לחזור ל-Idle אם כבר לא שם
 		}
 		break;
 	}
@@ -190,7 +185,6 @@ void Medic::ReportInjury(NPC* injuredSoldier)
 
 void Medic::AssignHealMission(NPC* injuredSoldier)
 {
-	// Validation checks BEFORE assigning
 	if (!injuredSoldier)
 	{
 		std::cout << "Medic: Cannot assign mission - invalid soldier pointer.\n";
@@ -215,20 +209,17 @@ void Medic::AssignHealMission(NPC* injuredSoldier)
 		return;
 	}
 
-	// Check if we're already assigned to this patient
 	if (std::find(patientsQueue.begin(), patientsQueue.end(), injuredSoldier) != patientsQueue.end())
 	{
 		std::cout << "Medic: Already assigned to this patient.\n";
 		return;
 	}
 
-	// All checks passed - assign the mission
 	patientsQueue.push_back(injuredSoldier);
 
 	std::cout << "Medic (Team " << (team == TEAM_RED ? "RED" : "BLUE")
 		<< ") assigned HEAL mission. Moving to base first.\n";
 
-	// Start the FSM by transitioning to the "GoToBase" state
 	SetState(new MedicGoToBaseState());
 }
 

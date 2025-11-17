@@ -43,7 +43,31 @@ void Commander::SetState(CommanderState* newState)
 
 void Commander::CalculatePathAndMove()
 {
-	MoveToTarget(); // search logic
+	if (!HasPath())
+	{
+		isMoving = false;
+		return;
+	}
+	Point nextWaypoint = currentPath.front();
+
+	double distToWaypoint = ManhattanDistance(location, nextWaypoint);
+
+	if (distToWaypoint < 1.5)
+	{
+		currentPath.pop_front();
+
+		if (!HasPath())
+		{
+			isMoving = false;
+			std::cout << "Commander reached end of A* path.\n";
+			return;
+		}
+
+		nextWaypoint = currentPath.front();
+	}
+
+	SetDirection(nextWaypoint);
+	MoveToTarget();
 }
 
 void Commander::ReportSighting(NpcType enemyType, Point EnemyLoc)
@@ -54,26 +78,38 @@ void Commander::ReportSighting(NpcType enemyType, Point EnemyLoc)
 
 void Commander::UpdateCombinedViewMap()
 {
-	// 1. reset View Map
-	for (int i = 0; i < MSX; ++i)
-		for (int j = 0; j < MSY; ++j)
-			combinedViewMap[i][j] = 0.0;
+	const double* selfViewMap = GetViewMap();
+
+	if (selfViewMap != nullptr) 
+	{
+		memcpy(combinedViewMap, selfViewMap, sizeof(double) * MSX * MSY);
+	}
+	else 
+	{
+		// Fallback
+		for (int i = 0; i < MSX; ++i)
+			for (int j = 0; j < MSY; ++j)
+				combinedViewMap[i][j] = 0.0;
+	}
 	
-	// 2. sum all team members View Maps
-	const double* memberViewMap = nullptr;
 	for (NPC* member : teamMembers)
 	{
-		if (member->IsAlive() && member->GetType() != COMMANDER)
-			memberViewMap = member->GetViewMap();
+		if (member == this || !member->IsAlive()) continue;
+
+		const double* memberViewMap = member->GetViewMap();
+		if (memberViewMap == nullptr) continue;
 
 		for (int i = 0; i < MSX; i++)
+		{
 			for (int j = 0; j < MSY; j++)
 			{
 				int index = i * MSY + j;
-				if (combinedViewMap[i][j] != NULL &&
-					memberViewMap[index] > combinedViewMap[i][j])
+				if (memberViewMap[index] > combinedViewMap[i][j])
+				{
 					combinedViewMap[i][j] = memberViewMap[index];
+				}
 			}
+		}
 	}
 }
 
@@ -299,54 +335,35 @@ void Commander::AssignHealingMissions()
 	if (injuredSoldiers.empty())
 		return;
 
-	// Find an idle medic
 	Medic* availableMedic = nullptr;
 	for (NPC* member : teamMembers)
 	{
 		if (member->GetType() == MEDIC && member->IsAlive())
 		{
 			Medic* medic = dynamic_cast<Medic*>(member);
-			if (medic && medic->IsIdle())
+			if (medic)
 			{
 				availableMedic = medic;
-				break;
+				break; 
 			}
 		}
 	}
 
 	if (!availableMedic)
 	{
-		std::cout << "Commander: No available medics.\n";
 		return;
 	}
 
-	// Find an injured soldier who isn't being treated
-	NPC* patientToAssign = nullptr;
-	for (auto it = injuredSoldiers.begin(); it != injuredSoldiers.end(); )
+	std::cout << "Commander: Assigning " << injuredSoldiers.size()
+		<< " heal mission(s) to an available medic.\n";
+
+	while (!injuredSoldiers.empty())
 	{
-		NPC* injured = *it;
+		NPC* patient = GetNextInjuredSoldier();
 
-		// Remove if dead or fully healed
-		if (!injured->IsAlive() || injured->GetHealth() >= MAX_HP)
+		if (patient && patient->IsAlive())
 		{
-			it = injuredSoldiers.erase(it);
-			continue;
+			availableMedic->AssignHealMission(patient);
 		}
-
-		// Check if already being treated
-		if (!IsPatientBeingTreated(injured))
-		{
-			patientToAssign = injured;
-			// it = injuredSoldiers.erase(it);  // ? REMOVE FROM QUEUE IMMEDIATELY
-			break;
-		}
-
-		++it;
-	}
-
-	if (patientToAssign)
-	{
-		std::cout << "Commander: Assigning heal mission to medic.\n";
-		availableMedic->AssignHealMission(patientToAssign);
 	}
 }

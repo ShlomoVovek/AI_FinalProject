@@ -13,7 +13,7 @@ void MedicGoToBaseState::OnEnter(Medic* agent)
 void MedicGoToBaseState::Execute(Medic* agent)
 {
    
-    if (agent->NeedsSelfHeal())
+    if (agent->NeedsSelfHeal() && agent->HasMedicine())
     {
         std::cout << "Medic interrupted GO_TO_BASE mission for self-heal!\\n";
         agent->SetState(new MedicHealingState());
@@ -27,7 +27,6 @@ void MedicGoToBaseState::Execute(Medic* agent)
         {
             std::cout << "Medic (Survival Mode): INTERRUPT BASE! Found nearby patient. Going to heal.\n";
 
-            // הוסף או העבר לראש התור
             auto it = std::find(agent->patientsQueue.begin(), agent->patientsQueue.end(), nearbyPatient);
             if (it != agent->patientsQueue.end())
             {

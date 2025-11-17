@@ -21,7 +21,9 @@ void CommanderPlanningState::Execute(Commander* commander)
     }
 
     // COOLDOWN
-    if ((commander->GetLastMajorCommand() == CMD_ATTACK || commander->GetLastMajorCommand() == CMD_DEFEND) &&
+    if ((commander->GetLastMajorCommand() == CMD_ATTACK ||
+        commander->GetLastMajorCommand() == CMD_DEFEND ||
+        commander->GetLastMajorCommand() == CMD_MOVE) && 
         commander->GetFramesSinceLastMajorCommand() < commander->COMMAND_COOLDOWN)
     {
         std::cout << "Commander planning: STICKING to last major command (ATTACK/DEFEND) until cooldown expires.\n";

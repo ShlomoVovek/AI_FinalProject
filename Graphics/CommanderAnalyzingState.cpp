@@ -7,7 +7,6 @@
 
 void CommanderAnalyzingState::OnEnter(Commander* commander)
 {
-    commander->allSpottedEnemies.clear();
     std::cout << "Commander (Team " << (commander->GetTeam() == TEAM_RED ? "RED" : "BLUE")
         << ") entering ANALYZING state\n";
 }
@@ -87,6 +86,7 @@ void CommanderAnalyzingState::Execute(Commander* commander)
 void CommanderAnalyzingState::OnExit(Commander* commander)
 {
     std::cout << "Commander exiting ANALYZING state\n";
+    commander->allSpottedEnemies.clear();
 }
 
 void CommanderAnalyzingState::HandleSupplyRequests(Commander* commander)

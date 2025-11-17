@@ -48,7 +48,7 @@ void CommanderRepositioningState::Execute(Commander* commander)
 
     if (isEmergencyRetreat && commander->HasPath())
     {
-        commander->MoveToTarget();
+        commander->CalculatePathAndMove();
 
         if (!commander->HasPath())
         {
