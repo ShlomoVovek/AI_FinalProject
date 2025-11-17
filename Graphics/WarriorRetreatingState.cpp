@@ -12,19 +12,14 @@ void WarriorRetreatingState::OnEnter(Warrior* warrior)
 
 void WarriorRetreatingState::Execute(Warrior* warrior)
 {
-    // אם הנסיגה הסתיימה (הגיע ליעד הבטוח)
     if (!warrior->IsMoving() && warrior->GetCurrentPath().empty())
     {
         std::cout << "Warrior reached safe position, setting state to IDLE.\n";
         warrior->SetState(new WarriorIdleState());
         return;
     }
+    warrior->CalculatePathAndMove();
 
-    // בצע תנועה
-    warrior->MoveToTarget();
-
-    // ירי הגנתי (Defensive Shooting) - ירי רק אם יש אויב בטווח ראייה/ירי.
-    // הפקודה מאפשרת ירי, אך לא כמו במצב התקפה (כלומר, לא דורש מעבר למצב Attack).
     NPC* pEnemy = warrior->ScanForEnemies();
     if (pEnemy && warrior->CanShootAt(pEnemy->GetLocation()))
     {

@@ -7,7 +7,6 @@ void CommanderRepositioningState::OnEnter(Commander* commander)
 {
     if (isEmergencyRetreat || commander->GetHealth() < 50)
     {
-        // EMERGENCY: Find position away from enemies
         Point safePos = commander->FindSafePosition();
 
         std::cout << "Commander EMERGENCY RETREAT to position: ("
@@ -22,63 +21,59 @@ void CommanderRepositioningState::OnEnter(Commander* commander)
         else
         {
             std::cout << "No path found, staying in place!\n";
-            commander->ClearPath();  // Stop moving if no path
+            commander->ClearPath();
         }
     }
+    criticalHealthWaitCounter = 0;
 }
 
 void CommanderRepositioningState::Execute(Commander* commander)
 {
-    // 1. טיפול במצב קריטי (נשאר כפי שהוא)
     if (commander->GetHealth() < CRITICAL_HP)
     {
-        std::cout << "Commander critically wounded (Health: "
-            << commander->GetHealth() << "), HOLDING POSITION for medic\n";
-        commander->ClearPath();
-        framesToWait = 100; // ממתין לחובש
-    }
-    else if (!commander->HasPath() && framesToWait <= 0)
-    {
-        // 2. חישוב נתיב יזום אם אין נתיב והמפקד לא מחכה
-        Point strategicPoint = commander->FindSafePosition(); // נשתמש במיקום בטוח כברירת מחדל
+        criticalHealthWaitCounter++;
 
-        std::cout << "Commander initiating self-reposition to: ("
-            << strategicPoint.x << ", " << strategicPoint.y << ")\n";
-
-        if (commander->FindAStarPath(strategicPoint, commander->GetComabinedViewMap()))
+        if (criticalHealthWaitCounter > 100)
         {
-            std::cout << "Reposition path calculated. Moving.\n";
-            // לא נשנה את framesToWait כדי לאפשר תנועה
-        }
-        else
-        {
-            std::cout << "Reposition path not found, going back to Analyzing.\n";
-            commander->ClearPath();
+            std::cout << "Commander: Medic timeout - returning to command despite low health\n";
+            commander->SetPlannedCommand(CMD_NONE, commander->GetLocation());
             commander->SetState(new CommanderAnalyzingState());
-            return; // יציאה מיידית אם לא נמצא נתיב
+            return;
         }
-    }
 
-    if (commander->HasPath())
+        framesToWait = 50;
+        return;
+    }
+    criticalHealthWaitCounter = 0;
+
+    if (isEmergencyRetreat && commander->HasPath())
     {
         commander->MoveToTarget();
+
+        if (!commander->HasPath())
+        {
+            std::cout << "Commander reached emergency safe position.\n";
+            isEmergencyRetreat = false;
+            framesToWait = 30;
+        }
+        return;
     }
     framesToWait--;
 
-    if ((!commander->HasPath() && framesToWait <= 0) || (framesToWait <= 0 && commander->GetHealth() > 40))
+    if (framesToWait <= 0)
     {
-        if (commander->GetHealth() > 40)
-        {
-            commander->SetPlannedCommand(CMD_NONE, commander->GetLocation());
-            std::cout << "Commander reposition complete, returning to command\n";
-            commander->SetState(new CommanderAnalyzingState());
-        }
-        else
+        if (commander->GetHealth() <= 40)
         {
             std::cout << "Commander still healing (Health: " << commander->GetHealth()
                 << "), HOLDING POSITION\n";
             commander->ClearPath();
-            framesToWait = 60;
+            framesToWait = 30;
+        }
+        else
+        {
+            commander->SetPlannedCommand(CMD_NONE, commander->GetLocation());
+            std::cout << "Commander reposition/wait complete, returning to command\n";
+            commander->SetState(new CommanderAnalyzingState());
         }
     }
 }

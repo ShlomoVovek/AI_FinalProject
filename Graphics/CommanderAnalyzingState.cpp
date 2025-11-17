@@ -46,12 +46,20 @@ void CommanderAnalyzingState::Execute(Commander* commander)
     // 5. Check for critical injuries AFTER assigning medics
     if (commander->HasCriticalInjuredSoldiers())
     {
-        std::cout << "Commander (Analyzing): Critical injury reported! Issuing RETREAT command to all units.\n";
-        commander->SetPlannedCommand(CMD_RETREAT, commander->GetLocation());
+        if (commander->GetPlannedCommand() != CMD_RETREAT)
+        {
+            std::cout << "Commander (Analyzing): Critical injury reported! Issuing RETREAT command to all units.\n";
+            commander->SetPlannedCommand(CMD_RETREAT, commander->GetLocation());
 
-        // Transition to IssuingOrders to send the retreat command
-        commander->SetState(new CommanderIssuingOrdersState());
-        return;
+            commander->SetState(new CommanderIssuingOrdersState());
+            return;
+        }
+        else
+        {
+            std::cout << "Commander (Analyzing): Sticking to RETREAT command.\n";
+            commander->SetState(new CommanderRepositioningState());
+            return;
+        }
     }
 
     // 6. Decide next action based on enemy presence

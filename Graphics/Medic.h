@@ -16,7 +16,9 @@ private:
 	
 	MedicState* currentState;
 	std::list<NPC*> patientsQueue; // will use FindAStarPath() for path from base to patient
-	Point finalTargetLocation; // patientTarget->GetLocation()
+	Point finalTargetLocation; 
+
+	double currentMedicineSupply;
 
 protected:
 	void CalculatePathAndMove() override;
@@ -32,7 +34,13 @@ public:
 	Medic(int x, int y, TeamColor t);
 	~Medic();
 
+	const double MAX_MEDICINE_SUPPLY = 100;
 	const double SELF_HEAL_THRESHOLD = 0.7 * MAX_HP;
+	void RestockMedicine() { currentMedicineSupply = MAX_MEDICINE_SUPPLY; }
+	void UseMedicine(double amount) { currentMedicineSupply -= amount; if (currentMedicineSupply < 0) currentMedicineSupply = 0; }
+	bool HasMedicine() const { return currentMedicineSupply > 0; }
+	double GetCurrentSupply() const { return currentMedicineSupply; }
+
 
 	// fsm Management
 	void SetState(MedicState* newState);

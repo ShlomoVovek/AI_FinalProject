@@ -25,7 +25,7 @@ void CommanderPlanningState::Execute(Commander* commander)
         commander->GetFramesSinceLastMajorCommand() < commander->COMMAND_COOLDOWN)
     {
         std::cout << "Commander planning: STICKING to last major command (ATTACK/DEFEND) until cooldown expires.\n";
-        // commander->SetState(new CommanderRepositioningState());
+        commander->SetState(new CommanderRepositioningState());
         return;
     }
 

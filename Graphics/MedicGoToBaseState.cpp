@@ -16,14 +16,10 @@ void MedicGoToBaseState::Execute(Medic* agent)
     if (agent->NeedsSelfHeal())
     {
         std::cout << "Medic interrupted GO_TO_BASE mission for self-heal!\\n";
-        // אם החלטתם שריפוי עצמי משתמש ב-SetPatientTarget:
-        // agent->SetPatientTarget(agent); 
-        // אחרת, פשוט עוברים למצב ריפוי:
         agent->SetState(new MedicHealingState());
         return;
     }
 
-    // לוגיקת חישוב נתיב ותנועה לבסיס (משתמשת ב-A* באופן מובנה דרך IPathfinding)
     if (!pathCalculated)
     {
         Point baseLoc = agent->GetBaseLocation();
@@ -44,7 +40,6 @@ void MedicGoToBaseState::Execute(Medic* agent)
         }
     }
 
-    // המשך תנועה
     if (agent->IsMoving())
     {
         agent->CalculatePathAndMove();
@@ -52,6 +47,7 @@ void MedicGoToBaseState::Execute(Medic* agent)
     else
     {
         std::cout << "Medic arrived at base. Now checking for patients.\\n";
+        agent->RestockMedicine();
 
         if (agent->GetNextPatient() != nullptr)
         {

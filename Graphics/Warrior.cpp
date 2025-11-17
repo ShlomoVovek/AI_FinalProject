@@ -65,7 +65,7 @@ Point Warrior::DetermineBestAttackPosition(Point enemyLoc)
 	if (euclideanDist < 1.0) euclideanDist = 1.0;
 
 	Point attackPos;
-	double targetDist = RIFLE_RANGE * 0.7; // Stay at 70% of max range
+	double targetDist = RIFLE_RANGE * 0.7;
 	attackPos.x = (int)(enemyLoc.x - (dx / euclideanDist) * targetDist);
 	attackPos.y = (int)(enemyLoc.y - (dy / euclideanDist) * targetDist);
 
@@ -296,11 +296,6 @@ void Warrior::DoSomeWork(const double* pMap)
 		if (!dynamic_cast<WarriorIdleState*>(currentState))
 			return;
 	}
-
-	if (currentState)
-	{
-		currentState->Execute(this);
-	}
 }
 void Warrior::ExecuteCommand(int commandCode, Point target)
 {
@@ -367,7 +362,7 @@ void Warrior::ExecuteCommand(int commandCode, Point target)
 
 	case CMD_ATTACK:
 	{
-		if (ammo == 0) break;
+		if (ammo == 0 && grenades == 0) break;
 
 		currentAttackTarget = target;
 		Point attackPos = DetermineBestAttackPosition(target);

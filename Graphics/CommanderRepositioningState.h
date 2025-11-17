@@ -9,11 +9,13 @@ class CommanderRepositioningState : public CommanderState
 private:
     int framesToWait; // Wait a few frames before returning to analyzing
     bool isEmergencyRetreat;
+    int criticalHealthWaitCounter;
 
 public:
     CommanderRepositioningState(bool emergency = false)
-        : framesToWait(emergency ? 60 : 10),  // Wait longer if emergency
-        isEmergencyRetreat(emergency)
+        : framesToWait(emergency ? 40 : 10),  // Wait longer if emergency
+        isEmergencyRetreat(emergency),
+        criticalHealthWaitCounter(0)
     {
     }
 

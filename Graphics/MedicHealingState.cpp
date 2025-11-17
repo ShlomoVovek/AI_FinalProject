@@ -14,16 +14,26 @@ void MedicHealingState::Execute(Medic* medic)
 {
     if (medic->NeedsSelfHeal())
     {
-        medic->heal(HEAL_AMOUNT_PER_TICK);
-        if (!medic->NeedsSelfHeal())
+        if (medic->HasMedicine())
         {
-            std::cout << "Medic self-heal complete. Checking mission queue.\\n";
-            if (medic->GetNextPatient() == nullptr)
-                medic->SetState(new MedicIdleState());
-            else
-                medic->SetState(new MedicGoToTargetState());
+            medic->heal(HEAL_AMOUNT_PER_TICK);
+            medic->UseMedicine(HEAL_AMOUNT_PER_TICK);
+
+            if (!medic->NeedsSelfHeal())
+            {
+                std::cout << "Medic self-heal complete. Checking mission queue.\\n";
+                if (medic->GetNextPatient() == nullptr)
+                    medic->SetState(new MedicIdleState());
+                else
+                    medic->SetState(new MedicGoToTargetState());
+            }
         }
-        return; // סיום, כי ריפוי עצמי קודם
+        else
+        {
+            std::cout << "Medic needs self-heal but has no medicine. Going to base.\\n";
+            medic->SetState(new MedicGoToBaseState());
+        }
+        return;
     }
 
     // 2. לוגיקת ריפוי פצועים חיצוניים (מהתור)
@@ -57,23 +67,32 @@ void MedicHealingState::Execute(Medic* medic)
 
     if (dist <= 2.0)
     {
-        patient->heal(HEAL_AMOUNT_PER_TICK);
-
-        if (patient->GetHealth() >= MAX_HP)
+        if (medic->HasMedicine())
         {
-            std::cout << "Patient fully healed. Checking next patient.\\n";
-            medic->RemoveCurrentPatient();
+            patient->heal(HEAL_AMOUNT_PER_TICK);
+            medic->UseMedicine(HEAL_AMOUNT_PER_TICK);
 
-            if (medic->GetNextPatient() == nullptr)
+            if (patient->GetHealth() >= MAX_HP)
             {
-                std::cout << "No more patients. Medic going to base (RETREAT).\\n";
-                medic->SetState(new MedicGoToBaseState());
+                std::cout << "Patient fully healed. Checking next patient.\\n";
+                medic->RemoveCurrentPatient();
+
+                if (medic->GetNextPatient() == nullptr)
+                {
+                    std::cout << "No more patients. Medic going to base (RETREAT).\\n";
+                    medic->SetState(new MedicGoToBaseState());
+                }
+                else
+                {
+                    std::cout << "Moving to next patient in queue.\\n";
+                    medic->SetState(new MedicGoToTargetState());
+                }
             }
-            else
-            {
-                std::cout << "Moving to next patient in queue.\\n";
-                medic->SetState(new MedicGoToTargetState());
-            }
+        }
+        else
+        {
+            std::cout << "Medic ran out of medicine. Going back to base.\\n";
+            medic->SetState(new MedicGoToBaseState());
         }
     }
     else

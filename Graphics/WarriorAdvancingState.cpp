@@ -24,12 +24,9 @@ void WarriorAdvancingState::Execute(Warrior* warrior)
         }
         else
         {
-            if (warrior->CanShootAt(enemyPos))
-            {
-                std::cout << "Warrior spotted enemy while advancing in Survive Mode - Attacking!\n";
-                warrior->ExecuteCommand(CMD_ATTACK, enemyPos);
-                return;
-            }
+            std::cout << "Warrior spotted enemy while advancing in Survive Mode - Attacking!\n";
+            warrior->ExecuteCommand(CMD_ATTACK, enemyPos);
+            return;
         }
     }
 
