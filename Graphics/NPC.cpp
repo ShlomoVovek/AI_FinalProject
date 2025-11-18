@@ -4,6 +4,7 @@
 // #include "Bullet.h"
 #include <math.h>
 #include <iostream>
+#include <algorithm>
 
 
 NPC::NPC(int x, int y, TeamColor t, NpcType nt) :
@@ -104,6 +105,48 @@ void RestorePath(Cell* goalCell, std::list<Point>& path)
 
 }
 
+void NPC::DecayThreats()
+{
+	for (auto it = sparseThreatMap.begin(); it != sparseThreatMap.end();)
+	{
+		it->second.threatValue -= DECAY_RATE;
+		if (it->second.threatValue <= 0)
+		{
+			it = sparseThreatMap.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
+}
+
+void NPC::AddThreat(Point p, double value, double radius)
+{
+	int startX = std::max(0, (int)(p.x - radius));
+	int endX = std::min(MSX - 1, (int)(p.x + radius));
+	int startY = std::max(0, (int)(p.y - radius));
+	int endY = std::min(MSY - 1, (int)(p.y + radius));
+
+	for (int i = startX; i <= endX; ++i)
+	{
+		for (int j = startY; j <= endY; ++j)
+		{
+			int index = i * MSY + j;
+
+			sparseThreatMap[index].threatValue = std::max(sparseThreatMap[index].threatValue, value);
+		}
+	}
+}
+
+void NPC::ReportExplosion(Point explosionLocation)
+{
+	if (Distance(this->location, explosionLocation) < HEARING_RANGE)
+	{
+		AddThreat(explosionLocation, GRENADE_THREAT_VALUE, GRENADE_THREAT_RADIUS);
+	}
+}
+
 void NPC::BuildViewMap(const double* pMap)
 {
 	for (int i = 0; i < MSX; i++)
@@ -113,7 +156,6 @@ void NPC::BuildViewMap(const double* pMap)
 			viewMap[i][j] = pMap[i * MSY + j];
 		}
 	}
-
 
 	// 2. create rays for view
 	const int NUM_RAYS = 36;
@@ -126,11 +168,10 @@ void NPC::BuildViewMap(const double* pMap)
 		double dirX = cos(alpha);
 		double dirY = sin(alpha);
 
-		for (int step = 0; step < SIGHT_RANGE; ++step) // limited sight range
-		{
-			//tmpX += SPEED * dirX * 10;
-			//tmpY += SPEED * dirY * 10;
+		bool isInTreeShadow = false;
 
+		for (int step = 0; step < SIGHT_RANGE; ++step)
+		{
 			tmpX += dirX;
 			tmpY += dirY;
 
@@ -142,19 +183,26 @@ void NPC::BuildViewMap(const double* pMap)
 				int obstacleIndex = mapX * MSY + mapY;
 				CellType obstacleType = (CellType)pMap[obstacleIndex];
 
+				if (isInTreeShadow && obstacleType == EMPTY)
+				{
+					viewMap[mapX][mapY] = COST_UNKNOWN;
+					continue;
+				}
+
 				switch (obstacleType)
 				{
 				case ROCK:
-					viewMap[mapX][mapY] = ROCK;
+					viewMap[mapX][mapY] = COST_SAFE;
 					break; // stops the rays
 
 				case WATER:
-					viewMap[mapX][mapY] = WATER;
+					viewMap[mapX][mapY] = 5;
 					continue; // rays continue
 
 				case TREE:
-					viewMap[mapX][mapY] = COST_DANGER;
-					break; // stops the rays
+					viewMap[mapX][mapY] = COST_UNKNOWN;
+					isInTreeShadow = true;
+					continue; // stops the rays
 
 				case EMPTY:
 					viewMap[mapX][mapY] = COST_SAFE;
@@ -169,6 +217,20 @@ void NPC::BuildViewMap(const double* pMap)
 			}
 			else // out of borders
 				break;
+		}
+	}
+	for (const auto& pair : sparseThreatMap)
+	{
+		int index = pair.first;
+		double threat = pair.second.threatValue;
+
+		int x = index / MSY;
+		int y = index % MSY;
+
+		if (x >= 0 && x < MSX && y >= 0 && y < MSY &&
+			viewMap[x][y] != (double)ROCK && viewMap[x][y] != (double)WATER)
+		{
+			viewMap[x][y] += threat;
 		}
 	}
 }

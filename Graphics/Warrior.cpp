@@ -270,6 +270,7 @@ void Warrior::DoSomeWork(const double* pMap)
 
 	if (!IsAlive()) return;
 
+	DecayThreats();
 	BuildViewMap(pMap);
 
 	if (isSurviveMode && !dynamic_cast<WarriorRetreatingState*>(currentState))

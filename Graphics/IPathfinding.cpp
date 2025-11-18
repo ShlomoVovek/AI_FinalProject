@@ -23,10 +23,6 @@ bool IPathfinding::IsWalkable(const double* safetyMap, Point p) const
 //		adding the basic cost of stepping forward with the safety penalty
 double IPathfinding::CalculateStepCost(int dx, int dy, const Point& neighbor, const double* safetyMap) const
 {
-	// 1. basic stepping cost
-	// double baseCost = (dx != 0 && dy != 0) ? DIAGONAL_COST : STRAIGHT_COST;
-
-	// 2. get safety value from map
 	if (neighbor.x < 0 || neighbor.x >= MSX || neighbor.y < 0 || neighbor.y >= MSY)
 		return 9999.0; // high costs
 	
@@ -37,10 +33,10 @@ double IPathfinding::CalculateStepCost(int dx, int dy, const Point& neighbor, co
 		return 9999.0; // high costs
 
 	// 3. calculate safety penalty
-	double safetyValue = safetyMap[index]; // maybe add null check
+	double safetyValue = safetyMap[index];
 	double safetyPenalty = 0.0;
 	
-	if (safetyValue >= 0) // if not obstacle
+	if (safetyValue >= 0)
 	{
 		safetyPenalty = safetyValue * SAFETY_WEIGHT;
 	}

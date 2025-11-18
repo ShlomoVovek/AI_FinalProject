@@ -176,6 +176,7 @@ void SupplyAgent::DoSomeWork(const double* pMap)
     if (!IsAlive())
         return;
 
+    DecayThreats();
     BuildViewMap(pMap);
 
     // Execute current state

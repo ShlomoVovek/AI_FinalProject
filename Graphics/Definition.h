@@ -7,9 +7,14 @@ const double SIGHT_RANGE = 25.0;
 const int MSX = 80;
 const int MSY = 48;
 
-const double COST_UNKNOWN = 10.0;
-const double COST_SAFE = 1.0;
+const double COST_UNKNOWN = 5.0;
+const double COST_SAFE = 2.0;
 const double COST_DANGER = 15.0;
+
+const double DECAY_RATE = 0.5;
+const double HEARING_RANGE = 20.0;
+const double GRENADE_THREAT_VALUE = 25.0; 
+const double GRENADE_THREAT_RADIUS = 3.0; 
 
 // types of cells in map
 enum CellType

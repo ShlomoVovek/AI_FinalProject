@@ -5,6 +5,7 @@
 #include "Cell.h"
 #include <vector>
 #include <list>
+#include <map>
 
 
 const double SPEED = 2; //1.40 ;
@@ -43,6 +44,11 @@ struct Sighting // report seeing enemey
 	Point point;
 };
 
+struct ThreatInfo
+{
+	double threatValue;
+};
+
 class Commander; // forward declaration for myCommander pointer attribute
 
 class NPC // abstract class
@@ -62,7 +68,11 @@ protected:
 	bool isMoving;
 	bool isSurviveMode;
 
+	// safety map, threats map & helper methods
 	double viewMap[MSX][MSY];
+	std::map<int, ThreatInfo> sparseThreatMap;
+	void DecayThreats();
+	void AddThreat(Point p, double value, double radius);
 	// pointer to all NPCs vector
 	const std::vector<NPC*>* npcList; 
 
@@ -116,7 +126,7 @@ public:
 
 	// commander methods
 	virtual void ReportSighting(NpcType enemyType, Point enemyLoc) = 0;
-	
+	void ReportExplosion(Point explosionLocation);
 	virtual void ExecuteCommand(int commandCode, Point target) = 0; 
 
 	bool IsSurviveMode() const { return isSurviveMode; }

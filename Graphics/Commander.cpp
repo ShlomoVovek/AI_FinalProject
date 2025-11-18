@@ -261,7 +261,7 @@ void Commander::DoSomeWork(const double* pMap)
 	{
 		framesSinceLastMajorCommand++;
 	}
-
+	DecayThreats();
 	BuildViewMap(pMap);
 
 	if (currentState)

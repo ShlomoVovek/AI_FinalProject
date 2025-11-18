@@ -40,6 +40,7 @@ void Medic::DoSomeWork(const double* pMap)
 {
 	if (!IsAlive()) return;
 
+	DecayThreats();
 	BuildViewMap(pMap);
 
 	if (currentState)

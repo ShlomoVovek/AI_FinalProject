@@ -13,6 +13,7 @@ private:
 	double dirX, dirY;
 
 	bool isExploding;
+	bool justExploded;
 	Bullet* bullets[NUM_BULLETS];
 	TeamColor team;
 public:
@@ -23,6 +24,9 @@ public:
 	void Update(const double* pMap, const std::vector<NPC*>& npcs);
 	void Explode(const double* pMap, const std::vector<NPC*>& npcs);
 	void SetIsExploding(bool value);
+
+	bool DidJustExplode() { return justExploded; }
+	void ClearJustExplodedFlag() { justExploded = false; }
 
 	void CreateSecurityMap(const double* pMap, double smap[MSX][MSY]);
 	bool IsActive();

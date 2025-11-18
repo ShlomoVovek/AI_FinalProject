@@ -4,7 +4,7 @@
 Grenade::Grenade(double startX, double startY, double endX, double endY, TeamColor grenadeTeam) :
 	currentX(startX), currentY(startY),
 	targetX(endX), targetY(endY),
-	isExploding(false), team(grenadeTeam)
+	isExploding(false), team(grenadeTeam), justExploded(false)
 {
 	double dx = targetX - currentX;
 	double dy = targetY - currentY;
@@ -88,6 +88,19 @@ void Grenade::Update(const double* pMap, const std::vector<NPC*>& npcs)
 
 	if (isExploding)
 	{
+		if (DidJustExplode())
+		{
+			Point explosionLocation = { (int)targetX, (int)targetY };
+			for (NPC* npc : npcs)
+			{
+				if (npc->IsAlive())
+				{
+					npc->ReportExplosion(explosionLocation);
+				}
+			}
+			ClearJustExplodedFlag();
+		}
+
 		Explode(pMap, npcs);
 	}
 }
@@ -123,9 +136,9 @@ void Grenade::SetIsExploding(bool value)
 	if (value && !isExploding)
 	{
 		isExploding = value;
-		int i;
+		justExploded = true;
 
-		for (i = 0; i < NUM_BULLETS; i++)
+		for (int i = 0; i < NUM_BULLETS; i++)
 			bullets[i]->SetIsMoving(value);
 	}
 	else if (!value)

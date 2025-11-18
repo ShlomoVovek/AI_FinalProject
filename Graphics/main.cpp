@@ -340,7 +340,7 @@ int main(int argc, char* argv[])
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
 	glutInitWindowSize(1200, 720);
 	glutInitWindowPosition(250, 50);
-	glutCreateWindow("AI Final Project");
+	glutCreateWindow("Press 'R' to restart the simulation, Press Esc for exit");
 
 	glutDisplayFunc(display);
 	//glutDisplayFunc(displayGameMap);
