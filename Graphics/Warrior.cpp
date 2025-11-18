@@ -550,44 +550,52 @@ bool Warrior::CanShootAt(Point target) const
 
 void Warrior::HandleSurviveModeLogic()
 {
-	// 1. Priority: Self-preservation (retreat if low health/ammo)
-	if (health < INJURED_THRESHOLD || ammo == 0) // (using health/ammo logic)
-	{
-		std::cout << "Warrior (" << (team == TEAM_RED ? "RED" : "BLUE")
-			<< ") is low on resources - seeking safety/resupply.\n";
-		ExecuteCommand(CMD_RETREAT, location); //
-		return;
-	}
+	// דרישה: אם מצב הישרדות פעיל והחיים מעל הסף -> סייר ותקוף
+	// INJURED_THRESHOLD מוגדר ב-Definition.h (בדרך כלל 40-50)
 
-	// 2. Priority: Engage any visible enemy
-	NPC* pEnemy = ScanForEnemies(); //
-	if (pEnemy != nullptr)
+	if (health > INJURED_THRESHOLD)
 	{
-		std::cout << "Warrior (" << (team == TEAM_RED ? "RED" : "BLUE")
-			<< ") spotted enemy in Survive Mode - Initiating ATTACK.\n";
-
-		ExecuteCommand(CMD_ATTACK, pEnemy->GetLocation()); //
-		return;
-	}
-
-	// 3. Priority: If idle, hunt for enemies (move to a random strategic point)
-	if (dynamic_cast<WarriorIdleState*>(currentState)) //
-	{
-		if (idlePatrolTimer > 0)
+		// יש מספיק חיים לקרב. כעת נבדוק אם יש נשק.
+		if (ammo > 0 || grenades > 0)
 		{
-			return;
-		}
-		// This uses the function you had commented out
-		Point strategicTarget = GetRandomMapTarget();
+			// 1. עדיפות עליונה: תקיפת אויב אם קיים בטווח ראייה
+			NPC* pEnemy = ScanForEnemies();
+			if (pEnemy != nullptr)
+			{
+				std::cout << "Warrior (Survival): Health good (" << health << ") & Enemy spotted -> ATTACKING.\n";
+				ExecuteCommand(CMD_ATTACK, pEnemy->GetLocation());
+				return;
+			}
 
-		// Only move if a valid new target was found
-		if (strategicTarget.x != location.x || strategicTarget.y != location.y)
-		{
-			std::cout << "Warrior (" << (team == TEAM_RED ? "RED" : "BLUE")
-				<< ") no current enemy - ADVANCING to strategic point ("
-				<< strategicTarget.x << ", " << strategicTarget.y << ").\n";
-			ExecuteCommand(CMD_MOVE, strategicTarget); //
+			// 2. עדיפות משנית: סיור (Patrol)
+			// אם אין אויב ואנחנו במצב מנוחה, נחפש יעד חדש במפה
+			if (dynamic_cast<WarriorIdleState*>(currentState))
+			{
+				// המתנה קצרה כדי לא להציף פקודות תזוזה
+				if (idlePatrolTimer > 0) return;
+
+				std::cout << "Warrior (Survival): Health good (" << health << "), no enemies -> PATROLLING map.\n";
+				Point patrolTarget = GetRandomMapTarget();
+
+				// וודא שהיעד שונה מהמיקום הנוכחי
+				if (patrolTarget.x != location.x || patrolTarget.y != location.y)
+				{
+					ExecuteCommand(CMD_MOVE, patrolTarget);
+				}
+			}
 		}
+		else
+		{
+			// יש חיים אבל אין תחמושת -> נסיגה/חיפוש אספקה
+			std::cout << "Warrior (Survival): Healthy but out of ammo -> Retreating.\n";
+			ExecuteCommand(CMD_RETREAT, location);
+		}
+	}
+	else
+	{
+		// החיים נמוכים (health <= INJURED_THRESHOLD) -> בריחה למקום בטוח
+		std::cout << "Warrior (Survival): Low health (" << health << ") -> Seeking Safety.\n";
+		ExecuteCommand(CMD_RETREAT, location);
 	}
 }
 
