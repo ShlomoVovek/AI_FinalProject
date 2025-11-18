@@ -72,17 +72,45 @@ void Grenade::Update(const double* pMap, const std::vector<NPC*>& npcs)
 		double new_dx = targetX - currentX;
 		double new_dy = targetY - currentY;
 
+		// 1. Check if reached target
 		if ((new_dx * dirX + new_dy * dirY) < 0)
 		{
 			currentX = targetX;
 			currentY = targetY;
 			SetIsExploding(true);
 		}
-
-		if (currentX <= 0 || currentX >= MSX || currentY <= 0 || currentY >= MSY ||
-			pMap[(int)currentX * MSY + (int)currentY] != (double)EMPTY)
+		const double NPC_HITBOX_RADIUS = 0.5;
+		for (NPC* npc : npcs)
 		{
-			SetIsExploding(true);
+			if (!npc->IsAlive() || npc->GetTeam() == this->team)
+			{
+				continue;
+			}
+
+			Point npcLoc = npc->GetLocation();
+			double dist = Distance(currentX, currentY, npcLoc.x, npcLoc.y);
+
+			if (dist < NPC_HITBOX_RADIUS)
+			{
+
+				SetIsExploding(true);
+				break;
+			}
+		}
+		if (!isExploding)
+		{
+			if (currentX <= 0 || currentX >= MSX || currentY <= 0 || currentY >= MSY)
+			{
+				SetIsExploding(true);
+			}
+			else
+			{
+				double cellValue = pMap[(int)currentX * MSY + (int)currentY];
+				if (cellValue == (double)ROCK || cellValue == (double)TREE)
+				{
+					SetIsExploding(true);
+				}
+			}
 		}
 	}
 

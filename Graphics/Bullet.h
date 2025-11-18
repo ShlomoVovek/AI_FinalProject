@@ -2,7 +2,7 @@
 #include "Definition.h"
 #include "NPC.h"
 
-const double BULLET_SPEED = 0.5;
+const double BULLET_SPEED = 1.25;
 const double BULLET_LIFETIME = 0.5;
 const double BULLET_SIZE = 0.2;
 const double BULLET_DAMAGE = 2;
@@ -14,7 +14,7 @@ private:
 	bool isMoving;
 	bool isCreatingSecurityMap;
 	double dirX, dirY;
-	double timeAlive; // Track how long bullet has been alive
+	double timeAlive;
 	TeamColor team;
 
 public:
@@ -25,6 +25,6 @@ public:
 	void SetIsMoving(bool value) { isMoving = value; if (value) timeAlive = 0; }
 
 	void CreateSecurityMap(const double* pMap, double smap[MSX][MSY]);
-	bool IsActive() { return isMoving; } // Check if bullet should be displayed
-	double GetTimeAlive() { return timeAlive; } // Get current time alive
+	bool IsActive() { return isMoving; }
+	double GetTimeAlive() { return timeAlive; } 
 };

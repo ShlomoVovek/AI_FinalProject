@@ -179,10 +179,47 @@ void SupplyAgent::DoSomeWork(const double* pMap)
     DecayThreats();
     BuildViewMap(pMap);
 
-    // Execute current state
+    if(health <= INJURED_THRESHOLD && !isFleeing)
+    {
+        isFleeing = true;
+        ClearPath(); 
+        isMoving = false; 
+
+        if (!deliveryQueue.empty()) 
+        {
+            std::cout << "SupplyAgent: Dropping mission due to injury.\n";
+            deliveryQueue.clear(); 
+        }
+
+        Point safePos = FindClosestSafePosition(13.0, GetViewMap()); 
+        if (!FindAStarPath(safePos, GetViewMap())) 
+        {
+            std::cout << "SupplyAgent: WARNING: No safe path found! Staying put.\n";
+        }
+    }
+    else if (health <= INJURED_THRESHOLD && isFleeing)
+    {
+        std::cout << "SupplyAgent: Health restored (" << health << "). Exiting FLEEING state.\n";
+        isFleeing = false;
+        isMoving = false; 
+
+        myCommander->ReportInjury(this);
+        SetState(new SupplyWaitState()); 
+    }
+
+    if (isFleeing)
+    {
+        if (HasPath()) 
+        {
+            CalculatePathAndMove(); 
+        }
+
+        return;
+    }
+
     if (currentState)
     {
-        currentState->Execute(this);
+        currentState->Execute(this); 
     }
 }
 

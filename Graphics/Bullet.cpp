@@ -46,22 +46,29 @@ void Bullet::Move(const double* pMap, const std::vector<NPC*>& npcs)
 		Point npcLoc = npc->GetLocation();
 		double dist = Distance(tmpX, tmpY, npcLoc.x, npcLoc.y);
 
-		// אם המרחק קטן מרדיוס הפגיעה, זוהי פגיעה!
 		if (dist < NPC_HITBOX_RADIUS)
 		{
-			// פגענו באויב!
-			std::cout << "Bullet HIT enemy!\n"; // (הודעת דיבאג)
+
+			std::cout << "Bullet HIT enemy!\n";
 			npc->TakeDamage(BULLET_DAMAGE); 
 			isMoving = false;
 			return; 
 		}
 	}
 
-	if (tmpX > 0 && tmpX < MSX && tmpY > 0 && tmpY < MSY &&
-		pMap[(int)tmpX * MSY + (int)tmpY] == (double)EMPTY)
+	if (tmpX > 0 && tmpX < MSX && tmpY > 0 && tmpY < MSY)
 	{
-		x = tmpX;
-		y = tmpY;
+		double cellValue = pMap[(int)tmpX * MSY + (int)tmpY];
+
+		if (cellValue == (double)ROCK || cellValue == (double)TREE)
+		{
+			isMoving = false;
+		}
+		else
+		{
+			x = tmpX;
+			y = tmpY;
+		}
 	}
 	else
 	{
@@ -92,20 +99,28 @@ void Bullet::CreateSecurityMap(const double* pMap, double smap[MSX][MSY])
 	isCreatingSecurityMap = true;
 	while (isCreatingSecurityMap)
 	{
-		// חשב צעד הבא
+
 		tmpX += BULLET_SPEED * dirX;
 		tmpY += BULLET_SPEED * dirY;
 
-		// בדוק גבולות והתנגשות (בדיוק כמו בפונקציה Move)
-		if (tmpX > 0 && tmpX < MSX && tmpY > 0 && tmpY < MSY &&
-			pMap[(int)tmpX * MSY + (int)tmpY] == (double)EMPTY)
+
+		if (tmpX > 0 && tmpX < MSX && tmpY > 0 && tmpY < MSY)
 		{
-			xsm = tmpX;
-			ysm = tmpY;
-			// עדכן את מפת האבטחה במיקום [x][y]
-			smap[(int)xsm][(int)ysm] += 0.001;
+			double cellValue = pMap[(int)tmpX * MSY + (int)tmpY];
+
+			// Stop ONLY on solid objects
+			if (cellValue == (double)ROCK || cellValue == (double)TREE)
+			{
+				isCreatingSecurityMap = false;
+			}
+			else // Keep going through EMPTY, WATER, BASE
+			{
+				xsm = tmpX;
+				ysm = tmpY;
+				smap[(int)xsm][(int)ysm] += 0.001;
+			}
 		}
-		else
+		else // Hit map boundary
 		{
 			isCreatingSecurityMap = false;
 		}

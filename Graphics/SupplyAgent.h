@@ -13,6 +13,7 @@ private:
 	Point targetLocation;  // Location of warrior who needs ammo
 	Point targetWarehouse[2];
 	bool hasAmmo;          // Whether agent is carrying ammo
+	bool isFleeing = false;
 	std::deque<NPC*> deliveryQueue;
 
 	int cargoAmmo = 0;
