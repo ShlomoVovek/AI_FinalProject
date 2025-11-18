@@ -19,6 +19,9 @@ void CommanderAnalyzingState::Execute(Commander* commander)
         std::cout << "Commander CRITICAL HEALTH: " << commander->GetHealth()
             << " - EMERGENCY RETREAT!\n";
         commander->ReportInjury(commander);  // Request medic
+
+        commander->AssignHealingMissions();
+
         commander->SetState(new CommanderRepositioningState(true));
         return;
     }
@@ -91,7 +94,6 @@ void CommanderAnalyzingState::OnExit(Commander* commander)
 
 void CommanderAnalyzingState::HandleSupplyRequests(Commander* commander)
 {
-    // 1. נבדוק אם יש לוחמים שמחכים לאספקה
     if (commander->HasLowAmmoSoldiers())
     {
         // 2. נמצא את ה-SupplyAgent
@@ -126,6 +128,7 @@ void CommanderAnalyzingState::HandleSupplyRequests(Commander* commander)
         else
         {
             std::cout << "Commander (Analyzing): Supply Agent not found or is dead.\n";
+            commander->GetResupplySoldiers().clear();
         }
     }
 }

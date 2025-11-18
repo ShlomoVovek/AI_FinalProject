@@ -48,22 +48,10 @@
     <ClCompile Include="Map.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Commander.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Warrior.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Cell.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="IPathfinding.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SupplyAgent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Medic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CommanderAnalyzingState.cpp">
@@ -123,6 +111,18 @@
     <ClCompile Include="Grenade.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SupplyAgent.cpp">
+      <Filter>Source Files\SupplyAgentStates</Filter>
+    </ClCompile>
+    <ClCompile Include="Warrior.cpp">
+      <Filter>Source Files\WarriorStates</Filter>
+    </ClCompile>
+    <ClCompile Include="Commander.cpp">
+      <Filter>Source Files\CommanderStates</Filter>
+    </ClCompile>
+    <ClCompile Include="Medic.cpp">
+      <Filter>Source Files\MedicStates</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NPC.h">
@@ -131,25 +131,13 @@
     <ClInclude Include="Map.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Commander.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Definition.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Warrior.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Cell.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IPathfinding.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Medic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SupplyAgent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CommanderState.h">
@@ -220,6 +208,18 @@
     </ClInclude>
     <ClInclude Include="Grenade.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Commander.h">
+      <Filter>Header Files\CommanderStates</Filter>
+    </ClInclude>
+    <ClInclude Include="SupplyAgent.h">
+      <Filter>Header Files\SupplyAgentState</Filter>
+    </ClInclude>
+    <ClInclude Include="Warrior.h">
+      <Filter>Header Files\WarriorStates</Filter>
+    </ClInclude>
+    <ClInclude Include="Medic.h">
+      <Filter>Header Files\MedicStates</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

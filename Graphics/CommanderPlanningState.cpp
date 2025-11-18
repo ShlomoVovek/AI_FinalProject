@@ -31,17 +31,13 @@ void CommanderPlanningState::Execute(Commander* commander)
         return;
     }
 
-    // 1. Check if enemies are spotted
     if (commander->HasSpottedEnemies())
     {
-        // 2. Count how many team members can fight
         int totalMembers = commander->GetTeamMemberCount();
         int woundedCount = commander->GetWoundedCount();
 
-        // 3. Decide strategy based on team condition
-        if (woundedCount >= totalMembers / 2)
+        if (woundedCount >= totalMembers / 2 || commander->HasLowAmmoSoldiers())
         {
-            // Most team is wounded - DEFEND strategy
             std::cout << "Commander planning: DEFEND (too many wounded: "
                 << woundedCount << "/" << totalMembers << ")\n";
 
@@ -50,7 +46,6 @@ void CommanderPlanningState::Execute(Commander* commander)
         }
         else
         {
-            // Team can fight - ATTACK strategy
             std::cout << "Commander planning: ATTACK (team ready: "
                 << (totalMembers - woundedCount) << "/" << totalMembers << ")\n";
 
@@ -60,8 +55,6 @@ void CommanderPlanningState::Execute(Commander* commander)
 
         commander->SetLastMajorCommand(commander->GetPlannedCommand());
         commander->ResetFramesSinceLastMajorCommand();
-
-        // 4. Transition to issuing orders
         commander->SetState(new CommanderIssuingOrdersState());
     }
     else
@@ -108,7 +101,6 @@ bool CommanderPlanningState::AreTeamMembersAtTarget(Commander* commander, Point 
             totalMembers++;
             Point memberLoc = member->GetLocation();
 
-            // Check if member is within 3 units of target
             double dist = std::sqrt(
                 (memberLoc.x - target.x) * (memberLoc.x - target.x) +
                 (memberLoc.y - target.y) * (memberLoc.y - target.y)
@@ -120,7 +112,5 @@ bool CommanderPlanningState::AreTeamMembersAtTarget(Commander* commander, Point 
             }
         }
     }
-
-    // If most team members are already at target, return true
     return (totalMembers > 0 && membersAtTarget >= totalMembers / 2);
 }

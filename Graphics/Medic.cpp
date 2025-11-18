@@ -204,12 +204,6 @@ void Medic::AssignHealMission(NPC* injuredSoldier)
 		return;
 	}
 
-	if (!IsIdle())
-	{
-		std::cout << "Medic: Cannot assign mission - already on a mission.\n";
-		return;
-	}
-
 	if (std::find(patientsQueue.begin(), patientsQueue.end(), injuredSoldier) != patientsQueue.end())
 	{
 		std::cout << "Medic: Already assigned to this patient.\n";

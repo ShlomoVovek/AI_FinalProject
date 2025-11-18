@@ -1,6 +1,7 @@
 #include "SupplyAgent.h"
 #include "SupplyIdleState.h"
 #include "SupplyWaitState.h"
+#include "SupplyGoToWarriorState.h"
 #include "SupplyGoToWarehouseState.h"
 #include "Definition.h"
 #include <iostream>
@@ -226,6 +227,52 @@ void SupplyAgent::DoSomeWork(const double* pMap)
         }
         
         return; 
+    }
+
+    if (isSurviveMode && hasAmmo)
+    {
+        NPC* closeWarrior = FindNearbyAllyNeedsResupply(true);
+
+        if (closeWarrior != nullptr)
+        {
+            double dist = Distance(location, closeWarrior->GetLocation());
+            if (dist <= 5.0)
+            {
+                NPC* currentTarget = GetDeliveryTarget();
+                if (currentTarget != closeWarrior)
+                {
+                    std::cout << "SupplyAgent (Survival): Found warrior closer than 5 units! Intercepting.\n";
+                    if (isSurviveMode && hasAmmo)
+                    {
+                        NPC* closeWarrior = FindNearbyAllyNeedsResupply(true);
+
+                        if (closeWarrior != nullptr)
+                        {
+                            double dist = Distance(location, closeWarrior->GetLocation());
+                            if (dist <= 5.0)
+                            {
+                                NPC* currentTarget = GetDeliveryTarget();
+                                if (currentTarget != closeWarrior)
+                                {
+                                    std::cout << "SupplyAgent (Survival): Found warrior closer than 5 units! Intercepting.\n";
+                                    deliveryQueue.push_front(closeWarrior);
+
+                                    ClearPath();
+                                    SetState(new SupplyGoToWarriorState());
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                    deliveryQueue.push_front(closeWarrior);
+
+                    // מנקים מסלול קיים ומשנים מצב מיידית
+                    ClearPath();
+                    SetState(new SupplyGoToWarriorState());
+                    return; // סיימנו את העבודה לפריים הזה
+                }
+            }
+        }
     }
 
     // 4. If not fleeing, execute current state

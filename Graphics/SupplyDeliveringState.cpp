@@ -34,6 +34,13 @@ void SupplyDeliveringState::Execute(SupplyAgent* agent)
         std::cout << "SupplyAgent is delivering ammo.\n";
         agent->DeliverAmmo();
 
+        if (agent->IsSurviveMode())
+        {
+            std::cout << "SupplyAgent (Survival): Delivery complete. Returning to base to reload immediately.\n";
+            agent->SetState(new SupplyGoToWarehouseState());
+            return;
+        }
+
         if (agent->GetDeliveryTarget() != nullptr)
         {
             std::cout << "SupplyAgent: New target in queue. Going back to warehouse.\n";
