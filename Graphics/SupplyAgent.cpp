@@ -171,6 +171,8 @@ void SupplyAgent::AssignSupplyMission(NPC* warrior)
     }
 }
 
+// In SupplyAgent.cpp
+
 void SupplyAgent::DoSomeWork(const double* pMap)
 {
     if (!IsAlive())
@@ -179,47 +181,57 @@ void SupplyAgent::DoSomeWork(const double* pMap)
     DecayThreats();
     BuildViewMap(pMap);
 
-    if(health <= INJURED_THRESHOLD && !isFleeing)
+    // 1. Check if JUST got injured (was not fleeing before)
+    if (health <= INJURED_THRESHOLD && !isFleeing)
     {
+        std::cout << "SupplyAgent: INJURED! Health: " << health << ". Entering FLEEING state.\n";
         isFleeing = true;
-        ClearPath(); 
-        isMoving = false; 
+        ClearPath();
+        isMoving = false;
 
-        if (!deliveryQueue.empty()) 
+        // Drop current mission
+        if (!deliveryQueue.empty())
         {
             std::cout << "SupplyAgent: Dropping mission due to injury.\n";
-            deliveryQueue.clear(); 
+            deliveryQueue.clear();
         }
 
-        Point safePos = FindClosestSafePosition(13.0, GetViewMap()); 
-        if (!FindAStarPath(safePos, GetViewMap())) 
+        // Find a safe spot to run to
+        Point safePos = FindClosestSafePosition(13.0, GetViewMap());
+        if (!FindAStarPath(safePos, GetViewMap()))
         {
             std::cout << "SupplyAgent: WARNING: No safe path found! Staying put.\n";
         }
+
+        myCommander->ReportInjury(this);
     }
-    else if (health <= INJURED_THRESHOLD && isFleeing)
+ 
+    else if (health > INJURED_THRESHOLD && isFleeing)
     {
         std::cout << "SupplyAgent: Health restored (" << health << "). Exiting FLEEING state.\n";
         isFleeing = false;
-        isMoving = false; 
+        isMoving = false;
 
-        myCommander->ReportInjury(this);
-        SetState(new SupplyWaitState()); 
+ 
+        SetState(new SupplyWaitState());
     }
 
+    // 3. If fleeing, just focus on moving/waiting
     if (isFleeing)
     {
-        if (HasPath()) 
+        if (HasPath())
         {
-            CalculatePathAndMove(); 
+            // Still moving to safe spot
+            CalculatePathAndMove();
         }
-
-        return;
+        
+        return; 
     }
 
+    // 4. If not fleeing, execute current state
     if (currentState)
     {
-        currentState->Execute(this); 
+        currentState->Execute(this);
     }
 }
 

@@ -4,6 +4,7 @@
 
 const int NUM_BULLETS = 20;
 const double GRENADE_SPEED = 2;
+const double GRENADE_DIRECT_HIT_DAMAGE = 20.0;
 
 class Grenade
 {

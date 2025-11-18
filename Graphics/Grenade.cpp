@@ -92,7 +92,7 @@ void Grenade::Update(const double* pMap, const std::vector<NPC*>& npcs)
 
 			if (dist < NPC_HITBOX_RADIUS)
 			{
-
+				npc->TakeDamage(GRENADE_DIRECT_HIT_DAMAGE);
 				SetIsExploding(true);
 				break;
 			}
