@@ -11,7 +11,7 @@ const int MAX_AMMO = 15;
 const int CRITICAL_AMMO = (int) MAX_AMMO * 0.3;
 const int MAX_GRENADE = 8;
 const int CRITICAL_GRENADE = 1;
-const double GUN_HIT_DAMAGE = 9.0;
+const double GUN_HIT_DAMAGE = 10.0;
 
 // range
 const double RIFLE_RANGE = 25.0;

@@ -1,5 +1,8 @@
 #pragma once
 
+/// <summary>
+/// Set the base interface for all Commander states. Each of those inherits from this class.
+/// </summary>
 
 class Commander;
 

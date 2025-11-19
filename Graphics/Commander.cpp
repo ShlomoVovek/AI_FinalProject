@@ -279,7 +279,6 @@ Point Commander::FindSafePosition() const
 	// Use BFS
 	Point safeSpot = FindClosestSafePosition(20.0, (const double*)combinedViewMap);
 
-	// If we found a safer position, use it
 	if (safeSpot != current)
 	{
 		return safeSpot;

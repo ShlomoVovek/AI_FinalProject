@@ -87,8 +87,7 @@ void IPathfinding::ProcessNeighbors(Cell* current, const Point& neighbor, const 
 			neighborCell->setParent(current);
 			neighborCell->setF(newG + neighborCell->getH());
 		
-			openList.push(neighborCell); // can not change priority of exist element in priority_queue
-										 // the worse element will be handled when exit the queue
+			openList.push(neighborCell);					
 		}
 	}
 	else // 4. create new cell and add to openList
@@ -139,17 +138,13 @@ Point IPathfinding::FindClosestSafePosition(double searchRange, const double* sa
 				Point neighbor = { current.x + dx, current.y + dy };
 				int neighborIndex = (int)neighbor.x * MSY + (int)neighbor.y;
 
-				// 1. check boundaries
 				if (neighbor.x < 0 || neighbor.x >= MSX || neighbor.y < 0 || neighbor.y >= MSY)
 					continue;
 
-				// 2. is visited
 				if (visited[neighborIndex]) continue;
 
-				// 3. Walkability
 				if (IsWalkable(safetyMap, neighbor))
 				{
-					// Use Manhattan distance for search range
 					double manhattanDist = ManhattanDistance(start, neighbor);
 
 					if (manhattanDist <= searchRange)

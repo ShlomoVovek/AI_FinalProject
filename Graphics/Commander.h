@@ -4,13 +4,18 @@
 
 class CommanderState;
 
+/// <summary>
+/// Set the Commnader class, inherits from NPC and implements IPathfinding.
+/// Knows all the team member and send them commands. when dies, the group is activating 'Survival Mode'.
+/// </summary>
+
 class Commander : public NPC, public IPathfinding
 {
 private:
-	double combinedViewMap[MSX][MSY];
+	double combinedViewMap[MSX][MSY]; // stores the visibility data reported by all team members
 	
 	// cooldown
-	int framesSinceLastMajorCommand = 0;
+	int framesSinceLastMajorCommand = 0; // number of frames since the last major strategic command
 	int lastMajorCommand = CMD_NONE;
 	const int COMMAND_COOLDOWN = 30;
 

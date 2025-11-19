@@ -5,7 +5,6 @@
 
 void WarriorRetreatingState::OnEnter(Warrior* warrior)
 {
-    // הנתיב כבר נמצא והוגדר ב-Warrior::ExecuteCommand
     std::cout << "Warrior (Team " << (warrior->GetTeam() == TEAM_RED ? "RED" : "BLUE")
         << ") entered RETREATING state.\n";
 }
@@ -23,7 +22,6 @@ void WarriorRetreatingState::Execute(Warrior* warrior)
     NPC* pEnemy = warrior->ScanForEnemies();
     if (pEnemy && warrior->CanShootAt(pEnemy->GetLocation()))
     {
-        // אם נמצא אויב בטווח בזמן נסיגה, בצע ירי
         warrior->Shoot(pEnemy);
     }
 }

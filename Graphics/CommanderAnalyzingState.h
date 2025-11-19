@@ -16,7 +16,6 @@ public:
     void OnExit(Commander* commander) override;
     const char* GetStateName() const override { return "ANALYZING"; }
 
-    void HandleMedicRequests(Commander* commander);
     void HandleSupplyRequests(Commander* commander);
 };
 

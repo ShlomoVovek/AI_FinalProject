@@ -3,7 +3,7 @@
 
 class Commander;
 
-// State: Commander moves to safer position (doesn't fight)
+// State: Commander moves to safer position 
 class CommanderRepositioningState : public CommanderState
 {
 private:

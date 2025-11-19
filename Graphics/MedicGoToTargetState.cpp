@@ -11,7 +11,6 @@ void MedicGoToTargetState::OnEnter(Medic* agent)
 
     NPC* patient = agent->GetNextPatient();
 
-    // בדיקת תקינות: האם פצוע קיים, חי, ופצוע
     if (!patient || !patient->IsAlive() || patient->GetHealth() >= MAX_HP)
     {
         if (patient)
@@ -24,12 +23,10 @@ void MedicGoToTargetState::OnEnter(Medic* agent)
             std::cout << "Medic: No patient in queue on GO_TO_TARGET entry. Returning to idle.\\n";
         }
 
-        // לאחר ההסרה (או אם התור היה ריק), בודקים אם יש מטרה חדשה
         if (agent->GetNextPatient() == nullptr)
         {
             agent->SetState(new MedicIdleState());
         }
-        // אם יש פצוע חדש, נשארים במצב זה. pathCalculated = false יבטיח חישוב נתיב חדש.
         return;
     }
 }
@@ -81,9 +78,8 @@ void MedicGoToTargetState::Execute(Medic* agent)
         }
         else
         {
-            // יש פצוע נוסף - מאתחלים חישוב נתיב עבורו
             std::cout << "Medic: Moving to next patient in queue.\\n";
-            pathCalculated = false; // מכריח חישוב נתיב חדש
+            pathCalculated = false;
             agent->currentPath.clear();
         }
         return;
@@ -92,8 +88,8 @@ void MedicGoToTargetState::Execute(Medic* agent)
     Point targetLoc = patient->GetLocation();
     double dist = Distance(medicLoc.x, medicLoc.y, targetLoc.x, targetLoc.y);
 
-    // 3. הגעה ליעד - קרוב מספיק כדי לרפא
-    if (dist <= 2.0) // 2.0 הוא סף הקרבה לריפוי
+ 
+    if (dist <= 2.0)
     {
         std::cout << "Medic arrived at target. Starting to heal.\\n";
         agent->SetState(new MedicHealingState());
@@ -102,7 +98,7 @@ void MedicGoToTargetState::Execute(Medic* agent)
 
     if (!pathCalculated || agent->currentPath.empty())
     {
-        if (agent->FindAStarPath(targetLoc, (const double*)agent->GetViewMap())) // ** שימוש ב-A* **
+        if (agent->FindAStarPath(targetLoc, (const double*)agent->GetViewMap()))
         {
             if (!agent->currentPath.empty())
             {
@@ -111,7 +107,7 @@ void MedicGoToTargetState::Execute(Medic* agent)
                 pathCalculated = true;
             }
         }
-        else // A* לא הצליח למצוא נתיב
+        else
         {
             std::cerr << "Medic: Path to target not found! Removing patient and checking next.\\n";
             agent->RemoveCurrentPatient();
@@ -123,12 +119,10 @@ void MedicGoToTargetState::Execute(Medic* agent)
         }
     }
 
-    // 5. המשך תנועה
     if (agent->IsMoving())
     {
         agent->CalculatePathAndMove();
 
-        // בדיקה אם המטרה זזה לאחר סיום הנתיב הנוכחי
         if (agent->currentPath.empty())
         {
             Point currentPatientLoc = patient->GetLocation();
@@ -136,13 +130,11 @@ void MedicGoToTargetState::Execute(Medic* agent)
 
             if (distanceToPatient >= 2.0)
             {
-                // הפצוע זז, מחשבים נתיב מחדש
                 std::cout << "Medic: Patient moved. Recalculating path.\\n";
                 pathCalculated = false;
             }
             else
             {
-                // קרובים מספיק, מעבר למצב Healing יקרה בפעימה הבאה
                 agent->isMoving = false;
             }
         }

@@ -36,31 +36,26 @@ void MedicHealingState::Execute(Medic* medic)
         return;
     }
 
-    // 2. לוגיקת ריפוי פצועים חיצוניים (מהתור)
     NPC* patient = medic->GetNextPatient();
 
-    // בדיקת תקינות: האם פצוע קיים, חי, או כבר נרפא
     if (!patient || !patient->IsAlive() || patient->GetHealth() >= MAX_HP)
     {
         if (patient)
-            medic->RemoveCurrentPatient(); // הסר את הפצוע הלא תקין/רפא
+            medic->RemoveCurrentPatient();
 
         if (medic->GetNextPatient() == nullptr)
         {
-            // אין יותר פצועים
             std::cout << "No more patients. Medic going idle.\\n";
             medic->SetState(new MedicIdleState());
         }
         else
         {
-            // יש פצוע נוסף - עבור לטפל בו
             std::cout << "Patient gone/healed. Moving to next patient in queue.\\n";
             medic->SetState(new MedicGoToTargetState());
         }
         return;
     }
 
-    // 3. ריפוי בפועל
     Point medicLoc = medic->GetLocation();
     Point patientLoc = patient->GetLocation();
     double dist = Distance(medicLoc, patientLoc);

@@ -8,7 +8,7 @@
 #include <map>
 
 
-const double SPEED = 2; //1.40 ;
+const double SPEED = 2; // Movement speed factor for the NPC.
 const double MAX_HP = 100.0;
 const double INJURED_THRESHOLD = MAX_HP * 0.5;
 const double CRITICAL_HP = MAX_HP * 0.3;
@@ -54,22 +54,21 @@ class Commander; // forward declaration for myCommander pointer attribute
 class NPC // abstract class
 {
 protected:
-	Map* gameMapPtr;
-	Point location;
+	Map* gameMapPtr; // Pointer to the main game map object.
+	Point location; // Current grid location of the NPC
 	TeamColor team;
 	NpcType type;
 	Commander* myCommander;
 	double health;
-	// int moveCooldown;
 
 	// behavior properties
 	Point targetLocation;
 	double directionX, directionY;
 	bool isMoving;
-	bool isSurviveMode;
+	bool isSurviveMode; // Flag for emergency survival behavior - when Commander is dead
 
 	// safety map, threats map & helper methods
-	double viewMap[MSX][MSY];
+	double viewMap[MSX][MSY]; // 2D array representing the NPC's current field of view/risk map
 	std::map<int, ThreatInfo> sparseThreatMap;
 	void DecayThreats();
 	void AddThreat(Point p, double value, double radius);
@@ -108,7 +107,6 @@ public:
 	bool IsAlive() const { return health > 0; }
 	bool CanFight() const { return health > CRITICAL_HP; }
 
-	// TODO: cancel virtual methods, implement in NPC.cpp
 	// report methods
 	virtual void ReportInjury(NPC* injuredSoldier) = 0;
 	virtual void ReportLowAmmo(NPC* warrior) = 0;

@@ -19,7 +19,7 @@ void SupplyWaitState::Execute(SupplyAgent* agent)
 
         if (target->IsAlive())
         {
-            break; // Found valid target
+            break;
         }
         else
         {
@@ -28,7 +28,6 @@ void SupplyWaitState::Execute(SupplyAgent* agent)
         }
     }
 
-    // Now check if there's a valid delivery target
     if (agent->GetDeliveryTarget() != nullptr)
     {
         std::cout << "SupplyAgent: New delivery target found. Moving to warrior.\n";

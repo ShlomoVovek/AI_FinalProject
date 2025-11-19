@@ -1,7 +1,6 @@
 #include "NPC.h"
 #include "Definition.h"
 #include "Commander.h"
-// #include "Bullet.h"
 #include <math.h>
 #include <iostream>
 #include <algorithm>
@@ -18,7 +17,7 @@ NPC::NPC(int x, int y, TeamColor t, NpcType nt) :
 	// view map
 	for (int i = 0; i < MSX; ++i)
 		for (int j = 0; j < MSY; ++j)
-			viewMap[i][j] = 0.0;
+			viewMap[i][j] = 0.0;  
 }
 
 void NPC::SetCommander(Commander* pCommander)

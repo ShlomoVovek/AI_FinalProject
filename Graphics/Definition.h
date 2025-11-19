@@ -3,18 +3,19 @@
 
 
 const double PI = 3.14;
-const double SIGHT_RANGE = 25.0;
+const double SIGHT_RANGE = 25.0; // Maximum distance a character can see enemies
 const int MSX = 80;
 const int MSY = 48;
 
+// costs for pathfinding
 const double COST_UNKNOWN = 5.0;
 const double COST_SAFE = 2.0;
 const double COST_DANGER = 15.0;
 
-const double DECAY_RATE = 0.5;
-const double HEARING_RANGE = 20.0;
-const double GRENADE_THREAT_VALUE = 25.0; 
-const double GRENADE_THREAT_RADIUS = 3.0; 
+const double DECAY_RATE = 0.5; // Rate at which knowledge/threat values decay over time
+const double HEARING_RANGE = 20.0; // Maximum distance a character can 'hear' or detect nearby events such as grenades
+const double GRENADE_THREAT_VALUE = 25.0;  // Base risk value applied by a grenade explosion.
+const double GRENADE_THREAT_RADIUS = 3.0; // Radius (in tiles) affected by a grenade explosion.
 
 // types of cells in map
 enum CellType

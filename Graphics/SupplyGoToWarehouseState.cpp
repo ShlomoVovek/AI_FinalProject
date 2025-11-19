@@ -20,7 +20,6 @@ void SupplyGoToWarehouseState::OnEnter(SupplyAgent* agent)
 
 void SupplyGoToWarehouseState::Execute(SupplyAgent* agent)
 {
-    // 1. חישוב נתיב אם לא חושב עדיין
     if (!pathCalculated)
     {
         Point warehousePos = agent->FindNearestWarehouse();
@@ -47,27 +46,21 @@ void SupplyGoToWarehouseState::Execute(SupplyAgent* agent)
             return;
         }
     }
-
-    // 2. תנועה אם יש נתיב ועדיין זז
     if (agent->IsMoving() || agent->HasPath())
     {
         agent->CalculatePathAndMove();
 
-        // אם CalculatePathAndMove סיימה את התנועה בפריימ הזה, 
-        // agent->isMoving יהיה false, והבלוק יסתיים. 
-        // נחכה לפריימ הבא כדי לבדוק הגעה.
         if (agent->IsMoving())
         {
-            return; // ממשיך לזוז, נחכה לפריימ הבא
+            return;
         }
     }
 
-    // 4. בדיקת הגעה למחסן
     Point currentLoc = agent->GetLocation();
     Point warehousePos = agent->FindNearestWarehouse();
     double dist = Distance(currentLoc, warehousePos);
 
-    if (dist <= 1.5) // הגעה מוצלחת
+    if (dist <= 1.5)
     {
         std::cout << "SupplyAgent reached warehouse, picking up ammo\n";
         agent->PickupAmmo();

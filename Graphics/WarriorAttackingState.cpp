@@ -14,27 +14,22 @@ void WarriorAttackingState::Execute(Warrior* warrior)
 {
     framesSinceLastShot++;
 
-    // 1. Move towards attack position
     warrior->CalculatePathAndMove();
 
-    // 2. Scan for enemies
     NPC* pEnemy = warrior->ScanForEnemies();
     if (pEnemy != nullptr)
     {
         Point enemyPos = pEnemy->GetLocation();
-
-        // Calculate distance to enemy
         Point myPos = warrior->GetLocation();
         double distance = Distance(myPos, enemyPos);
 
-        // 1. Check GRENADE "sweet spot" (long range, outside rifle range)
         if (distance > RIFLE_RANGE && distance <= GRENADE_RANGE && warrior->GetGrenades() > 0)
         {
             warrior->ThrowGrenade(enemyPos);
             std::cout << "Warrior throwing grenade at long-range enemy\n";
             framesSinceLastShot = 0;
         }
-        // 2. Check RIFLE range
+   
         else if (distance <= RIFLE_RANGE && warrior->CanShootAt(enemyPos))
         {
             if (framesSinceLastShot >= SHOOT_COOLDOWN)
@@ -61,11 +56,9 @@ void WarriorAttackingState::Execute(Warrior* warrior)
                 }
             }
         }
-        // Report sighting
         warrior->ReportSighting(pEnemy->GetType(), enemyPos);
     }
 
-    // 3. Check if reached attack position
     if (warrior->GetCurrentPath().empty() && !warrior->IsMoving())
     {
         pEnemy = warrior->ScanForEnemies();
@@ -95,8 +88,7 @@ void WarriorAttackingState::Execute(Warrior* warrior)
         warrior->ClearPath();
     }
 
-    // 4. Check critical health - might need to retreat
-    if (warrior->GetHealth() < CRITICAL_HP) // Very low health
+    if (warrior->GetHealth() < CRITICAL_HP)
     {
         std::cout << "Warrior critically injured, requesting medic\n";
         warrior->ExecuteCommand(CMD_RETREAT, warrior->GetLocation());

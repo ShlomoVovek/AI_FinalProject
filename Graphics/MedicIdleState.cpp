@@ -22,7 +22,6 @@ void MedicIdleState::Execute(Medic* agent)
         NPC* nearbyPatient = agent->FindNearbyInjuredAlly();
         if (nearbyPatient != nullptr)
         {
-            // בדוק אם הוא כבר בתור
             auto it = std::find(agent->patientsQueue.begin(), agent->patientsQueue.end(), nearbyPatient);
             if (it == agent->patientsQueue.end())
             {

@@ -50,7 +50,6 @@ Point SupplyAgent::GetBaseLocation() const
 {
     int BASE = this->GetTeam() == TEAM_RED ? RED_BASE : BLUE_BASE;
 
-    // Search entire visible map
     for (int i = 0; i < MSX; i++)
     {
         for (int j = 0; j < MSY; j++)
@@ -68,7 +67,6 @@ Point SupplyAgent::GetBaseLocation() const
 
 Point SupplyAgent::FindNearestWarehouse() const
 {
-    // First, check if we already have a cached warehouse location
     if (targetWarehouse[0].x >= 0 && targetWarehouse[0].x < MSX &&
         targetWarehouse[0].y >= 0 && targetWarehouse[0].y < MSY)
     {
@@ -77,13 +75,11 @@ Point SupplyAgent::FindNearestWarehouse() const
         return targetWarehouse[0];
     }
 
-    // Try to find warehouse in current view
     Point warehouse = GetBaseLocation();
 
     if (warehouse.x >= 0 && warehouse.x < MSX &&
         warehouse.y >= 0 && warehouse.y < MSY)
     {
-        // Cache it for future use
         const_cast<SupplyAgent*>(this)->targetWarehouse[0] = warehouse;
         std::cout << "Found and cached warehouse at (" << warehouse.x
             << ", " << warehouse.y << ")\n";
@@ -116,10 +112,8 @@ void SupplyAgent::PickupAmmo()
 
 void SupplyAgent::DeliverAmmo()
 {
-    // נשתמש ב-GetDeliveryTarget() כדי לקבל את הלוחם הנוכחי (הראשון בתור)
     NPC* targetWarrior = GetDeliveryTarget();
 
-    // 1. בדיקה האם יש משימה נוכחית והאם הסוכן נושא תחמושת
     if ((cargoAmmo > 0 || cargoGrenades > 0) && targetWarrior != nullptr && targetWarrior->IsAlive())
     {
         Warrior* warriorToResupply = dynamic_cast<Warrior*>(targetWarrior);
@@ -128,22 +122,16 @@ void SupplyAgent::DeliverAmmo()
         {
             std::cout << "SupplyAgent delivering supplies to warrior\n";
 
-            // 2. אספקה
             warriorToResupply->Resupply(cargoAmmo, cargoGrenades);
 
-            // 3. איפוס מטען הסוכן
             cargoAmmo = 0;
             cargoGrenades = 0;
             hasAmmo = false;
         }
-
-        // 4. *** הסרת הלוחם מהתור ***
         deliveryQueue.pop_front();
     }
-    // אם אין מטען או שהלוחם לא קיים/מת, נסיר רק את הלוחם מהתור (אם יש)
     else if (targetWarrior != nullptr)
     {
-        // אם הסוכן הגיע אבל הלוחם מת או משהו השתבש, פשוט ננקה אותו מהתור
         deliveryQueue.pop_front();
     }
 }
@@ -157,22 +145,17 @@ void SupplyAgent::AssignSupplyMission(NPC* warrior)
 {
     if (warrior != nullptr && warrior->IsAlive())
     {
-        // 1. הוסף לתור
         deliveryQueue.push_back(warrior);
 
-        // 2. אם הסוכן במצב סרק, התחל את המשימה
         if (dynamic_cast<SupplyIdleState*>(currentState) != nullptr ||
             dynamic_cast<SupplyWaitState*>(currentState) != nullptr)
         {
             std::cout << "Supply Agent: Mission accepted. Going to warehouse.\n";
-            // קבע את targetLocation למיקום הנוכחי של הלוחם הראשון בתור
             targetLocation = deliveryQueue.front()->GetLocation();
             SetState(new SupplyGoToWarehouseState());
         }
     }
 }
-
-// In SupplyAgent.cpp
 
 void SupplyAgent::DoSomeWork(const double* pMap)
 {
@@ -266,10 +249,9 @@ void SupplyAgent::DoSomeWork(const double* pMap)
                     }
                     deliveryQueue.push_front(closeWarrior);
 
-                    // מנקים מסלול קיים ומשנים מצב מיידית
                     ClearPath();
                     SetState(new SupplyGoToWarriorState());
-                    return; // סיימנו את העבודה לפריים הזה
+                    return;
                 }
             }
         }
@@ -406,7 +388,6 @@ NPC* SupplyAgent::FindNearbyAllyNeedsResupply(bool excludeCurrentTarget) const
 
     for (NPC* ally : *npcList)
     {
-        // 1. בדיקות בסיסיות (לא אני, מהקבוצה שלי, חי, בטווח)
         if (ally == this ||
             ally->GetTeam() != this->GetTeam() ||
             !ally->IsAlive() ||
@@ -415,21 +396,19 @@ NPC* SupplyAgent::FindNearbyAllyNeedsResupply(bool excludeCurrentTarget) const
             continue;
         }
 
-        // 2. בדיקה אם זה היעד הנוכחי שאנחנו רוצים להתעלם ממנו
         if (excludeCurrentTarget && ally == currentTarget)
         {
             continue;
         }
 
-        // 3. בדיקה ספציפית: האם זה לוחם שצריך אספקה
         Warrior* warrior = dynamic_cast<Warrior*>(ally);
         if (warrior && warrior->IsNeedSupply())
         {
-            return warrior; // מצאנו!
+            return warrior;
         }
     }
 
-    return nullptr; // לא נמצא אף אחד
+    return nullptr;
 }
 
 
